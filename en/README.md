@@ -43,7 +43,7 @@ chmod +x install_sepolia.sh
 ./install_sepolia.sh
 ````
 
-After installing the node, wait for full synchronization. Synchronization will be complete only when you see ✅ Execution synchronized when you request the synchronization status. In other cases, even if you see 100%, synchronization is not yet complete.
+After installing the node, wait for the full synchronization. The synchronization will be complete only when you see "✅ Execution synchronized" when you query the synchronization status. Otherwise, even if you see 100%, the synchronization is not yet complete.
 
 ## 📋 Main Menu
 
