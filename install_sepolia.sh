@@ -508,7 +508,7 @@ function setup_cron_agent {
     3) cron_schedule="*/15 * * * *" ;;
     4) cron_schedule="*/30 * * * *" ;;
     5) cron_schedule="0 * * * *" ;;
-    *) 
+    *)
       echo "$(t "invalid_interval")"
       cron_schedule="*/10 * * * *"
       ;;
@@ -520,31 +520,26 @@ CLIENT="$client"
 TG_TOKEN="$tg_token"
 TG_CHAT_ID="$tg_chat_id"
 
-# Формируем сообщение
-STATUS_MSG="[Sepolia Node Monitor]%0A"
-STATUS_MSG+="Execution client: geth%0A"
-STATUS_MSG+="Consensus client: $CLIENT%0A"
-
 # Проверка Geth
 if ! curl -s http://localhost:8545 >/dev/null; then
-  curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
-    -d "chat_id=$TG_CHAT_ID" \
-    -d "text=❌ Geth not responding!"
+  curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" -d "chat_id=$TG_CHAT_ID" --data-urlencode "text=❌ Geth not responding!"
   exit 1
 fi
 
 # Проверка консенсус-клиента
 if ! curl -s http://localhost:5052/eth/v1/node/syncing >/dev/null; then
-  curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
-    -d "chat_id=$TG_CHAT_ID" \
-    -d "text=❌ Consensus client $CLIENT not responding!"
+  curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" -d "chat_id=$TG_CHAT_ID" --data-urlencode "text=❌ Consensus client \$CLIENT not responding!"
   exit 1
 fi
 
-# Отправка итогового сообщения
-curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
-  -d "chat_id=$TG_CHAT_ID" \
-  -d "text=$STATUS_MSG✅ OK"
+# Формируем и отправляем итоговое сообщение
+STATUS_MSG="[Sepolia Node Monitor]
+Execution client: geth
+Consensus client: $CLIENT
+✅ OK"
+
+curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" -d "chat_id=$TG_CHAT_ID" --data-urlencode "text=$STATUS_MSG"
+echo "DEBUG: TG_TOKEN=$TG_TOKEN" >&2
 
 EOF
 
