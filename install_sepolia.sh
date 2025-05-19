@@ -94,7 +94,7 @@ function t {
             "deleted") echo "🗑️ Node completely removed." ;;
             "cancelled") echo "❌ Deletion cancelled." ;;
             "menu_title") echo "====== Sepolia Node Manager ======" ;;
-            "menu_options") echo '1) Install node\n2) Update node\n3) Check logs\n4) Check sync status\n5) Setup cron agent\n6) Remove cron agent\n7) Stop containers\n8) Start containers\n9) Delete node\n10) Check disk usage\n11) Exit' ;;
+            "menu_options") echo '1) Install node\n2) Update node\n3) Check logs\n4) Check sync status\n5) Setup cron agent wiht Tg notifications\n6) Remove cron agent\n7) Stop containers\n8) Start containers\n9) Delete node\n10) Check disk usage\n11) Exit' ;;
             "goodbye") echo "👋 Goodbye!" ;;
             "invalid_option") echo "❌ Invalid choice, try again." ;;
             "select_option") echo "Select option: " ;;
@@ -159,7 +159,7 @@ function t {
             "deleted") echo "🗑️ Нода полностью удалена." ;;
             "cancelled") echo "❌ Удаление отменено." ;;
             "menu_title") echo "====== Sepolia Node Manager ======" ;;
-            "menu_options") echo '1) Установить ноду\n2) Обновить ноду\n3) Проверить логи\n4) Проверить статус синхронизации\n5) Установить cron-агент\n6) Удалить cron-агент\n7) Остановить контейнеры\n8) Запустить контейнеры\n9) Удалить ноду\n10) Проверить занимаемое место\n11) Выйти' ;;
+            "menu_options") echo '1) Установить ноду\n2) Обновить ноду\n3) Проверить логи\n4) Проверить статус синхронизации\n5) Установить cron-агент с Тг уведомлениями\n6) Удалить cron-агент\n7) Остановить контейнеры\n8) Запустить контейнеры\n9) Удалить ноду\n10) Проверить занимаемое место\n11) Выйти' ;;
             "goodbye") echo "👋 До свидания!" ;;
             "invalid_option") echo "❌ Неверный выбор, попробуйте снова." ;;
             "select_option") echo "Выберите опцию: " ;;

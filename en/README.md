@@ -55,7 +55,7 @@ The script offers the following menu (available in English or Russian):
 2. Update containers
 3. View logs
 4. Check sync status
-5. Install cron-agent
+5. Install cron-agent with Tg notifications
 6. Remove cron-agent
 7. Stop containers
 8. Start containers
