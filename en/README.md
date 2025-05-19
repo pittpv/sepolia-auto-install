@@ -34,8 +34,7 @@ Dependency installation guide: [see here](https://github.com/pittpv/sepolia-auto
 ## 🚀 Installation & Run
 
 ```bash
-git clone https://github.com/pittpv/sepolia-auto-install.git
-cd sepolia-auto-install
+curl -o install_sepolia.sh https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/install_sepolia.sh
 chmod +x install_sepolia.sh
 ./install_sepolia.sh
 ````
