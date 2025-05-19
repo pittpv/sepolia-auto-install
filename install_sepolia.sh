@@ -72,7 +72,7 @@ function t {
             "enter_tg_token") echo "Enter Telegram token: " ;;
             "enter_tg_chat") echo "Enter Telegram chat_id: " ;;
             "select_cron") echo "Select cron agent interval:" ;;
-            "cron_options") echo '1) Every 5 minutes\n2) Every 10 minutes\n3) Every 15 minutes\n4) Every 30 minutes\n5) Every hour' ;;
+            "cron_options") echo $'1) Every 5 minutes\n2) Every 10 minutes\n3) Every 15 minutes\n4) Every 30 minutes\n5) Every hour' ;;
             "invalid_interval") echo "Invalid choice. Setting default interval: every 10 minutes." ;;
             "cron_installed") echo "✅ Cron agent installed with interval: $1" ;;
             "cron_removed") echo "🗑️ Agent and cron task removed." ;;
