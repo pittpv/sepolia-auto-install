@@ -10,7 +10,7 @@ VIOLET='\033[0;35m'
 RESET='\033[0m'
 
 function show_logo() {
-    echo -e "${BLUE}                        Добро пожаловать в скрипт установки и управления нодой Sepolia Ethereum${RESET}"
+    echo -e "${BLUE}$(t "welcome")${RESET}"
     curl -s https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/logo.sh | bash
 }
 
@@ -39,6 +39,7 @@ function t {
 
     if [[ "$lang" == "en" ]]; then
         case "$key" in
+            "welcome") echo "                     Welcome to the Sepolia Ethereum Node Setup and Management Script" ;;
             "jwt_gen") echo "🔐 Generating jwt.hex..." ;;
             "choose_client") echo "🔧 Choose consensus client:" ;;
             "client_selected") echo "✅ Selected client: $1" ;;
@@ -104,6 +105,7 @@ function t {
         esac
     else
         case "$key" in
+            "welcome") echo "                     Добро пожаловать в скрипт установки и управления нодой Sepolia Ethereum" ;;
             "jwt_gen") echo "🔐 Генерация jwt.hex..." ;;
             "choose_client") echo "🔧 Выберите consensus клиент:" ;;
             "client_selected") echo "✅ Выбран клиент: $1" ;;
