@@ -1,5 +1,7 @@
 # 🛰️ Sepolia Node Installer
 
+[for Russian](https://github.com/pittpv/sepolia-auto-install/blob/main/ "Russian version of description")          [Before running the script, install dependencies](https://github.com/pittpv/sepolia-auto-install/tree/main/en#%EF%B8%8F-requirements)
+
 An interactive bash script for installing, managing, and monitoring an Ethereum Sepolia node with support for consensus client selection (Prysm (recommended), Lighthouse, Teku), sync monitoring, Telegram integration, and an optional cron-based monitoring agent. Geth is used as the execution client.
 
 ## 📦 Features
