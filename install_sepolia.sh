@@ -520,26 +520,48 @@ CLIENT="$client"
 TG_TOKEN="$tg_token"
 TG_CHAT_ID="$tg_chat_id"
 
-# Проверка Geth
-if ! curl -s http://localhost:8545 >/dev/null; then
-  curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" -d "chat_id=$TG_CHAT_ID" --data-urlencode "text=❌ Geth not responding!"
+# Проверка Geth (execution client)
+# Отправляем JSON-RPC запрос eth_syncing
+geth_sync_response=$(curl -s -X POST http://localhost:8545 \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}')
+
+# Проверяем, не является ли ответ false (означает синхронизирована)
+if echo "$geth_sync_response" | grep -q '"result":false'; then
+  geth_status="✅ Geth synced"
+elif echo "$geth_sync_response" | grep -q '"result":'; then
+  geth_status="⚠️ Geth syncing in progress"
+else
+  curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
+    --data-urlencode "chat_id=$TG_CHAT_ID" \
+    --data-urlencode "text=❌ Geth not responding or returned invalid data!"
   exit 1
 fi
 
-# Проверка консенсус-клиента
-if ! curl -s http://localhost:5052/eth/v1/node/syncing >/dev/null; then
-  curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" -d "chat_id=$TG_CHAT_ID" --data-urlencode "text=❌ Consensus client \$CLIENT not responding!"
+# Проверка Consensus клиента
+consensus_response=$(curl -s http://localhost:5052/eth/v1/node/syncing)
+
+is_syncing=$(echo "$consensus_response" | jq -r '.data.is_syncing' 2>/dev/null)
+
+if [ "$is_syncing" == "false" ]; then
+  consensus_status="✅ $CLIENT synced"
+elif [ "$is_syncing" == "true" ]; then
+  consensus_status="⚠️ $CLIENT syncing in progress"
+else
+  curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
+    --data-urlencode "chat_id=$TG_CHAT_ID" \
+    --data-urlencode "text=❌ $CLIENT not responding or returned invalid data!"
   exit 1
 fi
 
 # Формируем и отправляем итоговое сообщение
 STATUS_MSG="[Sepolia Node Monitor]
-Execution client: geth
-Consensus client: $CLIENT
-✅ OK"
+Execution client: $geth_status
+Consensus client: $consensus_status"
 
-curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" -d "chat_id=$TG_CHAT_ID" --data-urlencode "text=$STATUS_MSG"
-
+curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
+  --data-urlencode "chat_id=$TG_CHAT_ID" \
+  --data-urlencode "text=$STATUS_MSG"
 EOF
 
   chmod +x "$AGENT_SCRIPT"
