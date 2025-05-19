@@ -85,6 +85,13 @@ The script displays:
 * Estimated time remaining
 * Completion status
 
+## 🔗 RPC links
+
+* RPC URL: `http://localhost:8545`
+* BEACON RPC URL: `http://localhost:5052`
+
+replace localhost with the IP address of your server.
+
 ## 🗑️ Removal
 
 The removal option completely wipes all node data and containers. Confirmation is required.
