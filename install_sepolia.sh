@@ -6,10 +6,16 @@ GREEN='\033[0;32m'
 CYAN='\033[0;36m'
 YELLOW='\033[1;33m'
 BLUE='\033[1;34m'
+VIOLET='\033[0;35m'
 RESET='\033[0m'
 
+function show_logo() {
+    echo -e "${BLUE}                        Добро пожаловать в скрипт установки и управления нодой Sepolia Ethereum${RESET}"
+    curl -s https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/logo.sh | bash
+}
+
 # Language selection
-echo "Select language / Выберите язык:"
+echo -e ${BLUE}"Select language / Выберите язык:${RESET}"
 select lang in "English" "Русский"; do
     case $lang in
         English)
@@ -30,7 +36,7 @@ done
 function t {
     local key="$1"
     shift
-    
+
     if [[ "$lang" == "en" ]]; then
         case "$key" in
             "jwt_gen") echo "🔐 Generating jwt.hex..." ;;
@@ -628,6 +634,7 @@ function delete_node {
 
 # Main menu
 function main_menu {
+  show_logo
   while true; do
     echo -e "\n${BLUE}$(t "menu_title")${RESET}"
     echo -e "$(t "menu_options")"
