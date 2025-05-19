@@ -539,7 +539,6 @@ Consensus client: $CLIENT
 ✅ OK"
 
 curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" -d "chat_id=$TG_CHAT_ID" --data-urlencode "text=$STATUS_MSG"
-echo "DEBUG: TG_TOKEN=$TG_TOKEN" >&2
 
 EOF
 
