@@ -303,8 +303,8 @@ EOF
       --jwt-secret=/jwt.hex
       --accept-terms-of-use
       --checkpoint-sync-url=https://sepolia.checkpoint-sync.ethpandaops.io
-	  --grpc-gateway-port=5052
-	  --grpc-gateway-host=0.0.0.0
+      --grpc-gateway-port=5052
+      --grpc-gateway-host=0.0.0.0
 EOF
       ;;
     teku)
