@@ -101,6 +101,9 @@ function t {
             "select_option") echo "Select option: " ;;
             "start_containers") echo "🏃‍➡️ Start containers" ;;
 			"containers_started") echo "✅ Containers started." ;;
+			"client_label_prysm") echo "Prysm (recommended)" ;;
+			"client_label_teku") echo "Teku" ;;
+			"client_label_lighthouse") echo "Lighthouse" ;;
             *) echo "$key" ;;
         esac
     else
@@ -167,6 +170,9 @@ function t {
             "select_option") echo "Выберите опцию: " ;;
 			"start_containers") echo "🏃‍➡️ Запустить контейнеры" ;;
 			"containers_started") echo "✅ Контейнеры запущены." ;;
+			"client_label_prysm") echo "Prysm (рекомендуется)" ;;
+			"client_label_teku") echo "Teku" ;;
+			"client_label_lighthouse") echo "Lighthouse" ;;
             *) echo "$key" ;;
         esac
     fi
@@ -207,12 +213,21 @@ function generate_jwt {
 
 function choose_consensus_client {
   mkdir -p "$NODE_DIR"
-  print_info "$(t "choose_client")"
-  select client in "Lighthouse" "Prysm" "Teku"; do
-    case $client in
-      Lighthouse|Prysm|Teku)
-        echo "${client,,}" > "$CLIENT_FILE"
-        print_success "$(t "client_selected" "$client")"
+
+  local options=("prysm" "teku" "lighthouse")
+  local labels=(
+    "$(t "client_label_prysm")"
+    "$(t "client_label_teku")"
+    "$(t "client_label_lighthouse")"
+  )
+
+  PS3="$(t "choose_client")"$'\n> '
+  select opt_label in "${labels[@]}"; do
+    case $REPLY in
+      1|2|3)
+        local selected="${options[$((REPLY-1))]}"
+        echo "$selected" > "$CLIENT_FILE"
+        print_success "$(t "client_selected" "$selected")"
         return
         ;;
       *) print_error "$(t "invalid_choice")" ;;
@@ -229,8 +244,6 @@ function create_docker_compose {
 
   print_info "$(t "creating_compose" "$client")"
   cat > "$DOCKER_COMPOSE_FILE" <<EOF
-version: '3.8'
-
 services:
   geth:
     image: ethereum/client-go:stable
