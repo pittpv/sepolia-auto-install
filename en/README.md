@@ -2,14 +2,13 @@
 
 🇷🇺 [for Russian](https://github.com/pittpv/sepolia-auto-install/blob/main/ "Russian version of description")
 
-⚠️ [Before running the script, install dependencies](https://github.com/pittpv/sepolia-auto-install/tree/main/en#%EF%B8%8F-requirements)
-
 ![First screen](https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/img-2025-05-21-09-10-30.png)
 
 An interactive bash script for installing, managing, and monitoring an Ethereum Sepolia node with support for consensus client selection (Prysm (recommended), Lighthouse, Teku), sync monitoring, Telegram integration, and an optional cron-based monitoring agent. Geth is used as the execution client.
 
 ## 📦 Features
 
+* 📦 System update and prerequisites install
 * 🔧 Install and run Sepolia node with selected consensus client
 * 🐳 Automatically generate `docker-compose.yml`
 * 📊 Check sync status (execution and consensus)
@@ -26,7 +25,7 @@ An interactive bash script for installing, managing, and monitoring an Ethereum 
 * `curl`, `jq`
 * `bash` ≥ 4.0
 
-Dependency installation guide: [see here](https://github.com/pittpv/sepolia-auto-install/blob/main/en/Install-Dependecies.md "How to install Docker and other dependencies")
+**Update from 21.05.2025**: All prerequisites can now be installed automatically by selecting option 1 in the menu. This will update the system and current applications, install Docker, Docker Compose, and other required utilities. After installation, the system will be cleaned of installation cache and unused packages.
 
 ### 🖥️ System Requirements
 
@@ -51,17 +50,18 @@ After installing the node, wait for the full synchronization. The synchronizatio
 
 The script offers the following menu (available in English or Russian):
 
-1. Install node
-2. Update containers
-3. View logs
-4. Check sync status
-5. Install cron-agent with Tg notifications
-6. Remove cron-agent
-7. Stop containers
-8. Start containers
-9. Remove node
-10. Check disk usage
-11. Exit
+1. Install requirements (Docker, etc.)
+2. Install node
+3. Update containers
+4. View logs
+5. Check sync status
+6. Set up cron agent with Tg notifications
+7. Remove cron agent
+8. Stop containers
+9. Start containers
+10. Delete node
+11. Check disk usage
+12. Exit
 
 ## 🔐 Telegram Notifications
 

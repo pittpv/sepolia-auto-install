@@ -95,15 +95,22 @@ function t {
             "deleted") echo "🗑️ Node completely removed." ;;
             "cancelled") echo "❌ Deletion cancelled." ;;
             "menu_title") echo "====== Sepolia Node Manager ======" ;;
-            "menu_options") echo '1) Install node\n2) Update node\n3) Check logs\n4) Check sync status\n5) Setup cron agent wiht Tg notifications\n6) Remove cron agent\n7) Stop containers\n8) Start containers\n9) Delete node\n10) Check disk usage\n11) Exit' ;;
+            "menu_options") echo '1) Install prerequisites (Docker and other software)\n2) Install node\n3) Update node\n4) Check logs\n5) Check sync status\n6) Setup cron agent wiht Tg notifications\n7) Remove cron agent\n8) Stop containers\n9) Start containers\n10) Delete node\n11) Check disk usage\n12) Exit' ;;
             "goodbye") echo "👋 Goodbye!" ;;
             "invalid_option") echo "❌ Invalid choice, try again." ;;
             "select_option") echo "Select option: " ;;
             "start_containers") echo "🏃‍➡️ Start containers" ;;
-			"containers_started") echo "✅ Containers started." ;;
-			"client_label_prysm") echo "Prysm (recommended)" ;;
-			"client_label_teku") echo "Teku" ;;
-			"client_label_lighthouse") echo "Lighthouse" ;;
+            "containers_started") echo "✅ Containers started." ;;
+            "client_label_prysm") echo "Prysm (recommended)" ;;
+            "client_label_teku") echo "Teku" ;;
+            "client_label_lighthouse") echo "Lighthouse" ;;
+            "update_base") echo "🛠 Updating system and installing base packages..." ;;
+            "install_docker") echo "📦 Installing Docker..." ;;
+            "docker_exists") echo "✅ Docker is already installed. Skipping." ;;
+            "install_compose") echo "📦 Installing Docker Compose..." ;;
+            "compose_exists") echo "✅ Docker Compose is already installed. Skipping." ;;
+            "requirements_done") echo "✅ All requirements successfully installed." ;;
+            "autoremove_clean") echo "Cleaning the system from unnecessary files..." ;;
             *) echo "$key" ;;
         esac
     else
@@ -164,15 +171,22 @@ function t {
             "deleted") echo "🗑️ Нода полностью удалена." ;;
             "cancelled") echo "❌ Удаление отменено." ;;
             "menu_title") echo "====== Sepolia Node Manager ======" ;;
-            "menu_options") echo '1) Установить ноду\n2) Обновить ноду\n3) Проверить логи\n4) Проверить статус синхронизации\n5) Установить cron-агент с Тг уведомлениями\n6) Удалить cron-агент\n7) Остановить контейнеры\n8) Запустить контейнеры\n9) Удалить ноду\n10) Проверить занимаемое место\n11) Выйти' ;;
+            "menu_options") echo '1) Установить требования (Docker и другое ПО)\n2) Установить ноду\n3) Обновить ноду\n4) Проверить логи\n5) Проверить статус синхронизации\n6) Установить cron-агент с Тг уведомлениями\n7) Удалить cron-агент\n8) Остановить контейнеры\n9) Запустить контейнеры\n10) Удалить ноду\n11) Проверить занимаемое место\n12) Выйти' ;;
             "goodbye") echo "👋 До свидания!" ;;
             "invalid_option") echo "❌ Неверный выбор, попробуйте снова." ;;
             "select_option") echo "Выберите опцию: " ;;
-			"start_containers") echo "🏃‍➡️ Запустить контейнеры" ;;
-			"containers_started") echo "✅ Контейнеры запущены." ;;
-			"client_label_prysm") echo "Prysm (рекомендуется)" ;;
-			"client_label_teku") echo "Teku" ;;
-			"client_label_lighthouse") echo "Lighthouse" ;;
+            "start_containers") echo "🏃‍➡️ Запустить контейнеры" ;;
+            "containers_started") echo "✅ Контейнеры запущены." ;;
+            "client_label_prysm") echo "Prysm (рекомендуется)" ;;
+            "client_label_teku") echo "Teku" ;;
+            "client_label_lighthouse") echo "Lighthouse" ;;
+            "update_base") echo "🛠 Обновление системы и установка базовых пакетов..." ;;
+            "install_docker") echo "📦 Устанавливаем Docker..." ;;
+            "docker_exists") echo "✅ Docker уже установлен. Пропускаем" ;;
+            "install_compose") echo "📦 Устанавливаем Docker Compose..." ;;
+            "compose_exists") echo "✅ Docker Compose уже установлен. Пропускаем" ;;
+            "requirements_done") echo "✅ Все необходимые требования установлены" ;;
+            "autoremove_clean") echo "Очистка системы от ненужных файлов..." ;;
             *) echo "$key" ;;
         esac
     fi
@@ -233,6 +247,37 @@ function choose_consensus_client {
       *) print_error "$(t "invalid_choice")" ;;
     esac
   done
+}
+
+function install_requirements {
+  cd $HOME
+
+  print_info "$(t "update_base")"
+  sudo apt update -y && sudo apt upgrade -y
+  sudo apt install screen curl git jq nano gnupg build-essential ca-certificates wget lz4 gcc make lsb-release software-properties-common apt-transport-https iptables automake autoconf tmux htop nvme-cli libgbm1 pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip -y
+
+  if ! command -v docker &> /dev/null; then
+    print_info "$(t "install_docker")"
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sudo sh get-docker.sh
+    sudo usermod -aG docker $USER
+  else
+    print_info "$(t "docker_exists")"
+  fi
+
+  if ! command -v docker-compose &> /dev/null; then
+    print_info "$(t "install_compose")"
+    sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+  else
+    print_info "$(t "compose_exists")"
+  fi
+
+  print_info "$(t "autoremove_clean")"
+  sudo apt autoremove -y && sudo apt clean
+
+  echo ""
+  print_success "$(t "requirements_done")"
 }
 
 function create_docker_compose {
@@ -656,17 +701,18 @@ function main_menu {
     echo -e "${BLUE}==================================${RESET}"
     read -p "$(t "select_option")" choice
     case $choice in
-      1) install_node ;;
-      2) update_node ;;
-      3) view_logs ;;
-      4) check_sync ;;
-      5) setup_cron_agent ;;
-      6) remove_cron_agent ;;
-      7) stop_containers ;;
-      8) start_containers ;;
-      9) delete_node ;;
-      10) check_disk_usage ;;
-      11) print_info "$(t "goodbye")"; exit 0 ;;
+      1) install_requirements ;;
+      2) install_node ;;
+      3) update_node ;;
+      4) view_logs ;;
+      5) check_sync ;;
+      6) setup_cron_agent ;;
+      7) remove_cron_agent ;;
+      8) stop_containers ;;
+      9) start_containers ;;
+      10) delete_node ;;
+      11) check_disk_usage ;;
+      12) print_info "$(t "goodbye")"; exit 0 ;;
       *) print_error "$(t "invalid_option")" ;;
     esac
   done
