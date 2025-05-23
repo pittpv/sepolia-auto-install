@@ -95,7 +95,7 @@ function t {
             "deleted") echo "🗑️ Node completely removed." ;;
             "cancelled") echo "❌ Deletion cancelled." ;;
             "menu_title") echo "====== Sepolia Node Manager ======" ;;
-            "menu_options") echo '1) Install prerequisites (Docker and other software)\n2) Install node\n3) Update node\n4) Check logs\n5) Check sync status\n6) Setup cron agent wiht Tg notifications\n7) Remove cron agent\n8) Stop containers\n9) Start containers\n10) Delete node\n11) Check disk usage\n12) Exit' ;;
+            "menu_options") echo '1) Install prerequisites (Docker and other software)\n2) Install node\n3) Update node\n4) Check logs\n5) Check sync status\n6) Setup cron agent wiht Tg notifications\n7) Remove cron agent\n8) Stop containers\n9) Start containers\n10) Delete node\n11) Check disk usage\n12) Firewall management\n13) Exit' ;;
             "goodbye") echo "👋 Goodbye!" ;;
             "invalid_option") echo "❌ Invalid choice, try again." ;;
             "select_option") echo "Select option: " ;;
@@ -111,6 +111,21 @@ function t {
             "compose_exists") echo "✅ Docker Compose is already installed. Skipping." ;;
             "requirements_done") echo "✅ All requirements successfully installed." ;;
             "autoremove_clean") echo "Cleaning the system from unnecessary files..." ;;
+            "firewall_menu") echo "🛡️ Firewall management:" ;;
+            "firewall_enable") echo "Enable firewall" ;;
+            "firewall_local_ports") echo "Allow ports for local usage" ;;
+            "firewall_remote_ip") echo "Allow/deny ports for another IP address" ;;
+            "enabling_firewall") echo "Enabling firewall..." ;;
+            "setting_local_ports") echo "Configuring ports for local use..." ;;
+            "enter_ip") echo "Enter IP address of the server: " ;;
+            "setting_remote_ports") echo "Configuring ports for IP" ;;
+            "return_main_menu") echo "Returning to main menu." ;;
+            "firewall_enabled_success") echo "✅ Firewall successfully enabled." ;;
+            "local_ports_success") echo "✅ Local ports successfully configured." ;;
+            "remote_ports_success") echo "✅ Remote IP ports successfully configured." ;;
+            "confirm_enable_firewall") echo "Do you really want to enable the firewall?" ;;
+            "firewall_enable_cancelled") echo "❌ Firewall enabling cancelled." ;;
+            "firewall_already_enabled") echo "🔒 Firewall is already enabled." ;;
             *) echo "$key" ;;
         esac
     else
@@ -171,7 +186,7 @@ function t {
             "deleted") echo "🗑️ Нода полностью удалена." ;;
             "cancelled") echo "❌ Удаление отменено." ;;
             "menu_title") echo "====== Sepolia Node Manager ======" ;;
-            "menu_options") echo '1) Установить требования (Docker и другое ПО)\n2) Установить ноду\n3) Обновить ноду\n4) Проверить логи\n5) Проверить статус синхронизации\n6) Установить cron-агент с Тг уведомлениями\n7) Удалить cron-агент\n8) Остановить контейнеры\n9) Запустить контейнеры\n10) Удалить ноду\n11) Проверить занимаемое место\n12) Выйти' ;;
+            "menu_options") echo '1) Установить требования (Docker и другое ПО)\n2) Установить ноду\n3) Обновить ноду\n4) Проверить логи\n5) Проверить статус синхронизации\n6) Установить cron-агент с Тг уведомлениями\n7) Удалить cron-агент\n8) Остановить контейнеры\n9) Запустить контейнеры\n10) Удалить ноду\n11) Проверить занимаемое место\n12) Управление файрволлом\n13) Выйти' ;;
             "goodbye") echo "👋 До свидания!" ;;
             "invalid_option") echo "❌ Неверный выбор, попробуйте снова." ;;
             "select_option") echo "Выберите опцию: " ;;
@@ -187,6 +202,21 @@ function t {
             "compose_exists") echo "✅ Docker Compose уже установлен. Пропускаем" ;;
             "requirements_done") echo "✅ Все необходимые требования установлены" ;;
             "autoremove_clean") echo "Очистка системы от ненужных файлов..." ;;
+            "firewall_menu") echo "🛡️ Управление файрволлом:" ;;
+            "firewall_enable") echo "Включить файрволл" ;;
+            "firewall_local_ports") echo "Разрешить порты для локального использования" ;;
+            "firewall_remote_ip") echo "Разрешить/запретить порты для другого IP-адреса" ;;
+            "enabling_firewall") echo "Включение файрволла..." ;;
+            "setting_local_ports") echo "Настройка портов для локального использования..." ;;
+            "enter_ip") echo "Введите IP-адрес сервера: " ;;
+            "setting_remote_ports") echo "Настройка портов для IP-адреса" ;;
+            "return_main_menu") echo "Возврат в главное меню." ;;
+            "firewall_enabled_success") echo "✅ Файрволл успешно включён." ;;
+            "local_ports_success") echo "✅ Порты для локального использования успешно настроены." ;;
+            "remote_ports_success") echo "✅ Порты для указанного IP успешно настроены." ;;
+            "confirm_enable_firewall") echo "Вы действительно хотите включить файрволл?" ;;
+            "firewall_enable_cancelled") echo "❌ Включение файрволла отменено." ;;
+            "firewall_already_enabled") echo "🔒 Файрволл уже включён." ;;
             *) echo "$key" ;;
         esac
     fi
@@ -692,6 +722,66 @@ function delete_node {
   fi
 }
 
+firewall_setup() {
+    while true; do
+        echo ""
+        echo "$(t "firewall_menu")"
+        echo "1) $(t "firewall_enable")"
+        echo "2) $(t "firewall_local_ports")"
+        echo "3) $(t "firewall_remote_ip")"
+        echo "4) $(t "back")"
+        read -p "$(t "select_option")" uwf_choice
+
+        case $uwf_choice in
+           1)
+               echo "$(t "enabling_firewall")"
+               if sudo ufw status | grep -q "Status: active"; then
+                   print_info "$(t "firewall_already_enabled")"
+               else
+                   read -p "$(t "confirm_enable_firewall") [y/n]: " confirm
+                   if [[ "$confirm" =~ ^[Yy]$ ]]; then
+                       sudo ufw allow 22
+                       sudo ufw allow ssh
+                       sudo ufw enable
+                       print_success "$(t "firewall_enabled_success")"
+                   else
+                       print_info "$(t "firewall_enable_cancelled")"
+                   fi
+               fi
+               ;;
+
+            2)
+                echo "$(t "setting_local_ports")"
+                sudo ufw allow 30303/tcp
+                sudo ufw allow 30303/udp
+                sudo ufw allow from 127.0.0.1 to any port 8545 proto tcp
+                sudo ufw allow from 127.0.0.1 to any port 5052 proto tcp
+                sudo ufw reload
+                print_success "$(t "local_ports_success")"
+                ;;
+            3)
+                read -p "$(t "enter_ip")" remote_ip
+                echo "$(t "setting_remote_ports") $remote_ip..."
+                sudo ufw allow 30303/tcp
+                sudo ufw allow 30303/udp
+                sudo ufw deny 8545/tcp
+                sudo ufw deny 3500/tcp
+                sudo ufw allow from "$remote_ip" to any port 8545 proto tcp
+                sudo ufw allow from "$remote_ip" to any port 5052 proto tcp
+                sudo ufw reload
+                print_success "$(t "remote_ports_success")"
+                ;;
+            4)
+                echo "$(t "return_main_menu")"
+                break
+                ;;
+            *)
+                echo "$(t "invalid_choice")"
+                ;;
+        esac
+    done
+}
+
 # Main menu
 function main_menu {
   show_logo
@@ -712,7 +802,8 @@ function main_menu {
       9) start_containers ;;
       10) delete_node ;;
       11) check_disk_usage ;;
-      12) print_info "$(t "goodbye")"; exit 0 ;;
+      12) firewall_setup ;;
+      13) print_info "$(t "goodbye")"; exit 0 ;;
       *) print_error "$(t "invalid_option")" ;;
     esac
   done
