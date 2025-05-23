@@ -765,7 +765,7 @@ firewall_setup() {
                 sudo ufw allow 30303/tcp
                 sudo ufw allow 30303/udp
                 sudo ufw deny 8545/tcp
-                sudo ufw deny 3500/tcp
+                sudo ufw deny 5052/tcp
                 sudo ufw allow from "$remote_ip" to any port 8545 proto tcp
                 sudo ufw allow from "$remote_ip" to any port 5052 proto tcp
                 sudo ufw reload
