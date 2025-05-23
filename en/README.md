@@ -104,10 +104,6 @@ The script displays:
 
 replace localhost with the IP address of your server.
 
-Вот блок с описанием функционала настройки файрволла в формате **Markdown**, с описанием **на английском** и **на русском** языках:
-
----
-
 ## 🔥 Firewall Management
 
 This feature adds a menu to manage the UFW (Uncomplicated Firewall) on your server. It helps secure your node by controlling access to important ports.
