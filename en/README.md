@@ -27,6 +27,8 @@ An interactive bash script for installing, managing, and monitoring an Ethereum 
 
 **Update from 21.05.2025**: All prerequisites can now be installed automatically by selecting option 1 in the menu. This will update the system and current applications, install Docker, Docker Compose, and other required utilities. After installation, the system will be cleaned of installation cache and unused packages.
 
+> I recommend using step 1 even if you have Docker. The script will skip installing the components you have. After upgrading your system, **check** if your old containers and other nodes are still running.
+
 ### 🖥️ System Requirements
 
 | Component          | Requirement                              |
