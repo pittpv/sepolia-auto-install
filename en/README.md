@@ -110,4 +110,6 @@ MIT License. Use at your own risk.
 
 ## ✍️ Feedback
 
+Any questions, bug report or feedback:
+
 https://t.me/+DLsyG6ol3SFjM2Vk
