@@ -18,6 +18,7 @@ An interactive bash script for installing, managing, and monitoring an Ethereum 
 * 🧹 Remove the node
 * 💽 Analyze disk usage
 * 📡 Install cron-agent with Telegram status notifications
+* 🔥 Firewall Management
 
 ## ⚙️ Requirements
 
@@ -63,7 +64,8 @@ The script offers the following menu (available in English or Russian):
 9. Start containers
 10. Delete node
 11. Check disk usage
-12. Exit
+12. Firewall management
+13. Exit
 
 ## 🔐 Telegram Notifications
 
@@ -101,6 +103,34 @@ The script displays:
 * BEACON RPC URL: `http://localhost:5052`
 
 replace localhost with the IP address of your server.
+
+Вот блок с описанием функционала настройки файрволла в формате **Markdown**, с описанием **на английском** и **на русском** языках:
+
+---
+
+## 🔥 Firewall Management
+
+This feature adds a menu to manage the UFW (Uncomplicated Firewall) on your server. It helps secure your node by controlling access to important ports.
+
+### Menu Options
+
+1. **Enable Firewall**
+   Opens SSH ports (22, `ssh`) and enables UFW if it's not already enabled.
+   A confirmation prompt (`y/n`) is shown before activation.
+
+2. **Allow Local Ports**
+   Useful when your node client (e.g. Aztec Sequencer) is running locally.
+   Opens Geth P2P ports and allows access to RPC and Beacon ports from `127.0.0.1`.
+
+3. **Allow Specific IPs**
+   Useful when your node client is running on another server.
+   Opens Geth ports to the public, blocks sensitive ports (8545, 5052), and allows them **only** from a trusted IP that you input.
+
+### Example Prompts
+
+* ✅ Confirmation message when UFW is already enabled.
+* ❌ Message when enabling is cancelled by the user.
+* 🔒 Only enables UFW if not already active.
 
 ## 🗑️ Removal
 
