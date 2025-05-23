@@ -722,7 +722,7 @@ function delete_node {
   fi
 }
 
-firewall_setup() {
+function firewall_setup() {
     while true; do
         echo ""
         echo "$(t "firewall_menu")"
@@ -776,7 +776,7 @@ firewall_setup() {
                 break
                 ;;
             *)
-                echo "$(t "invalid_choice")"
+                echo "$(t "invalid_option")"
                 ;;
         esac
     done
