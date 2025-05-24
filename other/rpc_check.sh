@@ -1,8 +1,13 @@
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
 
 echo -e "${CYAN}=== Ethereum Node Health & Blob Checker ===${NC}"
-EXEC_RPC=http://localhost:8545
-BEACON_RPC=http://localhost:5052
+
+# Get IP
+IP=$(curl -s https://api.ipify.org)
+[[ -z "$IP" ]] && { echo -e "${RED}Failed to get external IP${NC}"; exit 1; }
+
+EXEC_RPC="http://$IP:8545"
+BEACON_RPC="http://$IP:5052"
 
 echo -e "\n${CYAN}--- Your Execution RPC ---${NC}"
 echo -e "\n${NC}$EXEC_RPC${NC}"
