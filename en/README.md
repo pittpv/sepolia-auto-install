@@ -19,6 +19,7 @@ An interactive bash script for installing, managing, and monitoring an Ethereum 
 * 💽 Analyze disk usage
 * 📡 Install cron-agent with Telegram status notifications
 * 🔥 Firewall Management
+* 🌐 RPC and blob data check. <span style="color:gray;">Script created by creed2412 (discord)</span>
 
 ## ⚙️ Requirements
 
