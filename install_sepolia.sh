@@ -95,7 +95,7 @@ function t {
             "deleted") echo "🗑️ Node completely removed." ;;
             "cancelled") echo "❌ Deletion cancelled." ;;
             "menu_title") echo "====== Sepolia Node Manager ======" ;;
-            "menu_options") echo '1) Install prerequisites (Docker and other software)\n2) Install node\n3) Update node\n4) Check logs\n5) Check sync status\n6) Setup cron agent wiht Tg notifications\n7) Remove cron agent\n8) Stop containers\n9) Start containers\n10) Delete node\n11) Check disk usage\n12) Firewall management\n13) Exit' ;;
+            "menu_options") echo '1) Install prerequisites (Docker and other software)\n2) Install node\n3) Update node\n4) Check logs\n5) Check sync status\n6) Setup cron agent wiht Tg notifications\n7) Remove cron agent\n8) Stop containers\n9) Start containers\n10) Delete node\n11) Check disk usage\n12) Firewall management\n13) Check RPC server\n14) Exit' ;;
             "goodbye") echo "👋 Goodbye!" ;;
             "invalid_option") echo "❌ Invalid choice, try again." ;;
             "select_option") echo "Select option: " ;;
@@ -186,7 +186,7 @@ function t {
             "deleted") echo "🗑️ Нода полностью удалена." ;;
             "cancelled") echo "❌ Удаление отменено." ;;
             "menu_title") echo "====== Sepolia Node Manager ======" ;;
-            "menu_options") echo '1) Установить требования (Docker и другое ПО)\n2) Установить ноду\n3) Обновить ноду\n4) Проверить логи\n5) Проверить статус синхронизации\n6) Установить cron-агент с Тг уведомлениями\n7) Удалить cron-агент\n8) Остановить контейнеры\n9) Запустить контейнеры\n10) Удалить ноду\n11) Проверить занимаемое место\n12) Управление файрволлом\n13) Выйти' ;;
+            "menu_options") echo '1) Установить требования (Docker и другое ПО)\n2) Установить ноду\n3) Обновить ноду\n4) Проверить логи\n5) Проверить статус синхронизации\n6) Установить cron-агент с Тг уведомлениями\n7) Удалить cron-агент\n8) Остановить контейнеры\n9) Запустить контейнеры\n10) Удалить ноду\n11) Проверить занимаемое место\n12) Управление файрволлом\n13) Проверить RPC-сервер\n14) Выйти' ;;
             "goodbye") echo "👋 До свидания!" ;;
             "invalid_option") echo "❌ Неверный выбор, попробуйте снова." ;;
             "select_option") echo "Выберите опцию: " ;;
@@ -782,6 +782,13 @@ function firewall_setup() {
     done
 }
 
+#Script created by Creed https://www.notion.so/Aztec-Commands-by-Creed-1f2da4dd4652808e908bc7426bbbb284
+function run_rpc_check {
+  URL="https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/rpc_check.sh"
+  echo -e "${CYAN}Running RPC check script from GitHub...${RESET}"
+  bash <(curl -s "$URL") || print_error "Failed to run RPC check script."
+}
+
 # Main menu
 function main_menu {
   show_logo
@@ -803,7 +810,8 @@ function main_menu {
       10) delete_node ;;
       11) check_disk_usage ;;
       12) firewall_setup ;;
-      13) print_info "$(t "goodbye")"; exit 0 ;;
+      13) run_rpc_check ;;
+      14) print_info "$(t "goodbye")"; exit 0 ;;
       *) print_error "$(t "invalid_option")" ;;
     esac
   done

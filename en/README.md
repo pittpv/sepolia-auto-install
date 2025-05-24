@@ -128,6 +128,25 @@ This feature adds a menu to manage the UFW (Uncomplicated Firewall) on your serv
 * ❌ Message when enabling is cancelled by the user.
 * 🔒 Only enables UFW if not already active.
 
+## 🌐 RPC and Blob Data Check
+
+The function checks RPC availability and the presence of blob data for the last slots
+
+🔍 What the check does:
+
+* Detects the server's external IP address
+* Checks availability of Execution RPC (`:8545`) and Beacon RPC (`:5052`)
+* Requests the latest block and client version
+* Verifies the presence of blob data for the last 10 slots
+
+✅ Status is determined by the percentage of slots containing blob data:
+
+* `HEALTHY`: ≥75%
+* `WARNING`: 25–74%
+* `CRITICAL`: <25%
+
+Useful for diagnosing and ensuring that the node correctly processes data with EIP-4844 (blobs).
+
 ## 🗑️ Removal
 
 The removal option completely wipes all node data and containers. Confirmation is required.
