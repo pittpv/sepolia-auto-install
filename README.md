@@ -44,9 +44,7 @@
 ## 🚀 Установка и запуск
 
 ```bash
-curl -o install_sepolia.sh https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/install_sepolia.sh
-chmod +x install_sepolia.sh
-./install_sepolia.sh
+curl -o install_sepolia.sh https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/install_sepolia.sh && chmod +x install_sepolia.sh && ./install_sepolia.sh
 ```
 
 После установки ноды дождитесь полной синхронизации. Синхронизация будет завершена только тогда, когда при запросе статуса синхронизации вы увидите "✅ Execution синхронизирован". В остальных случаях, даже если вы видите 100%, синхронизация еще не завершена.

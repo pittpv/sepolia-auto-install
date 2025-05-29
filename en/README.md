@@ -43,9 +43,7 @@ An interactive bash script for installing, managing, and monitoring an Ethereum 
 ## 🚀 Installation & Run
 
 ```bash
-curl -o install_sepolia.sh https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/install_sepolia.sh
-chmod +x install_sepolia.sh
-./install_sepolia.sh
+curl -o install_sepolia.sh https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/install_sepolia.sh && chmod +x install_sepolia.sh && ./install_sepolia.sh
 ````
 
 After installing the node, wait for the full synchronization. The synchronization will be complete only when you see "✅ Execution synchronized" when you query the synchronization status. Otherwise, even if you see 100%, the synchronization is not yet complete.
