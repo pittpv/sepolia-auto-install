@@ -1,6 +1,32 @@
-RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
+#!/bin/bash
 
-echo -e "${CYAN}=== Ethereum Node Health & Blob Checker ===${NC}"
+# Color definitions (headings only)
+BLUE='\e[0;34m'
+GREEN='\e[0;32m'
+YELLOW='\e[0;33m'
+RED='\e[0;31m'
+RESET='\e[0m'
+
+# ======= RPC HEALTH GUIDE =======
+echo -e "\n${BLUE}========================================"
+echo "              RPC Health Guide"
+echo -e "========================================${RESET}"
+echo "200 : OK"
+echo "400 : Bad Request"
+echo "401 : Unauthorized"
+echo "403 : Forbidden"
+echo "404 : Not Found"
+echo "413 : Payload Too Large"
+echo "26  : Call Address Error"
+echo "429 : Too Many Requests"
+echo "500 : Internal Error"
+echo "503 : Unavailable"
+echo "Unreachable : Node/network unreachable"
+
+# ======= ETHEREUM NODE HEALTH CHECKER =======
+echo -e "\n${BLUE}========================================"
+echo "        ETHEREUM NODE HEALTH CHECKER"
+echo -e "========================================${RESET}"
 
 # Get IP
 IP=$(curl -s https://api.ipify.org)
@@ -14,75 +40,107 @@ echo -e "\n${NC}$EXEC_RPC${NC}"
 echo -e "\n${CYAN}--- Your Beacon RPC ---${NC}"
 echo -e "\n${NC}$BEACON_RPC${NC}"
 
-echo -e "\n${CYAN}--- Checking Execution RPC ---${NC}"
-BLOCKNUM=$(curl -s -X POST "$EXEC_RPC" -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r .result)
-if [[ "$BLOCKNUM" != "null" && "$BLOCKNUM" != "" ]]; then
-  DEC_BLOCKNUM=$((16#${BLOCKNUM:2}))
-  echo -e "${GREEN}✓ Healthy${NC} (Block: ${CYAN}$DEC_BLOCKNUM${NC})"; EXEC_OK=1
+echo -e "\n● Execution RPC Check"
+RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$EXEC_RPC" -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}')
+HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+BODY=$(echo "$RESPONSE" | sed '$d')
+if [[ "$HTTP_CODE" == "200" ]]; then
+  BLOCKNUM=$(echo "$BODY" | jq -r '.result' 2>/dev/null)
+  if [[ "$BLOCKNUM" != "null" && "$BLOCKNUM" != "" ]]; then
+    DEC_BLOCKNUM=$((16#${BLOCKNUM:2}))
+    echo -e "${GREEN}✓ Healthy${RESET} (Block: ${DEC_BLOCKNUM})"
+    EXEC_OK=1
+  else
+    echo -e "${RED}✗ Unhealthy${RESET}"
+    EXEC_OK=0
+  fi
 else
-  echo -e "${RED}✗ Unhealthy${NC}"; EXEC_OK=0
+  echo -e "${RED}✗ Unreachable (HTTP $HTTP_CODE)${RESET}"
+  EXEC_OK=0
 fi
 
-echo -e "\n${CYAN}--- Checking Beacon Node ---${NC}"
-VER=$(curl -s --max-time 5 "$BEACON_RPC/eth/v1/node/version" | jq -r .data.version)
-[[ "$VER" && "$VER" != "null" ]] && { echo -e "${GREEN}✓ Reachable${NC} (Version: ${CYAN}$VER${NC})"; BEACON_OK=1; } || { echo -e "${RED}✗ Unreachable${NC}"; BEACON_OK=0; }
+echo -e "\n● Beacon Node Check"
+BEACON_RESPONSE=$(curl -s -w "\n%{http_code}" --max-time 5 "$BEACON_RPC/eth/v1/node/version")
+BEACON_HTTP_CODE=$(echo "$BEACON_RESPONSE" | tail -n1)
+BEACON_BODY=$(echo "$BEACON_RESPONSE" | sed '$d')
 
-HEAD=$(curl -s --max-time 5 "$BEACON_RPC/eth/v1/beacon/headers/head" | jq -r .data.header.message.slot)
-if [[ "$HEAD" =~ ^[0-9]+$ ]]; then
-  echo -e "\n${CYAN}-- Blob Sidecars: Last 10 Slots --${NC}"
-  TOTAL=10; SLOTS_WITH_BLOBS=0; ERRORS=0; TOTAL_BLOBS=0
+if [[ "$BEACON_HTTP_CODE" == "200" ]]; then
+  VER=$(echo "$BEACON_BODY" | jq -r '.data.version' 2>/dev/null)
+  if [[ "$VER" && "$VER" != "null" ]]; then
+    echo -e "${GREEN}✓ Reachable${RESET} (Version: ${VER})"
+    BEACON_OK=1
+  else
+    echo -e "${YELLOW}⚠ Invalid JSON response format${RESET}"
+    BEACON_OK=0
+  fi
+else
+  echo -e "${RED}✗ Unreachable (HTTP $BEACON_HTTP_CODE)${RESET}"
+  BEACON_OK=0
+fi
+
+HEAD=""
+if [[ $BEACON_OK -eq 1 ]]; then
+  HEAD_RESPONSE=$(curl -s -w "\n%{http_code}" --max-time 5 "$BEACON_RPC/eth/v1/beacon/headers/head")
+  HEAD_HTTP_CODE=$(echo "$HEAD_RESPONSE" | tail -n1)
+  HEAD_BODY=$(echo "$HEAD_RESPONSE" | sed '$d')
+  if [[ "$HEAD_HTTP_CODE" == "200" ]]; then
+    HEAD=$(echo "$HEAD_BODY" | jq -r '.data.header.message.slot' 2>/dev/null)
+    if ! [[ "$HEAD" =~ ^[0-9]+$ ]]; then
+      echo -e "${YELLOW}⚠ Failed to get head slot${RESET}"
+      HEAD=""
+    fi
+  else
+    echo -e "${YELLOW}⚠ Failed to get head slot (HTTP $HEAD_HTTP_CODE)${RESET}"
+    HEAD=""
+  fi
+fi
+
+if [[ -n "$HEAD" ]]; then
+  echo -e "\n● Blob Sidecars Check (Last 10 Slots)"
+  TOTAL=10
+  SLOTS_WITH_BLOBS=0
+  ERRORS=0
+  TOTAL_BLOBS=0
   for ((i=0; i<10; i++)); do
-    SLOT=$((HEAD-i)); TRY=0; BLOB_COUNT=0
-    while ((TRY<3)); do
-      RESP=$(curl -s --max-time 10 "$BEACON_RPC/eth/v1/beacon/blob_sidecars/$SLOT")
-      CODE=$(echo "$RESP" | jq -r '.code // 200' 2>/dev/null)
-      JQ_EXIT=$?
-      
-      if [[ $JQ_EXIT -ne 0 ]]; then
-        ((TRY++))
-        sleep 2
-        continue
+    SLOT=$((HEAD-i))
+    BLOB_RESPONSE=$(curl -s -w "\n%{http_code}" --max-time 10 "$BEACON_RPC/eth/v1/beacon/blob_sidecars/$SLOT")
+    BLOB_HTTP_CODE=$(echo "$BLOB_RESPONSE" | tail -n1)
+    BLOB_BODY=$(echo "$BLOB_RESPONSE" | sed '$d')
+    if [[ "$BLOB_HTTP_CODE" == "200" ]]; then
+      N=$(echo "$BLOB_BODY" | jq -r '.data | length' 2>/dev/null)
+      if [[ "$N" =~ ^[1-9][0-9]*$ ]]; then
+        echo -e "${GREEN}✓ Slot $SLOT: $N blob(s)${RESET}"
+        ((SLOTS_WITH_BLOBS++))
+        ((TOTAL_BLOBS+=N))
+      else
+        echo -e "${YELLOW}⚠ Slot $SLOT: No blobs${RESET}"
       fi
-
-      case $CODE in
-        200)
-          N=$(echo "$RESP" | jq -r '.data | length')
-          if [[ "$N" =~ ^[1-9][0-9]*$ ]]; then
-            echo -e "${GREEN}✓ Slot $SLOT: $N blob(s)${NC}"
-            ((SLOTS_WITH_BLOBS++))
-            ((TOTAL_BLOBS+=N))
-            break
-          else
-            echo -e "${YELLOW}⚠ Slot $SLOT: No blobs${NC}"
-            break
-          fi
-          ;;
-        404|500|*) 
-          echo -e "${RED}✗ Slot $SLOT: Error ${CODE}${NC}"
-          ((ERRORS++))
-          break
-          ;;
-      esac
-    done
-    ((TRY==3)) && { echo -e "${RED}✗ Slot $SLOT: Failed after 3 retries${NC}"; ((ERRORS++)); }
+    elif [[ "$BLOB_HTTP_CODE" == "404" ]]; then
+      echo -e "${YELLOW}⚠ Slot $SLOT: Not found${RESET}"
+      ((ERRORS++))
+    else
+      echo -e "${RED}✗ Slot $SLOT: Error (HTTP $BLOB_HTTP_CODE)${RESET}"
+      ((ERRORS++))
+    fi
   done
-  
-  # Calculate true success rate (only slots with blobs)
+
   SUCCESS_RATE=$(awk -v s="$SLOTS_WITH_BLOBS" -v t="$TOTAL" 'BEGIN { printf "%.2f", (s/t)*100 }')
-  
-  # Determine status
-  if (( $(echo "$SUCCESS_RATE < 25" | bc -l) )); then STATUS="${RED}CRITICAL${NC}"
-  elif (( $(echo "$SUCCESS_RATE < 75" | bc -l) )); then STATUS="${YELLOW}WARNING${NC}"
-  else STATUS="${GREEN}HEALTHY${NC}"; fi
+  if (( $(echo "$SUCCESS_RATE < 25" | bc -l) )); then
+    STATUS="${RED}CRITICAL${RESET}"
+  elif (( $(echo "$SUCCESS_RATE < 75" | bc -l) )); then
+    STATUS="${YELLOW}WARNING${RESET}"
+  else
+    STATUS="${GREEN}HEALTHY${RESET}"
+  fi
 fi
 
-echo -e "\n${CYAN}=== Summary ===${NC}"
-[[ $EXEC_OK -eq 1 ]] && echo -e "Execution RPC: ${GREEN}OK${NC}" || echo -e "Execution RPC: ${RED}FAIL${NC}"
-[[ $BEACON_OK -eq 1 ]] && echo -e "Beacon RPC: ${GREEN}OK${NC}" || echo -e "Beacon RPC: ${RED}FAIL${NC}"
-if [[ "$HEAD" =~ ^[0-9]+$ ]]; then
-  echo -e "Blob Success: ${SLOTS_WITH_BLOBS}/${TOTAL} slots (${SUCCESS_RATE}%) -> $STATUS"
-  echo -e "Total Blobs Found: ${TOTAL_BLOBS} (Errors: ${ERRORS})"
+echo -e "\n${BLUE}========== Summary ==========${RESET}"
+printf "Execution RPC : %b\n" "$([[ ${EXEC_OK:-0} -eq 1 ]] && echo -e "${GREEN}OK${RESET}" || echo -e "${RED}FAIL${RESET}")"
+printf "Beacon RPC    : %b\n" "$([[ ${BEACON_OK:-0} -eq 1 ]] && echo -e "${GREEN}OK${RESET}" || echo -e "${RED}FAIL${RESET}")"
+if [[ -n "$HEAD" ]]; then
+  printf "Blob Success  : %d/%d slots (%.2f%%) -> %b\n" "$SLOTS_WITH_BLOBS" "$TOTAL" "$SUCCESS_RATE" "$STATUS"
+  printf "Total Blobs   : %d (Errors: %d)\n" "$TOTAL_BLOBS" "$ERRORS"
 fi
-echo -e "\n${CYAN}Threshold Guide:${NC}"
-echo -e "${GREEN}HEALTHY: ≥75%${NC} | ${YELLOW}WARNING: 25%-75%${NC} | ${RED}CRITICAL: <25%${NC}"
+
+echo -e "\nThreshold Guide: ${GREEN}HEALTHY: ≥75%${RESET} | ${YELLOW}WARNING: 25%-75%${RESET} | ${RED}CRITICAL: <25%${RESET}"
