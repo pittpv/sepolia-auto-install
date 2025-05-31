@@ -28,12 +28,29 @@ echo -e "\n${BLUE}========================================"
 echo "        ETHEREUM NODE HEALTH CHECKER"
 echo -e "========================================${RESET}"
 
-# Get IP
-IP=$(curl -s https://api.ipify.org)
-[[ -z "$IP" ]] && { echo -e "${RED}Failed to get external IP${NC}"; exit 1; }
 
-EXEC_RPC="http://$IP:8545"
-BEACON_RPC="http://$IP:5052"
+read -p "Use localhost (127.0.0.1) or external IP? [l/e]: " choice
+
+if [[ "$choice" =~ ^[Ll]$ ]]; then
+  HOST="127.0.0.1"
+elif [[ "$choice" =~ ^[Ii]$ ]]; then
+
+  IP=$(curl -s https://api.ipify.org)
+  if [[ -z "$IP" ]]; then
+    echo -e "${RED}Failed to get external IP${NC}"
+    exit 1
+  fi
+  HOST="$IP"
+else
+  echo -e "${RED}Invalid choice. Please use 'l' or 'i'.${NC}"
+  exit 1
+fi
+
+EXEC_RPC="http://$HOST:8545"
+BEACON_RPC="http://$HOST:5052"
+
+echo "Execution Layer RPC: $EXEC_RPC"
+echo "Beacon Node RPC:     $BEACON_RPC"
 
 echo -e "\n${CYAN}--- Your Execution RPC ---${NC}"
 echo -e "\n${NC}$EXEC_RPC${NC}"
