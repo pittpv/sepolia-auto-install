@@ -29,7 +29,7 @@ echo "        ETHEREUM NODE HEALTH CHECKER"
 echo -e "========================================${RESET}"
 
 
-read -p "Use localhost (127.0.0.1) or external IP? [l/e]: " choice
+read -p "Use localhost (127.0.0.1) or external IP? [Choose l or i]: " choice
 
 if [[ "$choice" =~ ^[Ll]$ ]]; then
   HOST="127.0.0.1"
