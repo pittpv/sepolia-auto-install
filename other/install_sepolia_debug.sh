@@ -9,6 +9,23 @@ BLUE='\033[1;34m'
 VIOLET='\033[0;35m'
 RESET='\033[0m'
 
+# Default Port Configurations
+# These variables define the default port numbers for various services.
+# They can be overridden by user input or loaded from a configuration file if such a mechanism is implemented.
+EXECUTION_RPC_PORT_DEFAULT="8545"
+EXECUTION_P2P_PORT_DEFAULT="30303"
+EXECUTION_AUTH_RPC_PORT_DEFAULT="8551" # Standard port for authenticated RPC
+CONSENSUS_RPC_PORT_DEFAULT="5052" # Used for HTTP API (e.g., Prysm's gRPC gateway, Lighthouse/Teku REST API)
+CONSENSUS_P2P_PORT_DEFAULT="9000" # Common P2P port for consensus clients (TCP/UDP)
+
+# Effective ports to be used by the script.
+# These are initialized with the default values and may be updated later by user input or a config file.
+EXECUTION_RPC_PORT=$EXECUTION_RPC_PORT_DEFAULT
+EXECUTION_P2P_PORT=$EXECUTION_P2P_PORT_DEFAULT
+EXECUTION_AUTH_RPC_PORT=$EXECUTION_AUTH_RPC_PORT_DEFAULT
+CONSENSUS_RPC_PORT=$CONSENSUS_RPC_PORT_DEFAULT
+CONSENSUS_P2P_PORT=$CONSENSUS_P2P_PORT_DEFAULT
+
 function show_logo() {
     echo -e "${BLUE}$(t "welcome")${RESET}"
     curl -s https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/logo.sh | bash
@@ -138,11 +155,11 @@ function t {
 			"teku_no_sync_data") echo "Teku Sync data." ;;
 			"teku_no_finality") echo "Teku no finality." ;;
 			"teku_health") echo "Teku health." ;;
-			"firewall_delete_rules") echo "Delete previously added rules for ports 8545 and 5052" ;;
+			"firewall_delete_rules") printf "Delete rules for ports (ExecRPC: %s, ConsRPC: %s, ExecP2P: %s, ConsP2P: %s)" "$1" "$2" "$3" "$4" ;;
             "firewall_view_rules") echo "View UFW rules" ;;
             "firewall_disable") echo "Disable firewall" ;;
             "deleting_old_rules") echo "Deleting old rules..." ;;
-            "no_matching_rules") echo "No rules found for ports 8545 or 5052." ;;
+            "no_matching_rules") printf "No rules found for current ports (%s, %s, %s, %s)." "$1" "$2" "$3" "$4" ;;
             "deleting_rule_number") echo "Deleting rule №" ;;
             "rules_deleted_success") echo "✅ Rules successfully deleted." ;;
             "view_ufw_rules") echo "UFW rules" ;;
@@ -151,9 +168,36 @@ function t {
             "confirm_disable_firewall") echo "Do you really want to disable the firewall?" ;;
             "firewall_disabled_success") echo "✅ Firewall successfully disabled." ;;
             "firewall_disable_cancelled") echo "❌ Firewall disabling cancelled." ;;
-			"confirm_delete_firewall_rules") echo "Are you sure you want to delete firewall rules for ports 8545 and 5052?" ;;
+			"confirm_delete_firewall_rules") printf "Are you sure you want to delete firewall rules for ports %s, %s, %s, %s?" "$1" "$2" "$3" "$4" ;;
 			"firewall_delete_cancelled") echo "❌ Firewall rule deletion cancelled." ;;
 			"rules_to_be_deleted") echo "The following firewall rules will be deleted:" ;;
+            "ask_custom_ports_prompt") echo "Do you want to configure custom ports? (yes/no, default: no)" ;;
+            "enter_exec_rpc_port") printf "Enter Execution Client RPC Port (default: %s): " "$1" ;;
+            "enter_exec_p2p_port") printf "Enter Execution Client P2P Port (default: %s): " "$1" ;;
+            "enter_exec_auth_port") printf "Enter Execution Client Auth RPC Port (default: %s): " "$1" ;;
+            "enter_consensus_rpc_port") printf "Enter Consensus Client RPC Port (default: %s): " "$1" ;;
+            "enter_consensus_p2p_port") printf "Enter Consensus Client P2P Port (default: %s): " "$1" ;;
+            "invalid_port_input") echo "❌ Invalid input. Port must be a number between 1024 and 65535." ;;
+            "ports_configured_message") printf "✅ Ports configured. Execution: RPC=%s, P2P=%s, Auth=%s. Consensus: RPC=%s, P2P=%s.\n" "$1" "$2" "$3" "$4" "$5" ;;
+            "saving_port_config") echo "💾 Saving port configuration..." ;;
+            "port_config_saved") printf "✅ Port configuration saved to %s.\n" "$1" ;;
+            "loading_port_config") echo "🔄 Attempting to load port configuration..." ;;
+            "loaded_port_config_from_file") printf "✅ Port configuration loaded from %s.\n" "$1" ;;
+            "port_config_not_found") printf "ℹ️ No custom port configuration found (%s). Using default/session values.\n" "$1" ;;
+            "reth_no_stages") echo "Reth: No detailed stage information available or already synced." ;;
+            "reth_stage_progress") printf "  Stage '%s': %s / %s (%s%% complete)" "$1" "$2" "$3" "$4" ;;
+            "reth_headers_target") printf "  Overall Chain Head Target (Headers): Block %s" "$1" ;;
+            "reth_synced_fully") echo "Reth: Fully Synced (eth_syncing returned false)." ;;
+            "reth_sync_details_title") echo "Reth Sync Stages Details:" ;;
+            "nethermind_sync_stage_title") echo "Nethermind Sync Stage:" ;;
+            "nethermind_current_stage") printf "  Current Stage: %s" "$1" ;;
+            "nethermind_block_progress_title") echo "Nethermind Block Sync Progress:" ;;
+            "nethermind_health_status_title") echo "Nethermind Health Status:" ;;
+            "nethermind_health_info") echo "  Overall Status: %s\n  Node Health Details: %s" ;;
+            "nethermind_health_request_failed") echo "  Failed to retrieve health status." ;;
+            "nethermind_synced_fully") echo "Nethermind: Fully Synced (eth_syncing returned false)." ;;
+            "nethermind_sync_data_missing") echo "Nethermind: Sync data missing from eth_syncing (after confirming not fully synced)." ;;
+            "nethermind_rpc_error") printf "Nethermind: Error calling RPC method %s." "$1" ;;
             *) echo "$key" ;;
         esac
     else
@@ -257,11 +301,11 @@ function t {
 			"teku_no_sync_data") echo "Данные синхронизации Teku." ;;
 			"teku_no_finality") echo "Teku нет финалити." ;;
 			"teku_health") echo "Teku здоровье." ;;
-			"firewall_delete_rules") echo "Удалить ранее добавленные правила для портов 8545 и 5052" ;;
+			"firewall_delete_rules") printf "Удалить правила для портов (ExecRPC: %s, ConsRPC: %s, ExecP2P: %s, ConsP2P: %s)" "$1" "$2" "$3" "$4" ;;
 			"firewall_view_rules") echo "Просмотреть правила UFW" ;;
 			"firewall_disable") echo "Отключить файрволл" ;;
 			"deleting_old_rules") echo "Удаление старых правил..." ;;
-			"no_matching_rules") echo "Правила для портов 8545 или 5052 не найдены." ;;
+			"no_matching_rules") printf "Правила для текущих портов (%s, %s, %s, %s) не найдены." "$1" "$2" "$3" "$4" ;;
 			"deleting_rule_number") echo "Удаление правила №" ;;
 			"rules_deleted_success") echo "✅ Правила успешно удалены." ;;
 			"view_ufw_rules") echo "Правила UFW" ;;
@@ -270,9 +314,36 @@ function t {
 			"confirm_disable_firewall") echo "Вы действительно хотите отключить файрволл?" ;;
 			"firewall_disabled_success") echo "✅ Файрволл успешно отключён." ;;
 			"firewall_disable_cancelled") echo "❌ Отключение файрволла отменено." ;;
-			"confirm_delete_firewall_rules") echo "Вы действительно хотите удалить правила файрволла для портов 8545 и 5052?" ;;
+			"confirm_delete_firewall_rules") printf "Вы действительно хотите удалить правила файрволла для портов %s, %s, %s, %s?" "$1" "$2" "$3" "$4" ;;
 			"firewall_delete_cancelled") echo "❌ Удаление правил файрволла отменено." ;;
 			"rules_to_be_deleted") echo "Будут удалены следующие правила файрволла:" ;;
+            "ask_custom_ports_prompt") echo "Хотите настроить пользовательские порты? (да/нет, по умолчанию: нет)" ;;
+            "enter_exec_rpc_port") printf "Введите RPC-порт клиента исполнения (по умолчанию: %s): " "$1" ;;
+            "enter_exec_p2p_port") printf "Введите P2P-порт клиента исполнения (по умолчанию: %s): " "$1" ;;
+            "enter_exec_auth_port") printf "Введите Auth RPC-порт клиента исполнения (по умолчанию: %s): " "$1" ;;
+            "enter_consensus_rpc_port") printf "Введите RPC-порт клиента консенсуса (по умолчанию: %s): " "$1" ;;
+            "enter_consensus_p2p_port") printf "Введите P2P-порт клиента консенсуса (по умолчанию: %s): " "$1" ;;
+            "invalid_port_input") echo "❌ Неверный ввод. Порт должен быть числом от 1024 до 65535." ;;
+            "ports_configured_message") printf "✅ Порты настроены. Исполнение: RPC=%s, P2P=%s, Auth=%s. Консенсус: RPC=%s, P2P=%s.\n" "$1" "$2" "$3" "$4" "$5" ;;
+            "saving_port_config") echo "💾 Сохранение конфигурации портов..." ;;
+            "port_config_saved") printf "✅ Конфигурация портов сохранена в %s.\n" "$1" ;;
+            "loading_port_config") echo "🔄 Попытка загрузки конфигурации портов..." ;;
+            "loaded_port_config_from_file") printf "✅ Конфигурация портов загружена из %s.\n" "$1" ;;
+            "port_config_not_found") printf "ℹ️ Пользовательская конфигурация портов не найдена (%s). Используются значения по умолчанию/сессии.\n" "$1" ;;
+            "reth_no_stages") echo "Reth: Подробная информация об этапах отсутствует или уже синхронизировано." ;;
+            "reth_stage_progress") printf "  Этап '%s': %s / %s (%s%% завершено)" "$1" "$2" "$3" "$4" ;;
+            "reth_headers_target") printf "  Общая целевая высота цепочки (Headers): Блок %s" "$1" ;;
+            "reth_synced_fully") echo "Reth: Полностью синхронизирован (eth_syncing вернул false)." ;;
+            "reth_sync_details_title") echo "Reth Подробности этапов синхронизации:" ;;
+            "nethermind_sync_stage_title") echo "Этап синхронизации Nethermind:" ;;
+            "nethermind_current_stage") printf "  Текущий этап: %s" "$1" ;;
+            "nethermind_block_progress_title") echo "Прогресс синхронизации блоков Nethermind:" ;;
+            "nethermind_health_status_title") echo "Статус работоспособности Nethermind:" ;;
+            "nethermind_health_info") echo "  Общий статус: %s\n  Подробности о работоспособности ноды: %s" ;;
+            "nethermind_health_request_failed") echo "  Не удалось получить статус работоспособности." ;;
+            "nethermind_synced_fully") echo "Nethermind: Полностью синхронизирован (eth_syncing вернул false)." ;;
+            "nethermind_sync_data_missing") echo "Nethermind: Данные синхронизации отсутствуют в eth_syncing (после подтверждения неполной синхронизации)." ;;
+            "nethermind_rpc_error") printf "Nethermind: Ошибка при вызове RPC метода %s." "$1" ;;
             *) echo "$key" ;;
         esac
     fi
@@ -310,6 +381,78 @@ function generate_jwt {
   print_info "$(t "jwt_gen")"
   mkdir -p "$NODE_DIR"
   head -c 32 /dev/urandom | xxd -p -c 32 > "$JWT_FILE"
+}
+
+function ask_for_custom_ports {
+  load_port_configuration # Load existing config first
+  print_info "$(t "ask_custom_ports_prompt")"
+  read -r custom_ports_choice
+  if [[ "${custom_ports_choice,,}" == "yes" || "${custom_ports_choice,,}" == "y" ]]; then
+    # Helper function for validated port input
+    get_validated_port() {
+      local prompt_key="$1"
+      local default_value="$2"
+      local current_value=""
+      while true; do
+        printf "%s" "$(t "$prompt_key" "$default_value")"
+        read -r user_input
+        if [[ -z "$user_input" ]]; then
+          current_value="$default_value"
+          break
+        elif [[ "$user_input" =~ ^[0-9]+$ && "$user_input" -ge 1024 && "$user_input" -le 65535 ]]; then
+          current_value="$user_input"
+          break
+        else
+          print_error "$(t "invalid_port_input")"
+        fi
+      done
+      echo "$current_value"
+    }
+
+    EXECUTION_RPC_PORT=$(get_validated_port "enter_exec_rpc_port" "$EXECUTION_RPC_PORT_DEFAULT")
+    EXECUTION_P2P_PORT=$(get_validated_port "enter_exec_p2p_port" "$EXECUTION_P2P_PORT_DEFAULT")
+    EXECUTION_AUTH_RPC_PORT=$(get_validated_port "enter_exec_auth_port" "$EXECUTION_AUTH_RPC_PORT_DEFAULT")
+    CONSENSUS_RPC_PORT=$(get_validated_port "enter_consensus_rpc_port" "$CONSENSUS_RPC_PORT_DEFAULT")
+    CONSENSUS_P2P_PORT=$(get_validated_port "enter_consensus_p2p_port" "$CONSENSUS_P2P_PORT_DEFAULT")
+  fi
+
+  # Ensure NODE_DIR exists (it should, but good practice)
+  mkdir -p "$NODE_DIR"
+  local port_config_file="$NODE_DIR/port_config.env"
+  print_info "$(t "saving_port_config")"
+  {
+    echo "EXECUTION_RPC_PORT=\"$EXECUTION_RPC_PORT\""
+    echo "EXECUTION_P2P_PORT=\"$EXECUTION_P2P_PORT\""
+    echo "EXECUTION_AUTH_RPC_PORT=\"$EXECUTION_AUTH_RPC_PORT\""
+    echo "CONSENSUS_RPC_PORT=\"$CONSENSUS_RPC_PORT\""
+    echo "CONSENSUS_P2P_PORT=\"$CONSENSUS_P2P_PORT\""
+  } > "$port_config_file"
+  print_success "$(t "port_config_saved" "$port_config_file")"
+
+  print_success "$(t "ports_configured_message" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
+}
+
+function load_port_configuration {
+  local port_config_file="$NODE_DIR/port_config.env"
+  print_info "$(t "loading_port_config")"
+  if [[ -f "$port_config_file" ]]; then
+    # Temporarily disable errexit if set, to prevent script exit if source fails (e.g. bad file)
+    local prev_opts=""
+    if [[ $- == *e* ]]; then
+      prev_opts=$(set +o | grep errexit)
+      set +e
+    fi
+
+    source "$port_config_file"
+
+    # Restore errexit if it was previously set
+    if [[ -n "$prev_opts" ]]; then
+      set -o errexit
+    fi
+    print_success "$(t "loaded_port_config_from_file" "$port_config_file")"
+  else
+    print_info "$(t "port_config_not_found" "$port_config_file")"
+  fi
 }
 
 function choose_consensus_client {
@@ -416,19 +559,49 @@ function create_docker_compose {
       execution_client_image="ethereum/client-go:stable"
       execution_client_container_name="geth"
       execution_client_data_dir_name="geth" # Keep this as the client name itself
-      execution_client_command="--sepolia --datadir /data --http --http.addr 0.0.0.0 --http.api eth,web3,net,engine --authrpc.addr 0.0.0.0 --authrpc.port 8551 --authrpc.jwtsecret /jwt.hex --authrpc.vhosts=* --http.corsdomain=\\"*\\" --syncmode=snap --cache=4096"
+      execution_client_command="  --sepolia
+      --datadir /data
+      --http
+      --http.addr 0.0.0.0
+      --http.api eth,web3,net,engine
+      --authrpc.addr 0.0.0.0
+      --authrpc.port $EXECUTION_AUTH_RPC_PORT
+      --authrpc.jwtsecret /jwt.hex
+      --authrpc.vhosts=*
+      --http.corsdomain=\"*\"
+      --syncmode=snap
+      --cache=4096"
       ;;
     reth)
       execution_client_image="ghcr.io/paradigmxyz/reth:latest"
       execution_client_container_name="reth"
       execution_client_data_dir_name="reth" # Keep this as the client name itself
-      execution_client_command="node --chain sepolia --datadir /data --http --http.api eth,net,web3,rpc --http.addr 0.0.0.0 --authrpc.addr 0.0.0.0 --authrpc.port 8551 --authrpc.jwtsecret /jwt.hex --metrics 0.0.0.0:9090"
+      execution_client_command="  node
+      --chain sepolia
+      --datadir /data
+      --http
+      --http.api eth,net,web3,rpc
+      --http.addr 0.0.0.0
+      --authrpc.addr 0.0.0.0
+      --authrpc.port $EXECUTION_AUTH_RPC_PORT
+      --authrpc.jwtsecret /jwt.hex
+      --metrics 0.0.0.0:9090"
       ;;
     nethermind)
       execution_client_image="nethermind/nethermind:latest"
       execution_client_container_name="nethermind"
       execution_client_data_dir_name="nethermind" # Keep this as the client name itself
-      execution_client_command="--config sepolia --datadir /data --JsonRpc.Enabled true --JsonRpc.Host 0.0.0.0 --JsonRpc.EngineHost 0.0.0.0 --JsonRpc.EnginePort 8551 --JsonRpc.JwtSecretFile /jwt.hex --Metrics.Enabled true --Metrics.ExposePort 9090"
+      execution_client_command="  --config sepolia
+      --datadir /data
+      --JsonRpc.Enabled true
+      --JsonRpc.Host 0.0.0.0
+      --JsonRpc.EngineHost 0.0.0.0
+      --JsonRpc.EnginePort $EXECUTION_AUTH_RPC_PORT
+      --JsonRpc.JwtSecretFile /jwt.hex
+      --Metrics.Enabled true
+      --Metrics.ExposePort 9090
+      --JsonRpc.EnabledModules=\"Eth,Web3,Net,Debug\"
+      --healthchecks-enabled=true"
       ;;
     *)
       print_warning "$(t "unknown_execution_client" "$execution_client")"
@@ -437,12 +610,23 @@ function create_docker_compose {
       execution_client_image="ethereum/client-go:stable"
       execution_client_container_name="geth"
       execution_client_data_dir_name="geth" # Keep this as the client name itself
-      execution_client_command="--sepolia --datadir /data --http --http.addr 0.0.0.0 --http.api eth,web3,net,engine --authrpc.addr 0.0.0.0 --authrpc.port 8551 --authrpc.jwtsecret /jwt.hex --authrpc.vhosts=* --http.corsdomain=\\"*\\" --syncmode=snap --cache=4096"
+      execution_client_command="  --sepolia
+      --datadir /data
+      --http
+      --http.addr 0.0.0.0
+      --http.api eth,web3,net,engine
+      --authrpc.addr 0.0.0.0
+      --authrpc.port $EXECUTION_AUTH_RPC_PORT
+      --authrpc.jwtsecret /jwt.hex
+      --authrpc.vhosts=*
+      --http.corsdomain=\"*\"
+      --syncmode=snap
+      --cache=4096"
       ;;
   esac
 
   # mkdir -p "$execution_client_data_path_base/$execution_client_data_dir_name" # REMOVED
-  
+
   # Reverted to simple, non-conditional volume definition
   # execution_client_volumes="- $NODE_DIR/$execution_client_data_dir_name:/data\n      - $JWT_FILE:/jwt.hex" # REMOVED
 
@@ -457,15 +641,15 @@ services:
       - $NODE_DIR/$execution_client_data_dir_name:/data
       - $JWT_FILE:/jwt.hex
     ports:
-      - "8545:8545"
-      - "30303:30303/tcp"
-      - "30303:30303/udp"
-      - "8551:8551"
-    command: >
-      $execution_client_command
+      - "$EXECUTION_RPC_PORT:$EXECUTION_RPC_PORT"
+      - "$EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/tcp"
+      - "$EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/udp"
+      - "$EXECUTION_AUTH_RPC_PORT:$EXECUTION_AUTH_RPC_PORT"
+    command: |
+${execution_client_command}
 EOF
 
-  local consensus_execution_endpoint="http://$execution_client_container_name:8551"
+  local consensus_execution_endpoint="http://$execution_client_container_name:$EXECUTION_AUTH_RPC_PORT"
 
   case $consensus_client in
     lighthouse)
@@ -482,9 +666,9 @@ EOF
     depends_on:
       - $execution_client_container_name
     ports:
-      - "5052:5052"
-      - "9000:9000/tcp"
-      - "9000:9000/udp"
+      - "$CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT"
+      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"
+      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"
     command: >
       lighthouse
       bn
@@ -495,9 +679,9 @@ EOF
       --http
       --http-address=0.0.0.0
       --listen-address=0.0.0.0
-      --enr-address=$(curl -s https://ip4only.me/api/ | cut -d',' -f2) 
-      --enr-tcp-port=9000
-      --enr-udp-port=9000
+      --enr-address=$(curl -s https://ip4only.me/api/ | cut -d',' -f2)
+      --enr-tcp-port=$CONSENSUS_P2P_PORT
+      --enr-udp-port=$CONSENSUS_P2P_PORT
 EOF
       ;;
     prysm)
@@ -514,7 +698,9 @@ EOF
     depends_on:
       - $execution_client_container_name
     ports:
-      - "5052:5052"
+      - "$CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT"
+      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"
+      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"
     command: >
       --sepolia
       --datadir=/data
@@ -522,8 +708,10 @@ EOF
       --jwt-secret=/jwt.hex
       --accept-terms-of-use
       --checkpoint-sync-url=https://sepolia.checkpoint-sync.ethpandaops.io
-      --grpc-gateway-port=5052
+      --grpc-gateway-port=$CONSENSUS_RPC_PORT
       --grpc-gateway-host=0.0.0.0
+      --p2p-tcp-port=$CONSENSUS_P2P_PORT
+      --p2p-udp-port=$CONSENSUS_P2P_PORT
 EOF
       ;;
     teku)
@@ -545,9 +733,9 @@ EOF
     depends_on:
       - $execution_client_container_name
     ports:
-      - "5052:5052"
-      - "9000:9000/tcp"   # P2P TCP
-      - "9000:9000/udp"   # P2P UDP
+      - "$CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT"
+      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"   # P2P TCP
+      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"   # P2P UDP
     command: >
       --network=sepolia
       --data-path=/data
@@ -556,14 +744,15 @@ EOF
       --checkpoint-sync-url=https://sepolia.checkpoint-sync.ethpandaops.io
       --rest-api-enabled=true
       --rest-api-interface=0.0.0.0
-      --p2p-port=9000
+      --rest-api-port=$CONSENSUS_RPC_PORT
+      --p2p-port=$CONSENSUS_P2P_PORT
       --p2p-advertised-ip=$(curl -s https://ip4only.me/api/ | cut -d',' -f2)
       --metrics-enabled=true
 EOF
       ;;
     *)
       # This was already handled for consensus_client at the beginning of the function
-      print_error "$(t "unknown_client" "$consensus_client")" 
+      print_error "$(t "unknown_client" "$consensus_client")"
       exit 1
       ;;
   esac
@@ -572,6 +761,7 @@ EOF
 function install_node {
   print_info "$(t "node_install")"
   mkdir -p "$NODE_DIR"
+  ask_for_custom_ports # Call the new function here
   choose_execution_client
   choose_consensus_client
   generate_jwt
@@ -582,8 +772,8 @@ function install_node {
   fi
   docker compose -f "$DOCKER_COMPOSE_FILE" up -d
   print_success "$(t "node_installed")"
-  echo -e "${BLUE}RPC:${RESET}      http://localhost:8545"
-  echo -e "${BLUE}BEACON:${RESET}   http://localhost:5052"
+  echo -e "${BLUE}RPC:${RESET}      http://localhost:$EXECUTION_RPC_PORT"
+  echo -e "${BLUE}BEACON:${RESET}   http://localhost:$CONSENSUS_RPC_PORT"
 }
 
 function update_node {
@@ -636,7 +826,7 @@ function check_sync {
   print_info "$(t "check_sync")"
   print_info "$(t "execution" "$display_execution_client_name")"
 
-  local sync_data=$(curl -s -X POST http://localhost:8545 -H 'Content-Type: application/json' \
+  local sync_data=$(curl -s -X POST "http://localhost:$EXECUTION_RPC_PORT" -H 'Content-Type: application/json' \
     --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}')
 
   if echo "$sync_data" | jq -e '.result == false' >/dev/null 2>&1; then
@@ -668,7 +858,7 @@ function check_sync {
 
         echo "$(t "sync_speed")"
         sleep 5
-        local sync_data2=$(curl -s -X POST http://localhost:8545 -H 'Content-Type: application/json' \
+        local sync_data2=$(curl -s -X POST "http://localhost:$EXECUTION_RPC_PORT" -H 'Content-Type: application/json' \
           --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}')
         local current2=$(echo "$sync_data2" | jq -r '.result.currentBlock // .result.syncing.currentBlock // .result.syncingData.currentBlock // empty')
         local current2_dec=$((16#${current2:2}))
@@ -690,121 +880,150 @@ function check_sync {
       fi
 
     elif [[ "$execution_client_name" == "reth" ]]; then
-      # Новая схема для Reth через stages
-      echo "$(t "syncing" "$display_execution_client_name")"
-
-      # Проверяем, есть ли stages в ответе
-      local stages_exist=$(echo "$sync_data" | jq '.result.stages? != null')
-      if [[ "$stages_exist" != "true" ]]; then
-        echo "$(t "reth_no_stages")"
+      if echo "$sync_data" | jq -e '.result == false' >/dev/null 2>&1; then
+        echo "$(t "reth_synced_fully")"
         return
       fi
 
-      local execution_block=0
-      local headers_block=0
+      local stages_exist=$(echo "$sync_data" | jq -e '.result.stages? | type == "array" and length > 0')
+      if [[ "$stages_exist" == "true" ]]; then
+        echo "$(t "reth_sync_details_title")"
+        local overall_headers_target_dec=0
 
-      local stages_json=$(echo "$sync_data" | jq -c '.result.stages[]')
+        # First pass for Headers target
+        while IFS= read -r stage_json; do
+          local name=$(echo "$stage_json" | jq -r '.name')
+          local target_hex=$(echo "$stage_json" | jq -r '.target // "0x0"')
+          if [[ "$name" == "Headers" && "$target_hex" != "0x0" ]]; then
+            overall_headers_target_dec=$(hex_to_dec "$target_hex")
+            printf "$(t "reth_headers_target")\n" "$overall_headers_target_dec"
+            break
+          fi
+        done <<< "$(echo "$sync_data" | jq -c '.result.stages[]')"
 
-      while IFS= read -r stage; do
-        local name=$(echo "$stage" | jq -r '.name')
-        local block_hex=$(echo "$stage" | jq -r '.block')
+        # Second pass for all stage progress
+        while IFS= read -r stage_json; do
+          local name=$(echo "$stage_json" | jq -r '.name')
+          local processed_hex=$(echo "$stage_json" | jq -r '.processed // "0x0"')
+          local target_hex=$(echo "$stage_json" | jq -r '.target // "0x0"')
 
-        local block_dec=0
-        if [[ "$block_hex" =~ ^0x[0-9a-fA-F]+$ ]]; then
-          block_dec=$((16#${block_hex:2}))
-        fi
+          local processed_dec=$(hex_to_dec "$processed_hex")
+          local target_dec=$(hex_to_dec "$target_hex")
 
-        echo "$name: $block_hex (dec: $block_dec)"
-
-        if [[ "$name" == "Execution" ]]; then
-          execution_block=$block_dec
-        elif [[ "$name" == "Headers" ]]; then
-          headers_block=$block_dec
-        fi
-      done <<< "$stages_json"
-
-      if [[ $headers_block -gt 0 ]]; then
-        local exec_percent=$((100 * execution_block / headers_block))
-        echo ""
-        echo "🧮 Execution Sync Progress: $execution_block / $headers_block = $exec_percent%"
+          if [[ $target_dec -gt 0 && $processed_dec -le $target_dec ]]; then
+            local progress_pct=$((processed_dec * 100 / target_dec))
+            printf "$(t "reth_stage_progress")\n" "$name" "$processed_dec" "$target_dec" "$progress_pct"
+          else
+            # Fallback for stages that might be "done" or have unusual progress reporting
+            printf "  Stage '%s': Processed %s, Target %s (Data may indicate completion or non-standard progress)\n" "$name" "$processed_dec" "$target_dec"
+          fi
+        done <<< "$(echo "$sync_data" | jq -c '.result.stages[]')"
       else
-        echo ""
-        echo "⚠️ Не удалось получить блок Headers для расчёта прогресса Execution"
+        echo "$(t "reth_no_stages")"
       fi
-	  
+
 	elif [[ "$execution_client_name" == "nethermind" ]]; then
-      echo "$(t "syncing" "$display_execution_client_name")"
-
-      # Пробуем получить подробную информацию
-      local debug_sync=$(curl -s -X POST http://localhost:8545 -H 'Content-Type: application/json' \
-        --data '{"jsonrpc":"2.0","method":"debug_syncProgress","params":[],"id":1}')
-
-      local debug_ok=$(echo "$debug_sync" | jq -r '.result.startingBlock // empty')
-
-      if [[ -n "$debug_ok" ]]; then
-        local start=$(echo "$debug_sync" | jq -r '.result.startingBlock')
-        local current=$(echo "$debug_sync" | jq -r '.result.currentBlock')
-        local highest=$(echo "$debug_sync" | jq -r '.result.highestBlock')
-
-        local start_dec=$((16#${start:2}))
-        local current_dec=$((16#${current:2}))
-        local highest_dec=$((16#${highest:2}))
-
-        local remaining=$((highest_dec - current_dec))
-        local progress=$((100 * (current_dec - start_dec) / (highest_dec - start_dec) ))
-
-        echo "$(t "current_block" "$current_dec")"
-        echo "$(t "target_block" "$highest_dec")"
-        echo "$(t "blocks_left" "$remaining")"
-        echo "$(t "progress" "$progress")"
-
-        echo "$(t "sync_speed")"
-        sleep 5
-
-        local debug_sync2=$(curl -s -X POST http://localhost:8545 -H 'Content-Type: application/json' \
-          --data '{"jsonrpc":"2.0","method":"debug_syncProgress","params":[],"id":1}')
-        local current2=$(echo "$debug_sync2" | jq -r '.result.currentBlock')
-        local current2_dec=$((16#${current2:2}))
-
-        local delta_blocks=$((current2_dec - current_dec))
-        local speed_bps=0
-        if [[ $delta_blocks -gt 0 ]]; then
-          speed_bps=$((delta_blocks / 5))
-        fi
-
-        echo "$(t "speed" "$speed_bps")"
-
-        if [[ $speed_bps -gt 0 ]]; then
-          local est_sec=$((remaining / speed_bps))
-          echo "$(t "eta" "$(format_time $est_sec)")"
-        else
-          echo "$(t "low_speed")"
-        fi
-      else
-        # fallback на eth_syncing
-        echo "$(t "fallback_to_eth_syncing")"
-
-        local current=$(echo "$sync_data" | jq -r '.result.currentBlock // empty')
-        local highest=$(echo "$sync_data" | jq -r '.result.highestBlock // empty')
-
-        if [[ -z "$current" || -z "$highest" || "$current" == "null" || "$highest" == "null" ]]; then
-          echo "$(t "sync_data_missing")"
-          return
-        fi
-
-        local current_dec=$((16#${current:2}))
-        local highest_dec=$((16#${highest:2}))
-        local remaining=$((highest_dec - current_dec))
-        local progress=$((100 * current_dec / highest_dec))
-
-        echo "$(t "current_block" "$current_dec")"
-        echo "$(t "target_block" "$highest_dec")"
-        echo "$(t "blocks_left" "$remaining")"
-        echo "$(t "progress" "$progress")"
+      # Initial Full Sync Check (eth_syncing)
+      if echo "$sync_data" | jq -e '.result == false' >/dev/null 2>&1; then
+        echo "$(t "nethermind_synced_fully")"
+        # Even if fully synced, we might want to show health, so don't return immediately.
+        # If a 'return' is desired here, it would skip stage and health display for fully synced nodes.
       fi
+
+      # --- Sync Stage Display -------------------------------------------------
+	echo ""
+	echo "$(t nethermind_sync_stage_title)"
+
+	local stage_rpc_payload='{"jsonrpc":"2.0","id":0,"method":"debug_getSyncStage","params":[]}'
+
+	stage_data=$(curl -s -X POST "http://localhost:$EXECUTION_RPC_PORT" \
+				  -H 'Content-Type: application/json' --data "$stage_rpc_payload")
+
+	if [[ -n "$stage_data" ]] && \
+	   echo "$stage_data" | jq -e '.error == null and .result != null' >/dev/null; then
+		stage_name_display=$(echo "$stage_data" | jq -r '.result.currentStage // "N/A"')
+		printf "%s\n" "$(t nethermind_current_stage "$stage_name_display")"
+	elif echo "$stage_data" | jq -e '.error != null' >/dev/null; then
+		error_message=$(echo "$stage_data" | jq -r '.error.message // "Unknown RPC error"')
+		printf "%s\n" "$(t nethermind_rpc_error "debug_getSyncStage") Details: $error_message"
+	else
+		printf "%s\n" "$(t nethermind_rpc_error "debug_getSyncStage") Details: Empty or invalid response"
+	fi
+
+      # Block Sync Progress (from eth_syncing data, only if not reported as fully synced by eth_syncing)
+      if ! (echo "$sync_data" | jq -e '.result == false' >/dev/null 2>&1); then
+        echo ""
+        echo "$(t "nethermind_block_progress_title")"
+        local current_hex=$(echo "$sync_data" | jq -r '.result.currentBlock // empty')
+        local highest_hex=$(echo "$sync_data" | jq -r '.result.highestBlock // empty')
+
+        if [[ -z "$current_hex" || "$current_hex" == "null" || -z "$highest_hex" || "$highest_hex" == "null" ]]; then
+          echo "$(t "nethermind_sync_data_missing")"
+        else
+          local current_dec=$(hex_to_dec "$current_hex")
+          local highest_dec=$(hex_to_dec "$highest_hex")
+
+          if [[ $highest_dec -eq 0 && $current_dec -gt 0 ]]; then # If highest is 0 but current is not, it might be pre-sync or error
+            echo "$(t "sync_data_invalid")"
+          elif [[ $highest_dec -eq 0 && $current_dec -eq 0 && "$stage_name_display" != "Finished" && "$stage_name_display" != "SnapSync" && "$stage_name_display" != "FastSync" && "$stage_name_display" != "FullSync" && "$stage_name_display" != "N/A" ]] ; then
+            # If both are 0, but stage suggests it's not done, data might be missing for block progress
+            echo "$(t "nethermind_sync_data_missing")"
+          elif [[ $highest_dec -ge $current_dec ]]; then # Normal progress or just finished
+            local remaining=$((highest_dec - current_dec))
+            local progress_pct=0
+            if [[ $highest_dec -gt 0 ]]; then # Avoid division by zero if highest_dec is 0 (e.g. at very start)
+                if [[ $current_dec -ge $highest_dec ]]; then # handles current == highest or current > highest
+                    progress_pct=100
+                else
+                    progress_pct=$((current_dec * 100 / highest_dec))
+                fi
+            elif [[ $current_dec -gt 0 ]]; then # highest is 0, but current is not (should not happen if previous checks are good)
+                 progress_pct=0 # Or some other indicator of unusual state
+            fi # if highest_dec is 0 and current_dec is 0, progress_pct remains 0
+
+            echo "$(t "current_block" "$current_dec")"
+            echo "$(t "target_block" "$highest_dec")"
+            echo "$(t "blocks_left" "$remaining")"
+            echo "$(t "progress" "$progress_pct")"
+          else # current_dec > highest_dec, should ideally be caught by eth_syncing:false
+             echo "$(t "execution_synced" "$display_execution_client_name")"
+          fi
+        fi
+      fi
+
+    # --- Health Status Check -----------------------------------------------
+		echo ""
+		echo "$(t nethermind_health_status_title)"
+
+		local health_output
+		local health_status_overall="Unknown"
+		local health_details_str=""
+
+		health_output=$(curl -s -X GET "http://localhost:$EXECUTION_RPC_PORT/health" -H 'Content-Type: application/json')
+
+		if [[ -n "$health_output" ]]; then
+		  if echo "$health_output" | jq -e '.status' >/dev/null 2>&1; then
+			health_status_overall=$(echo "$health_output" | jq -r '.status')
+		  elif ! echo "$health_output" | jq -e . >/dev/null 2>&1; then
+			health_status_overall="$health_output"
+			health_details_str="$health_output"
+		  fi
+
+		  if [[ -z "$health_details_str" ]]; then
+			if echo "$health_output" | jq -e . >/dev/null 2>&1; then
+			  health_details_str=$(echo "$health_output" | jq '.')
+			else
+			  health_details_str="$health_output"
+			fi
+		  fi
+
+		  printf "$(t nethermind_health_info)\n" "$health_status_overall" "$health_details_str"
+		else
+		  printf "$(t nethermind_health_info)\n" "Unknown" "$(t nethermind_health_request_failed)"
+		fi
 
     else
-      echo "⚠️ Неизвестный Execution клиент: $execution_client_name. Используется базовая проверка."
+      echo "⚠️ $(t "unknown_execution_client" "$execution_client_name"). $(t "sync_check_basic")"
       # Можно сделать fallback — либо как для Geth, либо просто вывести raw eth_syncing
       echo "$sync_data" | jq '.result'
     fi
@@ -815,12 +1034,12 @@ function check_sync {
 
   case "$consensus_client_name" in
     prysm|teku)
-      local syncing_resp=$(curl -s http://localhost:5052/eth/v1/node/syncing)
+      local syncing_resp=$(curl -s "http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/syncing")
       if [[ "$syncing_resp" == "{}" || -z "$syncing_resp" ]]; then
         echo "$(t "${consensus_client_name}_no_sync_data")"
-        local fin_resp=$(curl -s http://localhost:5052/eth/v1/node/finality)
+        local fin_resp=$(curl -s "http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/finality")
         if [[ -z "$fin_resp" ]]; then
-          fin_resp=$(curl -s http://localhost:5052/eth/v1/beacon/states/head/finality_checkpoints)
+          fin_resp=$(curl -s "http://localhost:$CONSENSUS_RPC_PORT/eth/v1/beacon/states/head/finality_checkpoints")
         fi
         if [[ -n "$fin_resp" ]]; then
           echo "$(t "${consensus_client_name}_beacon_active")"
@@ -840,11 +1059,11 @@ function check_sync {
 
       echo ""
       echo "$(t "${consensus_client_name}_health")"
-      curl -s http://localhost:5052/eth/v1/node/health | jq
+      curl -s "http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/health" | jq
       ;;
 
     lighthouse)
-      local syncing_resp=$(curl -s http://localhost:5052/eth/v1/node/syncing)
+      local syncing_resp=$(curl -s "http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/syncing")
       if [[ "$syncing_resp" == "{}" || -z "$syncing_resp" ]]; then
         echo "$(t "lighthouse_no_sync_data")"
       else
@@ -859,7 +1078,7 @@ function check_sync {
 
       echo ""
       echo "$(t "lighthouse_health")"
-      curl -s http://localhost:5052/eth/v1/node/health | jq
+      curl -s "http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/health" | jq
       ;;
 
     *)
@@ -910,7 +1129,7 @@ TG_TOKEN="$tg_token"
 TG_CHAT_ID="$tg_chat_id"
 
 # Check Execution Client
-execution_sync_response=\$(curl -s -X POST http://localhost:8545 \\
+execution_sync_response=\$(curl -s -X POST http://localhost:${EXECUTION_RPC_PORT} \\
   -H "Content-Type: application/json" \\
   -d '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}')
 
@@ -926,7 +1145,7 @@ else
 fi
 
 # Check Consensus Client
-consensus_response=\$(curl -s http://localhost:5052/eth/v1/node/syncing)
+consensus_response=\$(curl -s http://localhost:${CONSENSUS_RPC_PORT}/eth/v1/node/syncing)
 is_syncing=\$(echo "\$consensus_response" | jq -r '.data.is_syncing' 2>/dev/null)
 
 if [ "\$is_syncing" == "false" ]; then
@@ -1010,7 +1229,7 @@ function check_disk_usage {
     docker exec -it "$consensus_client_name" du -sh "$consensus_data_path" 2>/dev/null || print_warning "$(t "container_not_running" "$consensus_client_name")"
   else
     # This was client_not_found for consensus client, perhaps we don't need a message if EXECUTION_CLIENT_FILE is also missing as it defaults
-    print_warning "$(t "client_not_found" "$CLIENT_FILE")" 
+    print_warning "$(t "client_not_found" "$CLIENT_FILE")"
   fi
 }
 
@@ -1034,7 +1253,7 @@ function firewall_setup() {
         echo "1) $(t "firewall_enable")"
         echo "2) $(t "firewall_local_ports")"
         echo "3) $(t "firewall_remote_ip")"
-        echo "4) $(t "firewall_delete_rules")"
+        echo "4) $(t "firewall_delete_rules" "$EXECUTION_RPC_PORT" "$CONSENSUS_RPC_PORT" "$EXECUTION_P2P_PORT" "$CONSENSUS_P2P_PORT")"
         echo "5) $(t "firewall_view_rules")"
         echo "6) $(t "firewall_disable")"
         echo -e "${RED}7) $(t "back")${RESET}"
@@ -1059,32 +1278,36 @@ function firewall_setup() {
                 ;;
             2)
                 echo "$(t "setting_local_ports")"
-                sudo ufw allow 30303/tcp
-                sudo ufw allow 30303/udp
-                sudo ufw allow from 127.0.0.1 to any port 8545 proto tcp
-                sudo ufw allow from 127.0.0.1 to any port 5052 proto tcp
+                sudo ufw allow $EXECUTION_P2P_PORT/tcp
+                sudo ufw allow $EXECUTION_P2P_PORT/udp
+                sudo ufw allow $CONSENSUS_P2P_PORT/tcp # Assuming consensus P2P might also be needed locally by some setups
+                sudo ufw allow $CONSENSUS_P2P_PORT/udp # Assuming consensus P2P might also be needed locally by some setups
+                sudo ufw allow from 127.0.0.1 to any port $EXECUTION_RPC_PORT proto tcp
+                sudo ufw allow from 127.0.0.1 to any port $CONSENSUS_RPC_PORT proto tcp
                 sudo ufw reload
                 print_success "$(t "local_ports_success")"
                 ;;
             3)
                 read -p "$(t "enter_ip")" remote_ip
                 echo "$(t "setting_remote_ports") $remote_ip..."
-                sudo ufw allow 30303/tcp
-                sudo ufw allow 30303/udp
-                sudo ufw deny 8545/tcp
-                sudo ufw deny 5052/tcp
-                sudo ufw allow from "$remote_ip" to any port 8545 proto tcp
-                sudo ufw allow from "$remote_ip" to any port 5052 proto tcp
+                sudo ufw allow $EXECUTION_P2P_PORT/tcp
+                sudo ufw allow $EXECUTION_P2P_PORT/udp
+                sudo ufw allow $CONSENSUS_P2P_PORT/tcp
+                sudo ufw allow $CONSENSUS_P2P_PORT/udp
+                sudo ufw deny $EXECUTION_RPC_PORT/tcp
+                sudo ufw deny $CONSENSUS_RPC_PORT/tcp
+                sudo ufw allow from "$remote_ip" to any port $EXECUTION_RPC_PORT proto tcp
+                sudo ufw allow from "$remote_ip" to any port $CONSENSUS_RPC_PORT proto tcp
                 sudo ufw reload
                 print_success "$(t "remote_ports_success")"
                 ;;
             4)
 				echo "$(t "deleting_old_rules")"
-				# Получаем список правил, нумерованных
-				mapfile -t rules < <(sudo ufw status numbered | grep -E '8545|5052' | nl -w1 -s':' | tac)
+				# Получаем список правил, нумерованных. Search for any of the main ports.
+				mapfile -t rules < <(sudo ufw status numbered | grep -E "$EXECUTION_RPC_PORT|$CONSENSUS_RPC_PORT|$EXECUTION_P2P_PORT|$CONSENSUS_P2P_PORT" | nl -w1 -s':' | tac)
 
 				if [[ ${#rules[@]} -eq 0 ]]; then
-					print_info "$(t "no_matching_rules")"
+					print_info "$(t "no_matching_rules" "$EXECUTION_RPC_PORT" "$CONSENSUS_RPC_PORT" "$EXECUTION_P2P_PORT" "$CONSENSUS_P2P_PORT")"
 				else
 					print_info "$(t "rules_to_be_deleted")"
 					for rule in "${rules[@]}"; do
@@ -1094,7 +1317,7 @@ function firewall_setup() {
 					done
 
 					echo
-					echo "$(t "confirm_delete_firewall_rules") (y/n)"
+					print_warning "$(t "confirm_delete_firewall_rules" "$EXECUTION_RPC_PORT" "$CONSENSUS_RPC_PORT" "$EXECUTION_P2P_PORT" "$CONSENSUS_P2P_PORT") (y/n)"
 					read -r confirm
 					if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
 						print_info "$(t "firewall_delete_cancelled")"
@@ -1147,6 +1370,7 @@ function run_rpc_check {
 
 # Main menu
 function main_menu {
+  load_port_configuration # Load config at the start of the menu
   show_logo
   while true; do
     echo -e "\n${BLUE}$(t "menu_title")${RESET}"
