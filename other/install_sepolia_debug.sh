@@ -559,7 +559,7 @@ function create_docker_compose {
       execution_client_image="ethereum/client-go:stable"
       execution_client_container_name="geth"
       execution_client_data_dir_name="geth" # Keep this as the client name itself
-      execution_client_command="  --sepolia
+      execution_client_command="      --sepolia
       --datadir /data
       --http
       --http.addr 0.0.0.0
@@ -576,7 +576,7 @@ function create_docker_compose {
       execution_client_image="ghcr.io/paradigmxyz/reth:latest"
       execution_client_container_name="reth"
       execution_client_data_dir_name="reth" # Keep this as the client name itself
-      execution_client_command="  node
+      execution_client_command="      node
       --chain sepolia
       --datadir /data
       --http
@@ -591,7 +591,7 @@ function create_docker_compose {
       execution_client_image="nethermind/nethermind:latest"
       execution_client_container_name="nethermind"
       execution_client_data_dir_name="nethermind" # Keep this as the client name itself
-      execution_client_command="  --config sepolia
+      execution_client_command="      --config sepolia
       --datadir /data
       --JsonRpc.Enabled true
       --JsonRpc.Host 0.0.0.0
@@ -610,7 +610,7 @@ function create_docker_compose {
       execution_client_image="ethereum/client-go:stable"
       execution_client_container_name="geth"
       execution_client_data_dir_name="geth" # Keep this as the client name itself
-      execution_client_command="  --sepolia
+      execution_client_command="      --sepolia
       --datadir /data
       --http
       --http.addr 0.0.0.0
@@ -645,7 +645,7 @@ services:
       - "$EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/tcp"
       - "$EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/udp"
       - "$EXECUTION_AUTH_RPC_PORT:$EXECUTION_AUTH_RPC_PORT"
-    command: |
+    command:
 ${execution_client_command}
 EOF
 
@@ -669,7 +669,7 @@ EOF
       - "$CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT"
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"
-    command: >
+    command:
       lighthouse
       bn
       --network=sepolia
@@ -701,7 +701,7 @@ EOF
       - "$CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT"
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"
-    command: >
+    command:
       --sepolia
       --datadir=/data
       --execution-endpoint=$consensus_execution_endpoint
@@ -710,8 +710,6 @@ EOF
       --checkpoint-sync-url=https://sepolia.checkpoint-sync.ethpandaops.io
       --grpc-gateway-port=$CONSENSUS_RPC_PORT
       --grpc-gateway-host=0.0.0.0
-      --p2p-tcp-port=$CONSENSUS_P2P_PORT
-      --p2p-udp-port=$CONSENSUS_P2P_PORT
 EOF
       ;;
     teku)
@@ -736,7 +734,7 @@ EOF
       - "$CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT"
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"   # P2P TCP
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"   # P2P UDP
-    command: >
+    command:
       --network=sepolia
       --data-path=/data
       --ee-endpoint=$consensus_execution_endpoint
@@ -880,47 +878,64 @@ function check_sync {
       fi
 
     elif [[ "$execution_client_name" == "reth" ]]; then
-      if echo "$sync_data" | jq -e '.result == false' >/dev/null 2>&1; then
-        echo "$(t "reth_synced_fully")"
+      # Новая схема для Reth через stages
+      echo "$(t "syncing" "$display_execution_client_name")"
+
+      # Проверяем, есть ли stages в ответе
+      local stages_exist=$(echo "$sync_data" | jq '.result.stages? != null')
+      if [[ "$stages_exist" != "true" ]]; then
+        echo "$(t "reth_no_stages")"
         return
       fi
 
-      local stages_exist=$(echo "$sync_data" | jq -e '.result.stages? | type == "array" and length > 0')
-      if [[ "$stages_exist" == "true" ]]; then
-        echo "$(t "reth_sync_details_title")"
-        local overall_headers_target_dec=0
+      local execution_block=0
+      local bodies_block=0
+      local headers_block=0
 
-        # First pass for Headers target
-        while IFS= read -r stage_json; do
-          local name=$(echo "$stage_json" | jq -r '.name')
-          local target_hex=$(echo "$stage_json" | jq -r '.target // "0x0"')
-          if [[ "$name" == "Headers" && "$target_hex" != "0x0" ]]; then
-            overall_headers_target_dec=$(hex_to_dec "$target_hex")
-            printf "$(t "reth_headers_target")\n" "$overall_headers_target_dec"
-            break
-          fi
-        done <<< "$(echo "$sync_data" | jq -c '.result.stages[]')"
+      local stages_json=$(echo "$sync_data" | jq -c '.result.stages[]')
 
-        # Second pass for all stage progress
-        while IFS= read -r stage_json; do
-          local name=$(echo "$stage_json" | jq -r '.name')
-          local processed_hex=$(echo "$stage_json" | jq -r '.processed // "0x0"')
-          local target_hex=$(echo "$stage_json" | jq -r '.target // "0x0"')
+      while IFS= read -r stage; do
+        local name=$(echo "$stage" | jq -r '.name')
+        local block_hex=$(echo "$stage" | jq -r '.block')
 
-          local processed_dec=$(hex_to_dec "$processed_hex")
-          local target_dec=$(hex_to_dec "$target_hex")
+        local block_dec=0
+        if [[ "$block_hex" =~ ^0x[0-9a-fA-F]+$ ]]; then
+          block_dec=$((16#${block_hex:2}))
+        fi
 
-          if [[ $target_dec -gt 0 && $processed_dec -le $target_dec ]]; then
-            local progress_pct=$((processed_dec * 100 / target_dec))
-            printf "$(t "reth_stage_progress")\n" "$name" "$processed_dec" "$target_dec" "$progress_pct"
-          else
-            # Fallback for stages that might be "done" or have unusual progress reporting
-            printf "  Stage '%s': Processed %s, Target %s (Data may indicate completion or non-standard progress)\n" "$name" "$processed_dec" "$target_dec"
-          fi
-        done <<< "$(echo "$sync_data" | jq -c '.result.stages[]')"
+        echo "$name: $block_hex (dec: $block_dec)"
+
+        if [[ "$name" == "Execution" ]]; then
+          execution_block=$block_dec
+        elif [[ "$name" == "Bodies" ]]; then
+          bodies_block=$block_dec
+        elif [[ "$name" == "Headers" ]]; then
+          headers_block=$block_dec
+        fi
+      done <<< "$stages_json"
+
+      echo ""
+
+      # ─── Bodies ──────────────────────────────────────────────────────────────
+      if [[ $headers_block -gt 0 ]]; then
+        local bodies_percent=$((100 * bodies_block / headers_block))
+        echo "🧮 Bodies Sync Progress: $bodies_block / $headers_block = $bodies_percent%"
       else
-        echo "$(t "reth_no_stages")"
+        echo "⚠️ Не удалось получить блок Headers для расчёта прогресса Bodies"
       fi
+
+      # ─── Execution ───────────────────────────────────────────────────────────
+      if [[ $bodies_block -gt 0 ]]; then
+        local exec_percent=$((100 * execution_block / bodies_block))
+        echo "🧮 Execution Sync Progress: $execution_block / $bodies_block = $exec_percent%"
+      elif [[ $headers_block -gt 0 ]]; then
+        # fallback на Headers, если Bodies ещё не начались
+        local exec_percent=$((100 * execution_block / headers_block))
+        echo "🧮 Execution Sync Progress: $execution_block / $headers_block = $exec_percent%"
+      else
+        echo "⚠️ Не удалось получить данные для расчёта прогресса Execution"
+      fi
+
 
 	elif [[ "$execution_client_name" == "nethermind" ]]; then
       # Initial Full Sync Check (eth_syncing)
