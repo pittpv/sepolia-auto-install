@@ -7,7 +7,15 @@ YELLOW='\e[0;33m'
 RED='\e[0;31m'
 RESET='\e[0m'
 
-source $HOME/sepolia-node/port_config.env
+PORT_CONFIG="$HOME/sepolia-node/port_config.env"
+
+if [[ -f "$PORT_CONFIG" ]]; then
+  source "$PORT_CONFIG"
+else
+  echo "File $PORT_CONFIG not found. Default values are being used."
+  EXECUTION_RPC_PORT=8545
+  CONSENSUS_RPC_PORT=5052
+fi
 
 # ======= RPC HEALTH GUIDE =======
 echo -e "\n${BLUE}========================================"
