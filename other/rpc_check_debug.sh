@@ -51,9 +51,6 @@ fi
 EXEC_RPC="http://$HOST:$EXECUTION_RPC_PORT"
 BEACON_RPC="http://$HOST:$CONSENSUS_RPC_PORT"
 
-echo "Execution Layer RPC: $EXEC_RPC"
-echo "Beacon Node RPC:     $BEACON_RPC"
-
 echo -e "\n${CYAN}--- Your Execution RPC ---${NC}"
 echo -e "\n${NC}$EXEC_RPC${NC}"
 echo -e "\n${CYAN}--- Your Beacon RPC ---${NC}"
