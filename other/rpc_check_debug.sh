@@ -154,6 +154,7 @@ if [[ -n "$HEAD" ]]; then
   fi
 fi
 
+
 echo -e "\n${BLUE}========== Summary ==========${RESET}"
 printf "Execution RPC : %b\n" "$([[ ${EXEC_OK:-0} -eq 1 ]] && echo -e "${GREEN}OK${RESET}" || echo -e "${RED}FAIL${RESET}")"
 printf "Beacon RPC    : %b\n" "$([[ ${BEACON_OK:-0} -eq 1 ]] && echo -e "${GREEN}OK${RESET}" || echo -e "${RED}FAIL${RESET}")"
