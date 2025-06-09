@@ -130,14 +130,14 @@ The following configurations have been tested:
 
 | Execution / Consensus  | Prysm     | Teku      | Lighthouse                                              |
 |------------------------|-----------|-----------|---------------------------------------------------------|
-| **Geth**               | ✅ / ✅   | ✅ / ✅   | ⚠️ / ⚠️ (*consensus client P2P port must be changed from 9000*) |
+| **Geth**               | ✅ / ✅   | ✅ / ✅   | ⚠️ / ⚠️  |
 | **Reth**               | ✅ / ✅   | ✅ / ✅   | ✅ / ✅                                                  |
 | **Nethermind**         | ✅ / ✅   | ✅ / ✅   | ✅ / ✅                                                  |
 
 **Legend:**
 
 * ✅ / ✅ — works with default ports / works with custom ports
-* ⚠️ — works, but requires port modification (see note)
+* ⚠️ — works, but requires consensus client P2P port modification, must be changed from 9000
 
 ## 📡 Sync Monitoring
 
