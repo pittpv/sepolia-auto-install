@@ -7,6 +7,16 @@ YELLOW='\e[0;33m'
 RED='\e[0;31m'
 RESET='\e[0m'
 
+PORT_CONFIG="$HOME/sepolia-node/port_config.env"
+
+if [[ -f "$PORT_CONFIG" ]]; then
+  source "$PORT_CONFIG"
+else
+  echo "File $PORT_CONFIG not found. Default values are being used."
+  EXECUTION_RPC_PORT=8545
+  CONSENSUS_RPC_PORT=5052
+fi
+
 # ======= RPC HEALTH GUIDE =======
 echo -e "\n${BLUE}========================================"
 echo "              RPC Health Guide"
@@ -46,11 +56,8 @@ else
   exit 1
 fi
 
-EXEC_RPC="http://$HOST:8545"
-BEACON_RPC="http://$HOST:5052"
-
-echo "Execution Layer RPC: $EXEC_RPC"
-echo "Beacon Node RPC:     $BEACON_RPC"
+EXEC_RPC="http://$HOST:$EXECUTION_RPC_PORT"
+BEACON_RPC="http://$HOST:$CONSENSUS_RPC_PORT"
 
 echo -e "\n${CYAN}--- Your Execution RPC ---${NC}"
 echo -e "\n${NC}$EXEC_RPC${NC}"
@@ -151,6 +158,7 @@ if [[ -n "$HEAD" ]]; then
     STATUS="${GREEN}HEALTHY${RESET}"
   fi
 fi
+
 
 echo -e "\n${BLUE}========== Summary ==========${RESET}"
 printf "Execution RPC : %b\n" "$([[ ${EXEC_OK:-0} -eq 1 ]] && echo -e "${GREEN}OK${RESET}" || echo -e "${RED}FAIL${RESET}")"
