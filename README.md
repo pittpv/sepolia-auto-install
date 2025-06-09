@@ -1,4 +1,4 @@
-# 🛰️ Sepolia Node Installer
+# 🛰️ Sepolia RPC Node Installer All in one
 
 🇬🇧 [for English](https://github.com/pittpv/sepolia-auto-install/blob/main/en/ "English version of description")
 
