@@ -1508,7 +1508,7 @@ function firewall_setup() {
 
 #Script created by Creed https://www.notion.so/Aztec-Commands-by-Creed-1f2da4dd4652808e908bc7426bbbb284
 function run_rpc_check {
-  URL="https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/rpc_check_debug.sh"
+  URL="https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/rpc_check.sh"
   echo -e "${CYAN}Running RPC check script from GitHub...${RESET}"
   bash <(curl -s "$URL") || print_error "Failed to run RPC check script."
 }
