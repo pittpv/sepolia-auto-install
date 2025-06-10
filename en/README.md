@@ -19,7 +19,7 @@ An interactive bash script for installing, managing and monitoring an Ethereum S
 * 💽 Analyze disk usage
 * 📡 Install cron-agent with Telegram status notifications
 * 🔥 Advanced Firewall Management
-* 🌐 RPC and blob data check. Script created by `creed2412` (discord)
+* 🌐 RPC and blob data check. Script created by `web3.creed` (discord)
 
 ## ⚙️ Requirements
 
@@ -185,11 +185,11 @@ This feature adds a menu to manage the UFW (Uncomplicated Firewall) on your serv
 
 2. **Allow Local Ports**
    Useful when your node client (e.g. Aztec Sequencer) is running locally.
-   Opens Geth P2P ports and allows access to RPC and Beacon ports from `127.0.0.1`.
+   Execution and consensus P2P ports are opened and access to RPC and Beacon ports from `127.0.0.1` is allowed.
 
 3. **Allow Specific IPs**
    Useful when your node client is running on another server.
-   Opens Geth ports to the public, blocks sensitive ports (8545, 5052), and allows them **only** from a trusted IP that you input.
+   Execution and consensus P2P ports are opened, RPC and Beacon ports are blocked and allowed **only** for the entered trusted IP address.
    
 4. **Remove Rules for Ports**
    Here you can see which ports have been set previously and remove rules. To delete all rules, you need to delete **multiple times** until all necessary rules are deleted. 
@@ -212,7 +212,7 @@ The function checks RPC availability and the presence of blob data for the last 
 🔍 What the check does:
 
 * Detects the server's external IP address
-* Checks availability of Execution RPC (`:8545`) and Beacon RPC (`:5052`)
+* Checks availability of Execution RPC and Beacon RPC
 * Requests the latest block and client version
 * Verifies the presence of blob data for the last 10 slots
 
