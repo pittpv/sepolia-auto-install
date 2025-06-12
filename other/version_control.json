@@ -1,0 +1,42 @@
+[
+  {
+    "VERSION": "1.0.0",
+    "UPDATE_DATE": "19.05.2025",
+    "CHANGES": ["First version"]
+  },
+  {
+    "VERSION": "1.0.1",
+    "UPDATE_DATE": "19.05.2025",
+    "CHANGES": ["Fix for telegram notofications"]
+  },
+  {
+    "VERSION": "1.0.2",
+    "UPDATE_DATE": "20.05.2025",
+    "CHANGES": ["Language compatibility for welcome message", "Prysm docker-compose file fix"]
+  },
+  {
+    "VERSION": "1.1.0",
+    "UPDATE_DATE": "21.05.2025",
+    "CHANGES": ["Added automatic installation of dependencies"]
+  },
+  {
+    "VERSION": "1.2.0",
+    "UPDATE_DATE": "23.05.2025",
+    "CHANGES": ["Added firewall management"]
+  },
+  {
+    "VERSION": "1.3.0",
+    "UPDATE_DATE": "24.05.2025",
+    "CHANGES": ["Added RPC Check script by Creed"]
+  },
+  {
+    "VERSION": "1.4.0",
+    "UPDATE_DATE": "09.06.2025",
+    "CHANGES": ["Added the ability to select Execution client. Geth, Reth, Nethermind", "Added ability to assign a port during installation", "Added ability to assign a port to previously installed node", "Significantly expanded firewall management options", "For Reth and Nethermind implemented their own mechanisms to control the synchronization process", "When a node is deleted, the cron task is also deleted", "Verification of Telegram token and ChatID is implemented. Notifications are improved", "Added updated version of Creed RPC verification scrip", "Improved RPC check script to be compatible with both versions of Sepolia Auto Install, it is also possible to select localhost or external ip check", "Minor improvements"]
+  },
+  {
+    "VERSION": "1.5.0",
+    "UPDATE_DATE": "09.06.2025",
+    "CHANGES": ["Added Version control", "New logo"]
+  }
+]
