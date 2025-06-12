@@ -8,7 +8,6 @@ function print_colored() {
   echo "${b}$(echo "$1" | sed -E "s/(█+)/${m}\1${b}/g")${r}"
 }
 
-clear
 echo
 echo
 print_colored " ███████╗███████╗██████╗  ██████╗ ██╗     ██╗ █████╗     ███╗   ██╗ ██████╗ ██████╗ ███████╗"
