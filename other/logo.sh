@@ -1,26 +1,11 @@
 #!/bin/bash
 
-# Цвета
-BLUE=$'\033[34m'
-MAGENTA=$'\033[35m'
-RESET=$'\033[0m'
-
-# Функция с анимацией построчной печати
-function print_animated_line() {
-  local line="$1"
-  for ((i=0; i<${#line}; i++)); do
-    echo -ne "${line:$i:1}"
-    sleep 0.005
-  done
-  echo
-}
-
 # Функция подсветки "█" блоков
 function print_colored() {
   local b=$'\033[34m'
   local m=$'\033[35m'
   local r=$'\033[0m'
-  print_animated_line "${b}$(echo "$1" | sed -E "s/(█+)/${m}\1${b}/g")${r}"
+  echo "${b}$(echo "$1" | sed -E "s/(█+)/${m}\1${b}/g")${r}"
 }
 
 clear
