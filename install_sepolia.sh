@@ -9,6 +9,8 @@ BLUE='\033[1;34m'
 VIOLET='\033[0;35m'
 RESET='\033[0m'
 
+SCRIPT_VERSION="1.5.0"
+
 # Default Port Configurations
 # These variables define the default port numbers for various services.
 # They can be overridden by user input or loaded from a configuration file if such a mechanism is implemented.
@@ -216,6 +218,10 @@ function t {
             "updating_ports") echo "🔄 Updating ports..." ;;
             "ports_updated") echo "✅ Ports have been updated." ;;
             "restart_required") echo "♻️ To apply changes, restart the node containers, remove the old cron agent, and create a new one." ;;
+            "current_script_version") echo "📌 Current script version:" ;;
+            "new_version_avialable") echo "🚀 New version available:" ;;
+            "new_version_update") echo "Please update your Sepolia script" ;;
+            "version_up_to_date") echo "✅ You are using the latest version" ;;
             *) echo "$key" ;;
         esac
     else
@@ -380,9 +386,46 @@ function t {
             "updating_ports") echo "🔄 Обновляем порты..." ;;
             "ports_updated") echo "✅ Порты обновлены." ;;
             "restart_required") echo "♻️ Для применения изменений перезапустите контейнеры ноды, удалите старого cron-агента и создайте нового." ;;
+            "current_script_version") echo "📌 Текущая версия скрипта:" ;;
+            "new_version_avialable") echo "🚀 Доступна новая версия:" ;;
+            "new_version_update") echo "Пожалуйста, обновите Sepolia скрипт" ;;
+            "version_up_to_date") echo "✅ Установлена актуальная версия" ;;
             *) echo "$key" ;;
         esac
     fi
+}
+
+function check_version() {
+# === Проверяем и добавляем ключ VERSION в ~/.env-sepolia-version ===
+  # Если ключа VERSION в .env-sepolia-version нет – дописать его, не затронув остальные переменные
+  INSTALLED_VERSION=$(grep '^VERSION=' ~/.env-sepolia-version | cut -d'=' -f2)
+
+  if [ -z "$INSTALLED_VERSION" ]; then
+    echo "VERSION=$SCRIPT_VERSION" >> ~/.env-sepolia-version
+    INSTALLED_VERSION="$SCRIPT_VERSION"
+  elif [ "$INSTALLED_VERSION" != "$SCRIPT_VERSION" ]; then
+  # Обновляем строку VERSION в .env-sepolia-version
+    sed -i "s/^VERSION=.*/VERSION=$SCRIPT_VERSION/" ~/.env-sepolia-version
+    INSTALLED_VERSION="$SCRIPT_VERSION"
+  fi
+
+  # === Скачиваем remote version_control.json и определяем последнюю версию ===
+  REMOTE_VC_URL="https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/version_control.json"
+  # Скачиваем весь JSON, отбираем массив .[].VERSION, сортируем, берём последний
+  if remote_data=$(curl -fsSL "$REMOTE_VC_URL"); then
+    REMOTE_LATEST_VERSION=$(echo "$remote_data" | jq -r '.[].VERSION' | sort -V | tail -n1)
+  else
+    REMOTE_LATEST_VERSION=""
+  fi
+
+  # === Выводим текущую версию и, если надо, предупреждение об обновлении ===
+  echo -e "\n${CYAN}$(t "current_script_version") ${INSTALLED_VERSION}${NC}"
+  if [ -n "$REMOTE_LATEST_VERSION" ] && [ "$REMOTE_LATEST_VERSION" != "$INSTALLED_VERSION" ]; then
+    echo -e "${YELLOW}$(t "new_version_avialable") ${REMOTE_LATEST_VERSION}. $(t "new_version_update").${NC}"
+  elif [ -n "$REMOTE_LATEST_VERSION" ]; then
+    echo -e "${GREEN}$(t "version_up_to_date")${NC}"
+  fi
+
 }
 
 # Rest of the script remains the same, just replace all echo messages with t function calls
@@ -1516,6 +1559,7 @@ function run_rpc_check {
 # Main menu
 function main_menu {
   show_logo
+  check_version
   load_port_configuration # Load config at the start of the menu
   while true; do
     echo -e "\n${BLUE}$(t "menu_title")${RESET}"
@@ -1533,7 +1577,7 @@ function main_menu {
       8) stop_containers ;;
       9) start_containers ;;
       10) delete_node ;;
-	  11) change_intsalled_ports ;;
+      11) change_intsalled_ports ;;
       12) check_disk_usage ;;
       13) firewall_setup ;;
       14) run_rpc_check ;;

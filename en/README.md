@@ -40,7 +40,16 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 4–8 cores                                 |
 | **Disk**           | 600 GB SSD (can grow up to 1.5 TB)        |
 
-## 📌 Latest Updates 09-06-2025
+## 📌 Latest Updates 12-06-2025
+- Added version control system for Sepolia RPC script.
+- Updated logo
+
+---
+
+<details>
+<summary>📅 Version History</summary>
+
+### 09-06-2025
 - Added the ability to select Execution client. Geth, Reth, Nethermind.
 - Added ability to assign a port during installation. Default for execution 8545, consensus 5052.
 - Added ability to assign a port to previously installed node. 
@@ -51,11 +60,6 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 - Added updated version of Creed RPC verification script
 - Improved RPC check script to be compatible with both versions of Sepolia Auto Install, it is also possible to select localhost or external ip check.
 - Minor improvements
-
----
-
-<details>
-<summary>📅 Version History</summary>
 
 ### 24-05-2025
 - Added RPC Check script by Creed 
