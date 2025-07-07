@@ -38,5 +38,10 @@
     "VERSION": "1.5.0",
     "UPDATE_DATE": "09.06.2025",
     "CHANGES": ["Added Version control", "New logo"]
+  },
+  {
+    "VERSION": "1.5.1",
+    "UPDATE_DATE": "07.07.2025",
+    "CHANGES": ["View last 500 lines from logs with continuation"]
   }
 ]

@@ -9,7 +9,7 @@ BLUE='\033[1;34m'
 VIOLET='\033[0;35m'
 RESET='\033[0m'
 
-SCRIPT_VERSION="1.5.0"
+SCRIPT_VERSION="1.5.1"
 
 # Default Port Configurations
 # These variables define the default port numbers for various services.
@@ -892,8 +892,8 @@ function view_logs {
   print_info "$(t "select_logs")"
   select opt in "$display_execution_client_name" "$display_consensus_client_name" "$(t "back")"; do
     case $REPLY in
-      1) docker logs -f "$execution_client_name"; break ;;
-      2) docker logs -f "$consensus_client_name"; break ;;
+      1) docker logs --tail 500 -f "$execution_client_name"; break ;;
+      2) docker logs --tail 500 -f "$consensus_client_name"; break ;;
       3) break ;;
       *) print_error "$(t "invalid_option")";;
     esac
