@@ -40,14 +40,17 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 4–8 cores                                 |
 | **Disk**           | 600 GB SSD (can grow up to 1.5 TB)        |
 
-## 📌 Latest Updates 12-06-2025
-- Added version control system for Sepolia RPC script.
-- Updated logo
+## 📌 Latest Updates 07-07-2025
+- Changed log output: view last 500 lines with continuation
 
 ---
 
 <details>
 <summary>📅 Version History</summary>
+
+### 12-06-2025
+- Added version control system for Sepolia RPC script.
+- Updated logo
 
 ### 09-06-2025
 - Added the ability to select Execution client. Geth, Reth, Nethermind.
