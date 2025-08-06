@@ -52,6 +52,7 @@
 - Мелкие улучшения
 
 Ознакомьтесь с подробным описанием работы функции Управление файрволлом: [Firewall-Manager.md](https://github.com/pittpv/sepolia-auto-install/blob/main/ru/Firewall-Manager.md "Описание работы функции Управление файрволлом на русском языке")
+
 ---
 
 <details>

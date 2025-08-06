@@ -52,6 +52,7 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 - Minor improvements
 
 For detailed information about the Firewall Management function, please see: [Firewall-Manager.md](https://github.com/pittpv/sepolia-auto-install/blob/main/en/Firewall-Manager.md "Description of the Firewall Management function in English")
+
 ---
 
 <details>
