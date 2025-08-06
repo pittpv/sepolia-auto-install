@@ -15,7 +15,7 @@ The `firewall_setup` function provides an interactive menu for managing firewall
 
 ## Initial Setup
 
-Before use:
+Before working with the function, run the installation of the Sepolia node. Then proceed to the configuration:
 
 1. First run **Option 1** to:
     - Check/create DOCKER-USER chain
