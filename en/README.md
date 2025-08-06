@@ -19,7 +19,7 @@ An interactive bash script for installing, managing and monitoring an Ethereum S
 * 💽 Analyze disk usage
 * 📡 Install cron-agent with Telegram status notifications
 * 🔥 Advanced Firewall Management
-* 🌐 RPC and blob data check. Script created by `web3.creed` (discord)
+* 🌐 RPC and blob data check. Script created by `@web3.creed` (Discord)
 
 ## ⚙️ Requirements
 
@@ -40,13 +40,25 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 4–8 cores                                 |
 | **Disk**           | 600 GB SSD (can grow up to 1.5 TB)        |
 
-## 📌 Latest Updates 07-07-2025
-- Changed log output: view last 500 lines with continuation
+## 📌 Latest Updates 23-07-2025
+- The Firewall Management function has been completely rewritten. Rules now actually work properly. Thanks to @luce1970 (Discord) for identifying the bug.
+   - Can manage both ports and IP addresses
+   - Incoming/outgoing, TCP/UDP, all directions
+   - Add/remove rules by rule number correctly
+   - Separate or simultaneous deletion of iptables and ufw rules
+   - Block all incoming connections
+   - The function manages IPTABLES rules and duplicates them in UFW
+- Added flag in Geth to remove the 1 ETH limit
+- Minor improvements
 
+For detailed information about the Firewall Management function, please see: [Firewall-Manager.md](https://github.com/pittpv/sepolia-auto-install/blob/main/en/Firewall-Manager.md "Description of the Firewall Management function in English")
 ---
 
 <details>
 <summary>📅 Version History</summary>
+
+### 07-07-2025
+- Changed log output: view last 500 lines with continuation
 
 ### 12-06-2025
 - Added version control system for Sepolia RPC script.
@@ -138,13 +150,13 @@ The following configurations have been tested:
 | Execution / Consensus  | Prysm     | Teku      | Lighthouse                                              |
 |------------------------|-----------|-----------|---------------------------------------------------------|
 | **Geth**               | ✅  | ✅   | ⚠️ |
-| **Reth**               | ✅  | ✅   | ✅                                          |
-| **Nethermind**         | ✅  | ✅   | ✅                                         |
+| **Reth**               | ✅  | ✅   | ⚠️                                          |
+| **Nethermind**         | ✅  | ✅   | ⚠️                                         |
 
 **Legend:**
 
 * ✅ — works with default ports / works with custom ports
-* ⚠️ — works, but requires consensus client P2P port modification, must be changed from 9000
+* ⚠️ — works, but recommended consensus client P2P port modification, must be **changed from 9000**
 
 ## 📡 Sync Monitoring
 
@@ -182,35 +194,32 @@ replace localhost with the IP address of your server.
 
 ## 🔥 Firewall Management
 
-This feature adds a menu to manage the UFW (Uncomplicated Firewall) on your server. It helps secure your node by controlling access to important ports.
+This feature adds a menu to manage the UFW & IPTABLES on your server. It helps secure your node by controlling access to important ports.
+For detailed information about the Firewall Management function, please see: [Firewall-Manager.md](https://github.com/pittpv/sepolia-auto-install/blob/main/en/Firewall-Manager.md "Description of the Firewall Management function in English")
 
-### Menu Options
+### Menu Items
 
-1. **Enable Firewall**
-   Opens SSH ports (22, `ssh`) and enables UFW if it's not already enabled.
-   A confirmation prompt (`y/n`) is shown before activation.
+1. **Enable and prepare (ufw, iptables)**
+   Opens SSH ports (22, `ssh`), enables UFW, configures iptables.
+   If UFW is already active or iptables rules exist, the script will notify you.
 
-2. **Allow Local Ports**
-   Useful when your node client (e.g. Aztec Sequencer) is running locally.
-   Execution and consensus P2P ports are opened and access to RPC and Beacon ports from `127.0.0.1` is allowed.
+2. **Port management**
+   Add/remove rules by number. All directions and protocols. Option to block all incoming connections.
 
-3. **Allow Specific IPs**
-   Useful when your node client is running on another server.
-   Execution and consensus P2P ports are opened, RPC and Beacon ports are blocked and allowed **only** for the entered trusted IP address.
-   
-4. **Remove Rules for Ports**
-   Here you can see which ports have been set previously and remove rules. To delete all rules, you need to delete **multiple times** until all necessary rules are deleted. 
+3. **IP address management**
+   Add/remove rules by number. IP address with port specification, all directions and protocols.
 
-5. **View UFW Rules**
-   Allows you to view all installed rules.
+4. **View all rules**
+   Displays DOCKER-USER chain and UFW rules.
 
-6. **Disable Firewall**
+5. **Reset all rules and restart Docker**
+   Removes DOCKER-USER and UFW rules, disables UFW, restarts Docker to restore default rules.
 
-### Example Prompts
+### Key Features
 
-* ✅ Confirmation message when UFW is already enabled.
-* ❌ Message when enabling is cancelled by the user.
-* 🔒 Only enables UFW if not already active.
+* All critical operations require **explicit confirmation** to minimize errors.
+* Includes duplicate rule prevention.
+* Ensures proper rule deletion/addition sequencing.
 
 ## 🌐 RPC and Blob Data Check
 

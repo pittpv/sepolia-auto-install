@@ -43,5 +43,10 @@
     "VERSION": "1.5.1",
     "UPDATE_DATE": "07.07.2025",
     "CHANGES": ["View last 500 lines from logs with continuation"]
+  },
+  {
+    "VERSION": "1.6.0",
+    "UPDATE_DATE": "06.08.2025",
+    "CHANGES": ["New Firewall Management function", "Geth 1 eth limit fix", "Minor improvements"]
   }
 ]
