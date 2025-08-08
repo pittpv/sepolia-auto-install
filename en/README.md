@@ -40,7 +40,15 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 4–8 cores                                 |
 | **Disk**           | 600 GB SSD (can grow up to 1.5 TB)        |
 
-## 📌 Latest Updates 07-08-2025
+## 📌 Latest Updates 08-08-2025
+- Fix of the Nethermind configuration. In the previous configuration, synchronization issues could occur. 
+
+---
+
+<details>
+<summary>📅 Version History</summary>
+
+### 07-08-2025
 - The Firewall Management function has been completely rewritten. Rules now actually work properly. Thanks to @luce1970 (Discord) for identifying the bug.
    - Can manage both ports and IP addresses
    - Incoming/outgoing, TCP/UDP, all directions
@@ -50,13 +58,6 @@ All prerequisites can be installed automatically by selecting option 1 in the me
    - The function manages IPTABLES rules and duplicates them in UFW
 - Added flag in Geth to remove the 1 ETH limit
 - Minor improvements
-
-For detailed information about the Firewall Management function, please see: [Firewall-Manager.md](https://github.com/pittpv/sepolia-auto-install/blob/main/en/Firewall-Manager.md "Description of the Firewall Management function in English")
-
----
-
-<details>
-<summary>📅 Version History</summary>
 
 ### 07-07-2025
 - Changed log output: view last 500 lines with continuation
