@@ -212,7 +212,7 @@ echo -en "Tools : ${TOOL_STATUS}"
 ################################################################################
 # User Input: RPC Endpoints
 ################################################################################
-echo -e ""
+echo -e "\n"
 read -p "Use localhost (127.0.0.1) or external IP? [Choose l or i]: " choice
 
 if [[ "$choice" =~ ^[Ll]$ ]]; then
