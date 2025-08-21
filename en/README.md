@@ -40,13 +40,16 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 4–8 cores                                 |
 | **Disk**           | 600 GB SSD (can grow up to 1.5 TB)        |
 
-## 📌 Latest Updates 08-08-2025
-- Fix of the Nethermind configuration. In the previous configuration, synchronization issues could occur. 
+## 📌 Latest Updates 21-08-2025
+- Updated RPC check script to latest version. Thanks @web3.creed (Discord)
 
 ---
 
 <details>
 <summary>📅 Version History</summary>
+
+### 08-08-2025
+- Fix of the Nethermind configuration. In the previous configuration, synchronization issues could occur.
 
 ### 07-08-2025
 - The Firewall Management function has been completely rewritten. Rules now actually work properly. Thanks to @luce1970 (Discord) for identifying the bug.

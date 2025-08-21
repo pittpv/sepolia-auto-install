@@ -53,5 +53,10 @@
     "VERSION": "1.6.1",
     "UPDATE_DATE": "08.08.2025",
     "CHANGES": ["Fix for Nethermind configuration"]
+  },
+  {
+    "VERSION": "1.6.2",
+    "UPDATE_DATE": "21.08.2025",
+    "CHANGES": ["RPC check by Creed updated to latest version"]
   }
 ]
