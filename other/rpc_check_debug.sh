@@ -212,7 +212,7 @@ echo -en "Tools : ${TOOL_STATUS}"
 ################################################################################
 # User Input: RPC Endpoints
 ################################################################################
-
+echo -e ""
 read -p "Use localhost (127.0.0.1) or external IP? [Choose l or i]: " choice
 
 if [[ "$choice" =~ ^[Ll]$ ]]; then
@@ -221,22 +221,22 @@ elif [[ "$choice" =~ ^[Ii]$ ]]; then
 
   IP=$(curl -s https://api.ipify.org)
   if [[ -z "$IP" ]]; then
-    echo -e "${RED}Failed to get external IP${NC}"
+    echo -e "${RED}Failed to get external IP${RESET}"
     exit 1
   fi
   HOST="$IP"
 else
-  echo -e "${RED}Invalid choice. Please use 'l' or 'i'.${NC}"
+  echo -e "${RED}Invalid choice. Please use 'l' or 'i'.${RESET}"
   exit 1
 fi
 
 EXEC_RPC="http://$HOST:$EXECUTION_RPC_PORT"
 BEACON_RPC="http://$HOST:$CONSENSUS_RPC_PORT"
 
-echo -e "\n${CYAN}--- Your Execution RPC ---${NC}"
-echo -e "\n${NC}$EXEC_RPC${NC}"
-echo -e "\n${CYAN}--- Your Beacon RPC ---${NC}"
-echo -e "\n${NC}$BEACON_RPC${NC}"
+echo -e "\n${CYAN}--- Your Execution RPC ---${RESET}"
+echo -e "\n${RESET}$EXEC_RPC${RESET}"
+echo -e "\n${CYAN}--- Your Beacon RPC ---${RESET}"
+echo -e "\n${RESET}$BEACON_RPC${RESET}"
 
 ################################################################################
 # Sepolia RPC Check (Timeout, Connection Feedback, Clear Error State)
