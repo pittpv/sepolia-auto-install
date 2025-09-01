@@ -45,8 +45,8 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 
 ## 📌 Latest Updates 01-09-2025
 - Added an option that allows configuring CPU and RAM usage limits for EL and CL clients.
- - When this option is enabled, 20% of the server’s operating system resources are always reserved. The remaining resources are divided in a 60:40 ratio between EL and CL clients.
- - The option is automatically activated when installing the RPC node (you can opt out of setting limits) or can be launched separately on an already running node (requires a restart of the node containers).
+  - When this option is enabled, 20% of the server’s operating system resources are always reserved. The remaining resources are divided in a 60:40 ratio between EL and CL clients.
+  - The option is automatically activated when installing the RPC node (you can opt out of setting limits) or can be launched separately on an already running node (requires a restart of the node containers).
 
 ---
 
