@@ -20,6 +20,9 @@ An interactive bash script for installing, managing and monitoring an Ethereum S
 * 📡 Install cron-agent with Telegram status notifications
 * 🔥 Advanced Firewall Management
 * 🌐 RPC and blob data check. Script created by `@web3.creed` (Discord)
+* ⚙️ Configuring resource usage for Docker containers
+
+**Check out the Version History under the spoiler, there is a lot of useful information about the functions of the script.**
 
 ## ⚙️ Requirements
 
@@ -40,13 +43,18 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 4–8 cores                                 |
 | **Disk**           | 600 GB SSD (can grow up to 1.5 TB)        |
 
-## 📌 Latest Updates 21-08-2025
-- Updated RPC check script to latest version. Thanks @web3.creed (Discord)
+## 📌 Latest Updates 01-09-2025
+- Added an option that allows configuring CPU and RAM usage limits for EL and CL clients.
+ - When this option is enabled, 20% of the server’s operating system resources are always reserved. The remaining resources are divided in a 60:40 ratio between EL and CL clients.
+ - The option is automatically activated when installing the RPC node (you can opt out of setting limits) or can be launched separately on an already running node (requires a restart of the node containers).
 
 ---
 
 <details>
 <summary>📅 Version History</summary>
+
+### 21-08-2025
+- Updated RPC check script to latest version. Thanks @web3.creed (Discord)
 
 ### 08-08-2025
 - Fix of the Nethermind configuration. In the previous configuration, synchronization issues could occur.
@@ -132,6 +140,7 @@ The script offers the following menu (available in English or Russian):
 12. Check disk usage
 13. Firewall management
 14. Check RPC server
+15. Configure Docker resources
 0. Exit
 
 ## 🔐 Telegram Notifications
