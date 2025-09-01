@@ -63,5 +63,10 @@
     "VERSION": "1.7.0",
     "UPDATE_DATE": "01.09.2025",
     "CHANGES": ["Option for configuring Docker container resources based on system specifications"]
+  },
+  {
+    "VERSION": "1.7.1",
+    "UPDATE_DATE": "02.09.2025",
+    "CHANGES": ["Fix for update node function"]
   }
 ]

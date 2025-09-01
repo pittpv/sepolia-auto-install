@@ -1408,13 +1408,6 @@ function install_node {
   echo -e "${BLUE}BEACON:${RESET}   http://$(curl -s https://ip4only.me/api/ | cut -d',' -f2):$CONSENSUS_RPC_PORT"
 }
 
-function update_node {
-  print_info "$(t "node_update")"
-  docker compose -f "$DOCKER_COMPOSE_FILE" pull
-  docker compose -f "$DOCKER_COMPOSE_FILE" up -d
-  print_success "$(t "node_updated")"
-}
-
 function view_logs {
   local execution_client_name=$(cat "$EXECUTION_CLIENT_FILE" 2>/dev/null || echo "geth")
   local consensus_client_name=$(cat "$CLIENT_FILE" 2>/dev/null || echo "lighthouse")
@@ -1960,6 +1953,14 @@ function start_containers {
   print_info "$(t "start_containers")"
   docker compose -f "$DOCKER_COMPOSE_FILE" up -d
   print_success "$(t "containers_started")"
+}
+
+function update_node {
+  print_info "$(t "node_update")"
+  docker compose -f "$DOCKER_COMPOSE_FILE" pull
+  stop_containers
+  start_containers
+  print_success "$(t "node_updated")"
 }
 
 function check_disk_usage {
