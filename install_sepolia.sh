@@ -118,7 +118,7 @@ function t {
             "goodbye") echo "👋 Goodbye!" ;;
             "invalid_option") echo "❌ Invalid choice, try again." ;;
             "select_option") echo "Select option: " ;;
-            "start_containers") echo "🏃‍➡️ Start containers" ;;
+            "start_containers") echo "🏃‍➡️ Starting containers..." ;;
             "containers_started") echo "✅ Containers started." ;;
             "client_label_prysm") echo "Prysm (recommended)" ;;
             "client_label_teku") echo "Teku" ;;
@@ -441,7 +441,7 @@ function t {
             "goodbye") echo "👋 До свидания!" ;;
             "invalid_option") echo "❌ Неверный выбор, попробуйте снова." ;;
             "select_option") echo "Выберите опцию: " ;;
-            "start_containers") echo "🏃‍➡️ Запустить контейнеры" ;;
+            "start_containers") echo "🏃‍➡️ Запуск контейнеров..." ;;
             "containers_started") echo "✅ Контейнеры запущены." ;;
             "client_label_prysm") echo "Prysm (рекомендуется)" ;;
             "client_label_teku") echo "Teku" ;;
