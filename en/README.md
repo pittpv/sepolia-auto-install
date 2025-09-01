@@ -36,12 +36,12 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 
 ### 🖥️ System Requirements
 
-| Component          | Requirement                              |
-|--------------------|-------------------------------------------|
-| **OS**             | Ubuntu 20.04 or later                     |
-| **RAM**            | 8–16 GB                                   |
-| **CPU**            | 4–8 cores                                 |
-| **Disk**           | 600 GB SSD (can grow up to 1.5 TB)        |
+| Component          | Requirement                        |
+|--------------------|------------------------------------|
+| **OS**             | Ubuntu 20.04 or later              |
+| **RAM**            | 16 GB and more                     |
+| **CPU**            | 8 cores and more                   |
+| **Disk**           | 800 GB SSD (can grow up to 1.5 TB) |
 
 ## 📌 Latest Updates 01-09-2025
 - Added an option that allows configuring CPU and RAM usage limits for EL and CL clients.
