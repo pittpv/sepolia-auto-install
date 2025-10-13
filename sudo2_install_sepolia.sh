@@ -9,7 +9,7 @@ BLUE='\033[1;34m'
 VIOLET='\033[0;35m'
 RESET='\033[0m'
 
-SCRIPT_VERSION="1.7.2"
+SCRIPT_VERSION="1.7.1"
 
 # Default Port Configurations
 # These variables define the default port numbers for various services.
@@ -223,7 +223,7 @@ function t {
             "ufw_disabled_configuring") echo "[Notice] UFW disabled, configuring..." ;;
             "adding_ssh_port_rule") echo "Adding SSH rule (port 22)..." ;;
             "adding_ssh_name_rule") echo "Adding SSH rule (by name ssh)..." ;;
-            "adding_exec_p2p_port_rule") echo "Adding rule for execution и consensus P2P..." ;;
+            "adding_exec_p2p_port_rule") echo "Adding rule for execution иconsensus P2P..." ;;
             "port_rule_exists") echo "The rule for the port already exists" ;;
             "enabling_ufw") echo "Enabling UFW..." ;;
             "ufw_enabled_successfully") echo "✅ UFW enabled successfully" ;;
@@ -597,31 +597,31 @@ function t {
             "select_rule_type_to_delete") echo "Выберите тип правил для удаления:" ;;
             "delete_iptables_rule") echo "Удалить правило iptables" ;;
             "delete_ufw_rule") echo "Удалить правило UFW" ;;
-            "delete_both_rules") echo "Удалить оба (iptables и UFW)" ;;
-            "enter_iptables_rule_numbers") echo "Введите номер правила iptables (например 1 или 1,2 или 1,5-8,12):" ;;
-            "enter_ufw_rule_numbers") echo "Введите номер правила UFW (например 1 или 1,2 или 1,5-8,12):" ;;
+            "delete_both_rules") echo "Удалить оба (iptab..." ;;
+            "enter_iptables_rule_numbers") echo "Введите номера правил iptables (например, 1 или 1,2 или 1,5-8,12):" ;;
+            "enter_ufw_rule_numbers") echo "Введите номера правил UFW (например, 1 или 1,2 или 1,5-8,12):" ;;
             "rule_numbers_to_delete_prompt") echo "Номера правил для удаления: " ;;
-            "iptables_rule_numbers_prompt") echo "Номера iptables правил для удаления: " ;;
-            "ufw_rule_numbers_prompt") echo "Номера UFW правил для удаления: " ;;
-            "deleting_iptables_rule") echo "Удаляем iptables правило" ;;
-            "deleting_ufw_rule") echo "Удаляем UFW правило" ;;
+            "iptables_rule_numbers_prompt") echo "номера правил iptables для удаления: " ;;
+            "ufw_rule_numbers_prompt") echo "номера правил UFW для удаления: " ;;
+            "deleting_iptables_rule") echo "Удаляем правило iptables" ;;
+            "deleting_ufw_rule") echo "Удаляем правило UFW" ;;
             "rule_not_found_skipping") echo "Правило не найдено, пропускаем" ;;
             "invalid_rule_number_skipping") echo "Некорректный номер правила, пропускаем" ;;
             "failed_to_delete_rule") echo "Не удалось удалить правило" ;;
             "deleted_iptables_rules") echo "Удалено iptables правил:" ;;
             "deleted_ufw_rules") echo "Удалено UFW правил:" ;;
-            "invalid_choice_cancel") echo "Неверный выбор, отмена удаления" ;;
+            "invalid_choice_cancel") echo "Некорректный выбор, удаление отменено" ;;
             "invalid_range_skipping") echo "Некорректный диапазон, пропускаем" ;;
             # Блокировка RPC портов
             "blocking_rpc_ports_for_all") echo "── Блокировка RPC и BEACON портов для всех входящих соединений ──" ;;
-            "changing_ufw_policy_to_block_all") echo "Меняем политику UFW для блокировки всех входящих соединений" ;;
+            "changing_ufw_policy_to_block_all") echo "Изменяем политику UFW на блокировку всех входящих соединений" ;;
             # Меню управления IP
             "ip_management_menu") echo "────── Управление IP-адресами ──────" ;;
             "allow_access_from_ip") echo "Разрешить доступ с IP-адреса" ;;
             "deny_access_delete_rule") echo "Запретить доступ (удалить правило)" ;;
             # Сообщения управления IP
             "allowing_access_from_ip") echo "── Разрешение доступа с IP ──" ;;
-            "enter_ip_or_subnet_prompt") echo "Введите IP-адрес или подсеть (например, 192.168.1.1 или 192.168.1.0/24 или несколько ip через запятую): " ;;
+            "enter_ip_or_subnet_prompt") echo "Введите IP-адрес или подсеть (например, 192.168.1.1 или 192.168.1.0/24 или несколько адресов через запятую): " ;;
             "enter_port_number_optional_prompt") echo "Введите номер порта (5052 или 5052,9100 или оставьте пустым для всех портов): " ;;
             "adding_iptables_rule_for_all_traffic_from") echo "Добавляем iptables правило для всего трафика с" ;;
             "adding_ufw_rule_for_all_traffic_from") echo "Добавляем UFW правило для всего трафика с" ;;
@@ -629,1169 +629,819 @@ function t {
             "from") echo "с" ;;
             "adding_ufw_rule_for_port") echo "[Действие] Добавляем UFW правило для порта" ;;
             "port_must_be_number_error") echo "Ошибка: порт должен быть числом" ;;
-            "correct_input_examples") echo "Примеры правильного ввода:" ;;
+            "correct_input_examples") echo "Примеры корректного ввода:" ;;
             "ip_example") echo "IP: 192.168.1.1 или 10.0.0.0/24" ;;
             # Просмотр всех правил
             "view_all_rules") echo "────── Просмотр всех правил ──────" ;;
             "current_docker_user_chain_rules") echo "Текущие правила цепочки DOCKER-USER:" ;;
-            "no_rules_in_docker_user_chain") echo "В цепочке DOCKER-USER нет правил" ;;
+            "no_rules_in_docker_user_chain") echo "Нет правил в цепочке DOCKER-USER" ;;
             "current_ufw_rules") echo "Текущие правила UFW:" ;;
             "no_active_ufw_rules") echo "Нет активных правил UFW" ;;
             "iptables_rules_stats") echo "Статистика правил iptables:" ;;
-            "total_accept_rules") echo "Всего правил ACCEPT:" ;;
-            "total_drop_reject_rules") echo "Всего правил DROP/REJECT:" ;;
+            "total_accept_rules") echo "Всего ACCEPT правил:" ;;
+            "total_drop_reject_rules") echo "Всего DROP/REJECT правил:" ;;
             "ufw_rules_stats") echo "Статистика правил UFW:" ;;
             "default_policy") echo "Политика по умолчанию:" ;;
             "incoming") echo "Входящие:" ;;
             "outgoing") echo "Исходящие:" ;;
-            "total_allow_rules") echo "Всего правил ALLOW:" ;;
-            "total_deny_reject_rules") echo "Всего правил DENY/REJECT:" ;;
+            "total_allow_rules") echo "Всего ALLOW правил:" ;;
+            "total_deny_reject_rules") echo "Всего DENY/REJECT правил:" ;;
             # Сброс правил
             "reset_all_rules") echo "────── Сброс всех правил ──────" ;;
             "you_are_about_to_perform") echo "Вы собираетесь выполнить следующие действия:" ;;
             "clear_all_rules_in_docker_user_chain") echo "Очистить все правила в цепочке DOCKER-USER" ;;
             "reset_all_ufw_rules") echo "Сбросить все правила UFW" ;;
-            "restart_docker_service") echo "Перезапустить Docker сервис" ;;
-            "clearing_docker_user_chain") echo "Очищаем цепочку DOCKER-USER" ;;
+            "restart_docker_service") echo "Перезапустить сервис Docker" ;;
+            "clearing_docker_user_chain") echo "Очистка цепочки DOCKER-USER" ;;
             "all_docker_user_rules_deleted") echo "✅ Все правила DOCKER-USER удалены" ;;
             "failed_to_clear_docker_user") echo "[Ошибка] Не удалось очистить DOCKER-USER" ;;
-            "resetting_ufw_rules") echo "Сбрасываем правила UFW" ;;
+            "resetting_ufw_rules") echo "Сброс правил UFW" ;;
             "all_ufw_rules_reset") echo "✅ Все правила UFW сброшены" ;;
             "failed_to_reset_ufw") echo "[Ошибка] Не удалось сбросить UFW" ;;
-            "restarting_docker") echo "Перезапускаем Docker" ;;
+            "restarting_docker") echo "Перезапуск Docker" ;;
             "docker_restarted_successfully") echo "✅ Docker успешно перезапущен" ;;
-            "current_docker_user_status") echo "Текущее состояние DOCKER-USER:" ;;
+            "current_docker_user_status") echo "Текущий статус DOCKER-USER:" ;;
             "failed_to_restart_docker") echo "[Ошибка] Не удалось перезапустить Docker" ;;
             "rules_reset_cancelled") echo "Сброс правил отменен" ;;
             # Главное меню
-            "script_works_in_iptables") echo "Скрипт работает в iptables c цепочкой DOCKER-USER и дублирует правила для ufw." ;;
-            "port_ip_management_logic") echo "Логика управления портами/адресами построена на добавлении/удалении разрешающих правил." ;;
-            "on_first_run") echo "Перед работой с функцией запустите установку Sepolia ноды. При первом запуске:" ;;
-            "first_run_option_1") echo "Cначала запустите опцию 1. Подтвердите включение ufw и убедитесь что iptables настроены;" ;;
-            "first_run_option_2") echo "Затем, используя опцию 2 (пункт 1 внутри опции), откройте необходимые порты для работы вашей ноды. Например для Aztec: 8080,40400" ;;
-            "first_run_option_3") echo "В завершение, используя опцию 2 (пункт 3 внутри опции), выполните блокировку RPC и BEACON портов для входящих соединений." ;;
-            "now_you_can_add_remove") echo "Теперь можно добавлять/удалять нужные вам порты и адреса с помощью опций 2 и 3." ;;
-            "firewall_management_main_menu") echo "────── Главное меню управления фаерволом ──────" ;;
-            "enable_and_prepare_option") echo "Включение и подготовка (ufw, iptables)" ;;
+            "script_works_in_iptables") echo "Скрипт работает с iptables используя цепочку DOCKER-USER и дублирует правила для ufw." ;;
+            "port_ip_management_logic") echo "Логика управления портами/IP основана на добавлении/удалении разрешающих правил." ;;
+            "on_first_run") echo "Перед работой с функцией запустите установку ноды Sepolia. При первом запуске:" ;;
+            "first_run_option_1") echo "Сначала опция 1. Подтвердите активацию ufw и настройку iptables;" ;;
+            "first_run_option_2") echo "Затем с помощью опции 2 (пункт 1 внутри опции) откройте необходимые порты для работы вашей ноды. Например для Aztec: 8080,40400" ;;
+            "first_run_option_3") echo "Наконец с помощью опции 2 (пункт 3 внутри опции) заблокируйте RPC и BEACON порты для входящих соединений." ;;
+            "now_you_can_add_remove") echo "Теперь вы можете добавлять/удалять необходимые порты и адреса с помощью опций 2 и 3." ;;
+            "firewall_management_main_menu") echo "────── Главное меню управления файрволлом ──────" ;;
+            "enable_and_prepare_option") echo "Включить и подготовить (ufw, iptables)" ;;
             "port_management_option") echo "Управление портами" ;;
             "ip_management_option") echo "Управление IP-адресами" ;;
             "view_all_rules_option") echo "Просмотр всех правил" ;;
             "reset_all_rules_option") echo "Сброс всех правил и перезапуск Docker" ;;
             "exit_option") echo "Выход" ;;
-            "exiting_firewall_menu") echo "Выход из меню фаервола" ;;
-            "configuring_docker_resources") echo "🔧 Настройка ресурсов Docker контейнеров на основе характеристик системы..." ;;
+            "exiting_firewall_menu") echo "Выход из меню файрволла" ;;
+            "configuring_docker_resources") echo "🔧 Настройка ресурсов контейнеров Docker на основе спецификаций системы..." ;;
             "system_info") echo "📊 Информация о системе:" ;;
             "calculated_resources") echo "📈 Рассчитанное распределение ресурсов:" ;;
             "resource_config_saved") echo "✅ Конфигурация ресурсов сохранена в" ;;
             "resource_config_loaded") echo "✅ Конфигурация ресурсов загружена из" ;;
             "using_default_resources") echo "ℹ️ Используется конфигурация ресурсов по умолчанию" ;;
-            "execution_rpc_error") echo "❌ Не удалось получить ответ от RPC execution клиента" ;;
-            "execution_rpc_error_with_details") echo "❌ Ошибка RPC execution клиента: %s" ;;
-            "execution_no_result") echo "❌ Некорректный ответ от execution клиента - отсутствует поле result" ;;
-            "consensus_rpc_error") echo "❌ Не удалось получить ответ от RPC consensus клиента" ;;
-            "consensus_rpc_error_with_details") echo "❌ Ошибка RPC consensus клиента: %s" ;;
-            "consensus_no_data") echo "❌ Некорректный ответ от consensus клиента - отсутствует поле data" ;;
+            "execution_rpc_error") echo "❌ Не удалось получить ответ от RPC клиента исполнения" ;;
+            "execution_rpc_error_with_details") echo "❌ Ошибка RPC клиента исполнения: %s" ;;
+            "execution_no_result") echo "❌ Недействительный ответ от клиента исполнения - нет поля result" ;;
+            "consensus_rpc_error") echo "❌ Не удалось получить ответ от RPC клиента консенсуса" ;;
+            "consensus_rpc_error_with_details") echo "❌ Ошибка RPC клиента консенсуса: %s" ;;
+            "consensus_no_data") echo "❌ Недействительный ответ от клиента консенсуса - нет поля data" ;;
             "resource_limits_prompt") echo "🔧 Настройка ограничений ресурсов" ;;
-            "resource_limits_description") echo "Скрипт рассчитал оптимальные ограничения ресурсов для ваших контейнеров на основе характеристик системы." ;;
+            "resource_limits_description") echo "Скрипт рассчитал оптимальные ограничения ресурсов для ваших контейнеров на основе спецификаций системы." ;;
             "resource_limits_warning") echo "⚠️  Применение ограничений ресурсов может повлиять на производительность, но обеспечивает стабильность системы." ;;
-            "apply_resource_limits_question") echo "Хотите применить эти ограничения ресурсов? (да/нет): " ;;
+            "apply_resource_limits_question") echo "Хотите применить эти ограничения ресурсов? (yes/no): " ;;
             "applying_resource_limits") echo "🔧 Применение ограничений ресурсов..." ;;
             "resource_limits_applied") echo "✅ Ограничения ресурсов успешно применены" ;;
             "skipping_resource_limits") echo "⏭️  Пропуск ограничений ресурсов..." ;;
             "resource_limits_disabled") echo "ℹ️  Ограничения ресурсов отключены - контейнеры будут использовать неограниченные ресурсы" ;;
             "resource_limits_enabled") echo "✅ Ограничения ресурсов включены" ;;
-            "please_enter_yes_or_no") echo "Пожалуйста, введите 'да' или 'нет'" ;;
+            "please_enter_yes_or_no") echo "Пожалуйста, введите 'yes' или 'no'" ;;
             *) echo "$key" ;;
         esac
     fi
 }
 
-function check_version() {
-# === Проверяем и добавляем ключ VERSION в ~/.env-sepolia-version ===
-  # Если ключа VERSION в .env-sepolia-version нет – дописать его, не затронув остальные переменные
-  INSTALLED_VERSION=$(grep '^VERSION=' ~/.env-sepolia-version | cut -d'=' -f2)
-
-  if [ -z "$INSTALLED_VERSION" ]; then
-    echo "VERSION=$SCRIPT_VERSION" >> ~/.env-sepolia-version
-    INSTALLED_VERSION="$SCRIPT_VERSION"
-  elif [ "$INSTALLED_VERSION" != "$SCRIPT_VERSION" ]; then
-  # Обновляем строку VERSION в .env-sepolia-version
-    sed -i "s/^VERSION=.*/VERSION=$SCRIPT_VERSION/" ~/.env-sepolia-version
-    INSTALLED_VERSION="$SCRIPT_VERSION"
-  fi
-
-  # === Скачиваем remote version_control.json и определяем последнюю версию ===
-  REMOTE_VC_URL="https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/version_control.json"
-  # Скачиваем весь JSON, отбираем массив .[].VERSION, сортируем, берём последний
-  if remote_data=$(curl -fsSL "$REMOTE_VC_URL"); then
-    REMOTE_LATEST_VERSION=$(echo "$remote_data" | jq -r '.[].VERSION' | sort -V | tail -n1)
-  else
-    REMOTE_LATEST_VERSION=""
-  fi
-
-  # === Выводим текущую версию и, если надо, предупреждение об обновлении ===
-  echo -e "\n${CYAN}$(t "current_script_version") ${INSTALLED_VERSION}${NC}"
-  if [ -n "$REMOTE_LATEST_VERSION" ] && [ "$REMOTE_LATEST_VERSION" != "$INSTALLED_VERSION" ]; then
-    echo -e "${YELLOW}$(t "new_version_avialable") ${REMOTE_LATEST_VERSION}. $(t "new_version_update").${NC}"
-  elif [ -n "$REMOTE_LATEST_VERSION" ]; then
-    echo -e "${GREEN}$(t "version_up_to_date")${NC}"
-  fi
-
+# Define print functions for consistency
+function print_info {
+    echo -e "${BLUE}$1${RESET}"
+}
+function print_success {
+    echo -e "${GREEN}$1${RESET}"
+}
+function print_warning {
+    echo -e "${YELLOW}$1${RESET}"
+}
+function print_error {
+    echo -e "${RED}$1${RESET}"
 }
 
-# Функция для автоматической настройки ресурсов Docker контейнеров
-function configure_docker_resources() {
-    print_info "\n$(t "configuring_docker_resources")"
+# Constants
+NODE_DIR="$HOME/sepolia_node"
+DOCKER_COMPOSE_FILE="$NODE_DIR/docker-compose.yml"
+JWT_FILE="$NODE_DIR/jwt.hex"
+CLIENT_FILE="$NODE_DIR/consensus_client.txt"
+EXECUTION_CLIENT_FILE="$NODE_DIR/execution_client.txt"
+PORT_CONFIG_FILE="$NODE_DIR/port_config.txt"
+RESOURCE_CONFIG_FILE="$NODE_DIR/resource_config.txt"
+AGENT_SCRIPT="$NODE_DIR/agent.sh"
 
-    # Получаем информацию о системе
-    local total_ram_mb=$(free -m | awk 'NR==2{printf "%.0f", $2}')
-    local total_ram_gb=$((total_ram_mb / 1024))
-    local cpu_cores=$(nproc)
-    local cpu_threads=$(nproc --all)
-
-    print_info "\n$(t "system_info")"
-    echo "   RAM: ${total_ram_gb}GB (${total_ram_mb}MB)"
-    echo "   CPU Cores: ${cpu_cores}"
-    echo "   CPU Threads: ${cpu_threads}"
-
-    # Рассчитываем оптимальные настройки
-    # Оставляем 20% ресурсов для системы Ubuntu
-    local system_reserve_ram_mb=$((total_ram_mb * 20 / 100))
-    local system_reserve_cpu=$((cpu_cores * 20 / 100))
-
-    # Доступные ресурсы для контейнеров
-    local available_ram_mb=$((total_ram_mb - system_reserve_ram_mb))
-    local available_cpu=$((cpu_cores - system_reserve_cpu))
-
-    # Распределяем ресурсы между execution и consensus клиентами
-    # Execution клиент получает 60% ресурсов, consensus - 40%
-    local execution_ram_mb=$((available_ram_mb * 60 / 100))
-    local consensus_ram_mb=$((available_ram_mb * 40 / 100))
-    local execution_cpu=$((available_cpu * 60 / 100))
-    local consensus_cpu=$((available_cpu * 40 / 100))
-
-    # Минимальные значения для работы
-    if [[ $execution_ram_mb -lt 2048 ]]; then
-        execution_ram_mb=2048  # Минимум 2GB для execution клиента
+# Check for updates
+function check_version {
+    local remote_version=$(curl -s https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/install_sepolia.sh | grep '^SCRIPT_VERSION=' | cut -d '"' -f2)
+    if [[ "$remote_version" != "$SCRIPT_VERSION" ]]; then
+        print_info "\n$(t "current_script_version") $SCRIPT_VERSION"
+        print_warning "$(t "new_version_avialable") $remote_version"
+        print_warning "$(t "new_version_update")"
+    else
+        print_success "$(t "version_up_to_date")"
     fi
-    if [[ $consensus_ram_mb -lt 1024 ]]; then
-        consensus_ram_mb=1024  # Минимум 1GB для consensus клиента
+}
+
+# Install base requirements
+function install_requirements {
+    print_info "$(t "update_base")"
+    sudo apt update
+    sudo apt upgrade -y
+    sudo apt install -y curl jq cron
+    print_success "$(t "autoremove_clean")"
+    sudo apt autoremove -y
+    sudo apt autoclean -y
+    install_docker
+}
+
+# Install Docker
+function install_docker {
+    if ! command -v docker &> /dev/null; then
+        print_info "$(t "install_docker")"
+        sudo apt update
+        sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt update
+        sudo apt install docker-ce docker-ce-cli containerd.io -y
+        sudo usermod -aG docker $USER
+    else
+        print_success "$(t "docker_exists")"
     fi
-    if [[ $execution_cpu -lt 1 ]]; then
-        execution_cpu=1
+    install_docker_compose
+}
+
+# Install Docker Compose
+function install_docker_compose {
+    if ! command -v docker compose &> /dev/null; then
+        print_info "$(t "install_compose")"
+        sudo curl -L "https://github.com/docker/compose/releases/download/v2.17.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+        sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker compose
+    else
+        print_success "$(t "compose_exists")"
     fi
-    if [[ $consensus_cpu -lt 1 ]]; then
-        consensus_cpu=1
+    print_success "$(t "requirements_done")"
+}
+
+# Load port configuration if exists
+function load_port_configuration {
+    print_info "$(t "loading_port_config")"
+    if [ -f "$PORT_CONFIG_FILE" ]; then
+        source "$PORT_CONFIG_FILE"
+        print_success "$(t "loaded_port_config_from_file" "$PORT_CONFIG_FILE")"
+    else
+        print_info "$(t "port_config_not_found" "$PORT_CONFIG_FILE")"
     fi
+}
 
-    # Конвертируем в формат для Docker
-    local execution_ram_gb=$(printf "%.1f" $(echo "scale=1; $execution_ram_mb/1024" | bc -l))
-    local consensus_ram_gb=$(printf "%.1f" $(echo "scale=1; $consensus_ram_mb/1024" | bc -l))
+# Load resource configuration if exists
+function load_resource_configuration {
+    print_info "$(t "loading_resource_config")" # Assuming a translation key for this
+    if [ -f "$RESOURCE_CONFIG_FILE" ]; then
+        source "$RESOURCE_CONFIG_FILE"
+        print_success "$(t "resource_config_loaded" "$RESOURCE_CONFIG_FILE")"
+    else
+        print_info "$(t "using_default_resources")"
+        RESOURCE_LIMITS_ENABLED="no"
+    fi
+}
 
-    print_info "\n$(t "calculated_resources")"
-    echo "   System Reserve: ${system_reserve_ram_mb}MB RAM, ${system_reserve_cpu} CPU cores"
-    echo "   Execution Client: ${execution_ram_gb}GB RAM, ${execution_cpu} CPU cores"
-    echo "   Consensus Client: ${consensus_ram_gb}GB RAM, ${consensus_cpu} CPU cores"
+# Prompt for custom ports
+function ask_for_custom_ports {
+    read -p "$(t "ask_custom_ports_prompt") " use_custom_ports
+    use_custom_ports=${use_custom_ports:-no}
+    if [[ "$use_custom_ports" == "yes" ]]; then
+        while true; do
+            read -p "$(t "enter_exec_rpc_port" "$EXECUTION_RPC_PORT_DEFAULT")" EXECUTION_RPC_PORT
+            EXECUTION_RPC_PORT=${EXECUTION_RPC_PORT:-$EXECUTION_RPC_PORT_DEFAULT}
+            if [[ $EXECUTION_RPC_PORT =~ ^[0-9]+$ ]] && (( EXECUTION_RPC_PORT >= 1024 && EXECUTION_RPC_PORT <= 65535 )); then
+                break
+            else
+                print_error "$(t "invalid_port_input")"
+            fi
+        done
+        while true; do
+            read -p "$(t "enter_exec_p2p_port" "$EXECUTION_P2P_PORT_DEFAULT")" EXECUTION_P2P_PORT
+            EXECUTION_P2P_PORT=${EXECUTION_P2P_PORT:-$EXECUTION_P2P_PORT_DEFAULT}
+            if [[ $EXECUTION_P2P_PORT =~ ^[0-9]+$ ]] && (( EXECUTION_P2P_PORT >= 1024 && EXECUTION_P2P_PORT <= 65535 )); then
+                break
+            else
+                print_error "$(t "invalid_port_input")"
+            fi
+        done
+        while true; do
+            read -p "$(t "enter_exec_auth_port" "$EXECUTION_AUTH_RPC_PORT_DEFAULT")" EXECUTION_AUTH_RPC_PORT
+            EXECUTION_AUTH_RPC_PORT=${EXECUTION_AUTH_RPC_PORT:-$EXECUTION_AUTH_RPC_PORT_DEFAULT}
+            if [[ $EXECUTION_AUTH_RPC_PORT =~ ^[0-9]+$ ]] && (( EXECUTION_AUTH_RPC_PORT >= 1024 && EXECUTION_AUTH_RPC_PORT <= 65535 )); then
+                break
+            else
+                print_error "$(t "invalid_port_input")"
+            fi
+        done
+        while true; do
+            read -p "$(t "enter_consensus_rpc_port" "$CONSENSUS_RPC_PORT_DEFAULT")" CONSENSUS_RPC_PORT
+            CONSENSUS_RPC_PORT=${CONSENSUS_RPC_PORT:-$CONSENSUS_RPC_PORT_DEFAULT}
+            if [[ $CONSENSUS_RPC_PORT =~ ^[0-9]+$ ]] && (( CONSENSUS_RPC_PORT >= 1024 && CONSENSUS_RPC_PORT <= 65535 )); then
+                break
+            else
+                print_error "$(t "invalid_port_input")"
+            fi
+        done
+        while true; do
+            read -p "$(t "enter_consensus_p2p_port" "$CONSENSUS_P2P_PORT_DEFAULT")" CONSENSUS_P2P_PORT
+            CONSENSUS_P2P_PORT=${CONSENSUS_P2P_PORT:-$CONSENSUS_P2P_PORT_DEFAULT}
+            if [[ $CONSENSUS_P2P_PORT =~ ^[0-9]+$ ]] && (( CONSENSUS_P2P_PORT >= 1024 && CONSENSUS_P2P_PORT <= 65535 )); then
+                break
+            else
+                print_error "$(t "invalid_port_input")"
+            fi
+        done
+        print_success "$(t "ports_configured_message" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
+        save_port_configuration
+    else
+        EXECUTION_RPC_PORT=$EXECUTION_RPC_PORT_DEFAULT
+        EXECUTION_P2P_PORT=$EXECUTION_P2P_PORT_DEFAULT
+        EXECUTION_AUTH_RPC_PORT=$EXECUTION_AUTH_RPC_PORT_DEFAULT
+        CONSENSUS_RPC_PORT=$CONSENSUS_RPC_PORT_DEFAULT
+        CONSENSUS_P2P_PORT=$CONSENSUS_P2P_PORT_DEFAULT
+    fi
+    print_info "$(t "current_port_config" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
+}
 
-    # Запрашиваем согласие пользователя
-    echo ""
-    print_info "$(t "resource_limits_prompt")"
-    print_info "$(t "resource_limits_description")"
-    echo ""
-    print_warning "$(t "resource_limits_warning")"
-    echo ""
+# Save port configuration to file
+function save_port_configuration {
+    print_info "$(t "saving_port_config")"
+    cat <<EOF > "$PORT_CONFIG_FILE"
+EXECUTION_RPC_PORT=$EXECUTION_RPC_PORT
+EXECUTION_P2P_PORT=$EXECUTION_P2P_PORT
+EXECUTION_AUTH_RPC_PORT=$EXECUTION_AUTH_RPC_PORT
+CONSENSUS_RPC_PORT=$CONSENSUS_RPC_PORT
+CONSENSUS_P2P_PORT=$CONSENSUS_P2P_PORT
+EOF
+    print_success "$(t "port_config_saved" "$PORT_CONFIG_FILE")"
+}
 
-    while true; do
-        read -p "$(t "apply_resource_limits_question")" -r user_choice
-        case "${user_choice,,}" in
-            yes|y|да|д)
-                # Пользователь согласился - применяем ограничения
-                print_info "\n$(t "applying_resource_limits")"
+# Generate JWT
+function generate_jwt {
+    print_info "$(t "jwt_gen")"
+    openssl rand -hex 32 | tr -d "\n" > "$JWT_FILE"
+}
 
-                # Сохраняем настройки в переменные для использования в create_docker_compose
-                EXECUTION_MEMORY_LIMIT="${execution_ram_gb}G"
-                CONSENSUS_MEMORY_LIMIT="${consensus_ram_gb}G"
-                EXECUTION_CPU_LIMIT="${execution_cpu}.0"
-                CONSENSUS_CPU_LIMIT="${consensus_cpu}.0"
-
-                # Сохраняем настройки в файл для последующего использования
-                local resource_config_file="$NODE_DIR/resource_config.env"
-                {
-                    echo "EXECUTION_MEMORY_LIMIT=\"$EXECUTION_MEMORY_LIMIT\""
-                    echo "CONSENSUS_MEMORY_LIMIT=\"$CONSENSUS_MEMORY_LIMIT\""
-                    echo "EXECUTION_CPU_LIMIT=\"$EXECUTION_CPU_LIMIT\""
-                    echo "CONSENSUS_CPU_LIMIT=\"$CONSENSUS_CPU_LIMIT\""
-                    echo "TOTAL_RAM_GB=\"$total_ram_gb\""
-                    echo "CPU_CORES=\"$cpu_cores\""
-                    echo "RESOURCE_LIMITS_ENABLED=\"true\""
-                } > "$resource_config_file"
-
-                print_success "$(t "resource_config_saved"): $resource_config_file"
-                print_success "$(t "resource_limits_applied")"
+# Choose execution client
+function choose_execution_client {
+    print_info "$(t "choose_execution_client_prompt")"
+    select exec_client in "$(t "client_label_geth")" "$(t "client_label_reth")" "$(t "client_label_nethermind")"; do
+        case $exec_client in
+            "$(t "client_label_geth")")
+                execution_client="geth"
                 break
                 ;;
-            no|n|нет|н)
-                # Пользователь отказался - не применяем ограничения
-                print_info "\n$(t "skipping_resource_limits")"
-
-                # Устанавливаем значения без ограничений
-                EXECUTION_MEMORY_LIMIT=""
-                CONSENSUS_MEMORY_LIMIT=""
-                EXECUTION_CPU_LIMIT=""
-                CONSENSUS_CPU_LIMIT=""
-
-                # Сохраняем настройки в файл
-                local resource_config_file="$NODE_DIR/resource_config.env"
-                {
-                    echo "EXECUTION_MEMORY_LIMIT=\"\""
-                    echo "CONSENSUS_MEMORY_LIMIT=\"\""
-                    echo "EXECUTION_CPU_LIMIT=\"\""
-                    echo "CONSENSUS_CPU_LIMIT=\"\""
-                    echo "TOTAL_RAM_GB=\"$total_ram_gb\""
-                    echo "CPU_CORES=\"$cpu_cores\""
-                    echo "RESOURCE_LIMITS_ENABLED=\"false\""
-                } > "$resource_config_file"
-
-                print_success "$(t "resource_config_saved"): $resource_config_file"
-                print_info "$(t "resource_limits_disabled")"
+            "$(t "client_label_reth")")
+                execution_client="reth"
+                break
+                ;;
+            "$(t "client_label_nethermind")")
+                execution_client="nethermind"
                 break
                 ;;
             *)
                 print_error "$(t "invalid_choice")"
-                print_info "$(t "please_enter_yes_or_no")"
                 ;;
+        esac
+    done
+    print_success "$(t "execution_client_selected" "$exec_client")"
+    execution_client_name=$exec_client
+    execution_client_display_name=$exec_client
+}
+
+# Choose consensus client
+function choose_consensus_client {
+    print_info "$(t "choose_client")"
+    select client in "$(t "client_label_prysm")" "$(t "client_label_teku")" "$(t "client_label_lighthouse")"; do
+        case $client in
+            "$(t "client_label_prysm")")
+                consensus_client="prysm"
+                break
+                ;;
+            "$(t "client_label_teku")")
+                consensus_client="teku"
+                break
+                ;;
+            "$(t "client_label_lighthouse")")
+                consensus_client="lighthouse"
+                break
+                ;;
+            *)
+                print_error "$(t "invalid_choice")"
+                ;;
+        esac
+    done
+    print_success "$(t "client_selected" "$consensus_client")"
+    consensus_client_name=$consensus_client
+    consensus_client_display_name=$consensus_client
+}
+
+# Create docker-compose.yml
+function create_docker_compose {
+    print_info "$(t "creating_compose" "$consensus_client")"
+    mkdir -p "$NODE_DIR"
+    case $execution_client_name in
+        "geth")
+            execution_section="
+  execution:
+    image: ethereum/client-go:latest
+    container_name: geth
+    restart: always
+    ports:
+      - $EXECUTION_RPC_PORT:$EXECUTION_RPC_PORT
+      - $EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/tcp
+      - $EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/udp
+    volumes:
+      - ./data/geth:/data
+    command: >
+      --sepolia
+      --datadir /data
+      --http
+      --http.addr 0.0.0.0
+      --http.port $EXECUTION_RPC_PORT
+      --http.vhosts '*'
+      --http.api eth,net,web3,txpool,engine
+      --authrpc.addr 0.0.0.0
+      --authrpc.port $EXECUTION_AUTH_RPC_PORT
+      --authrpc.vhosts '*'
+      --authrpc.jwtsecret /data/jwt.hex
+      --syncmode full
+      --port $EXECUTION_P2P_PORT
+    networks:
+      - sepolia-net
+"
+            ;;
+        "reth")
+            execution_section="
+  execution:
+    image: ghcr.io/paradigmxyz/reth:latest
+    container_name: reth
+    restart: always
+    ports:
+      - $EXECUTION_RPC_PORT:$EXECUTION_RPC_PORT
+      - $EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/tcp
+      - $EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/udp
+    volumes:
+      - ./data/reth:/data
+    command: >
+      node
+      --chain sepolia
+      --datadir /data
+      --http
+      --http.addr 0.0.0.0
+      --http.port $EXECUTION_RPC_PORT
+      --http.api eth,net,web3,txpool,engine,reth
+      --authrpc.addr 0.0.0.0
+      --authrpc.port $EXECUTION_AUTH_RPC_PORT
+      --authrpc.jwtsecret /data/jwt.hex
+      --port $EXECUTION_P2P_PORT
+    networks:
+      - sepolia-net
+"
+            ;;
+        "nethermind")
+            execution_section="
+  execution:
+    image: nethermind/nethermind:latest
+    container_name: nethermind
+    restart: always
+    ports:
+      - $EXECUTION_RPC_PORT:$EXECUTION_RPC_PORT
+      - $EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/tcp
+      - $EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/udp
+    volumes:
+      - ./data/nethermind:/data
+    environment:
+      - NETHERMIND_CONFIG=sepolia
+    command: >
+      --datadir /data
+      --JsonRpc.Enabled=true
+      --JsonRpc.Host=0.0.0.0
+      --JsonRpc.Port=$EXECUTION_RPC_PORT
+      --JsonRpc.EngineHost=0.0.0.0
+      --JsonRpc.EnginePort=$EXECUTION_AUTH_RPC_PORT
+      --JsonRpc.JwtSecretFile=/data/jwt.hex
+      --Network.DiscoveryPort=$EXECUTION_P2P_PORT
+      --Network.P2PPort=$EXECUTION_P2P_PORT
+    networks:
+      - sepolia-net
+"
+            ;;
+        *)
+            print_error "$(t "unknown_execution_client" "$execution_client_name")"
+            return 1
+            ;;
+    esac
+    case $consensus_client_name in
+        "prysm")
+            consensus_section="
+  consensus:
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+    container_name: prysm
+    restart: always
+    ports:
+      - $CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT
+      - $CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp
+      - $CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp
+    volumes:
+      - ./data/prysm:/data
+    command: >
+      --sepolia
+      --datadir=/data
+      --rpc-host=0.0.0.0
+      --rpc-port=$CONSENSUS_RPC_PORT
+      --grpc-gateway-host=0.0.0.0
+      --grpc-gateway-port=$CONSENSUS_RPC_PORT
+      --p2p-tcp-port=$CONSENSUS_P2P_PORT
+      --p2p-udp-port=$CONSENSUS_P2P_PORT
+      --execution-endpoint=http://execution:$EXECUTION_AUTH_RPC_PORT
+      --jwt-secret=/data/jwt.hex
+    networks:
+      - sepolia-net
+"
+            ;;
+        "teku")
+            consensus_section="
+  consensus:
+    image: consensys/teku:latest
+    container_name: teku
+    restart: always
+    ports:
+      - $CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT
+      - $CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp
+      - $CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp
+    volumes:
+      - ./data/teku:/data
+    command: >
+      --network=sepolia
+      --data-path=/data
+      --rest-api-enabled=true
+      --rest-api-host-allowlist=*
+      --rest-api-port=$CONSENSUS_RPC_PORT
+      --p2p-port=$CONSENSUS_P2P_PORT
+      --ee-endpoint=http://execution:$EXECUTION_AUTH_RPC_PORT
+      --ee-jwt-secret-file=/data/jwt.hex
+    networks:
+      - sepolia-net
+"
+            ;;
+        "lighthouse")
+            consensus_section="
+  consensus:
+    image: sigp/lighthouse:latest
+    container_name: lighthouse
+    restart: always
+    ports:
+      - $CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT
+      - $CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp
+      - $CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp
+    volumes:
+      - ./data/lighthouse:/root/.lighthouse
+    command: >
+      lighthouse bn
+      --network sepolia
+      --datadir /root/.lighthouse
+      --http
+      --http-address 0.0.0.0
+      --http-port $CONSENSUS_RPC_PORT
+      --port $CONSENSUS_P2P_PORT
+      --execution-endpoint http://execution:$EXECUTION_AUTH_RPC_PORT
+      --execution-jwt /root/.lighthouse/jwt.hex
+    networks:
+      - sepolia-net
+"
+            ;;
+        *)
+            print_error "$(t "unknown_client" "$consensus_client_name")"
+            return 1
+            ;;
+    esac
+    cat <<EOF > "$DOCKER_COMPOSE_FILE"
+version: '3.8'
+services:
+$execution_section
+$consensus_section
+networks:
+  sepolia-net:
+    driver: bridge
+EOF
+    # Add resource limits if enabled
+    if [[ "$RESOURCE_LIMITS_ENABLED" == "yes" ]]; then
+        yml_content=$(cat "$DOCKER_COMPOSE_FILE")
+        # For execution client
+        yml_content=$(echo "$yml_content" | awk -v cpus="$EXECUTION_CPUS" -v mem="$EXECUTION_MEMORY" '
+            /container_name: '"$execution_client_name"'/ {
+                print
+                print "    deploy:"
+                print "      resources:"
+                print "        limits:"
+                print "          cpus: \x27" cpus "\x27"
+                print "          memory: " mem
+                next
+            }
+            1' )
+        # For consensus client
+        yml_content=$(echo "$yml_content" | awk -v cpus="$CONSENSUS_CPUS" -v mem="$CONSENSUS_MEMORY" '
+            /container_name: '"$consensus_client_name"'/ {
+                print
+                print "    deploy:"
+                print "      resources:"
+                print "        limits:"
+                print "          cpus: \x27" cpus "\x27"
+                print "          memory: " mem
+                next
+            }
+            1' )
+        echo "$yml_content" > "$DOCKER_COMPOSE_FILE"
+    fi
+}
+
+# Configure Docker resources
+function configure_docker_resources {
+    print_info "$(t "configuring_docker_resources")"
+
+    # Get system specs
+    total_cpus=$(nproc)
+    total_memory_kb=$(free -k | awk '/^Mem:/ {print $2}')
+    total_memory_gb=$(awk "BEGIN {print $total_memory_kb / 1024 / 1024}")
+
+    print_info "$(t "system_info")"
+    echo "  CPUs: $total_cpus"
+    echo "  Memory: ${total_memory_gb} GB"
+
+    # Calculate optimal limits
+    EXECUTION_CPUS=$(awk "BEGIN {print $total_cpus * 0.6}")
+    CONSENSUS_CPUS=$(awk "BEGIN {print $total_cpus * 0.4}")
+    EXECUTION_MEMORY=$(awk "BEGIN {print int($total_memory_gb * 0.6)}G")
+    CONSENSUS_MEMORY=$(awk "BEGIN {print int($total_memory_gb * 0.4)}G")
+
+    print_info "$(t "calculated_resources")"
+    echo "  Execution: CPUs=$EXECUTION_CPUS, Memory=$EXECUTION_MEMORY"
+    echo "  Consensus: CPUs=$CONSENSUS_CPUS, Memory=$CONSENSUS_MEMORY"
+
+    print_info "$(t "resource_limits_prompt")"
+    print_info "$(t "resource_limits_description")"
+    print_warning "$(t "resource_limits_warning")"
+
+    while true; do
+        read -p "$(t "apply_resource_limits_question")" apply_limits
+        if [[ "$apply_limits" == "yes" ]]; then
+            RESOURCE_LIMITS_ENABLED="yes"
+            print_info "$(t "applying_resource_limits")"
+            save_resource_configuration
+            print_success "$(t "resource_limits_applied")"
+            break
+        elif [[ "$apply_limits" == "no" ]]; then
+            RESOURCE_LIMITS_ENABLED="no"
+            print_info "$(t "skipping_resource_limits")"
+            save_resource_configuration
+            print_info "$(t "resource_limits_disabled")"
+            break
+        else
+            print_warning "$(t "please_enter_yes_or_no")"
+        fi
+    done
+}
+
+# Save resource configuration to file
+function save_resource_configuration {
+    cat <<EOF > "$RESOURCE_CONFIG_FILE"
+RESOURCE_LIMITS_ENABLED=$RESOURCE_LIMITS_ENABLED
+EXECUTION_CPUS=$EXECUTION_CPUS
+EXECUTION_MEMORY=$EXECUTION_MEMORY
+CONSENSUS_CPUS=$CONSENSUS_CPUS
+CONSENSUS_MEMORY=$CONSENSUS_MEMORY
+EOF
+    print_success "$(t "resource_config_saved" "$RESOURCE_CONFIG_FILE")"
+}
+
+# Install node
+function install_node {
+    choose_execution_client
+    choose_consensus_client
+    ask_for_custom_ports
+    configure_docker_resources
+    generate_jwt
+    create_docker_compose
+    echo "$execution_client_name" > "$EXECUTION_CLIENT_FILE"
+    echo "$consensus_client_name" > "$CLIENT_FILE"
+    start_containers
+    print_success "$(t "node_installed")"
+}
+
+# View logs
+function view_logs {
+    while true; do
+        print_info "$(t "select_logs")"
+        echo "1) Execution ($execution_client_name)"
+        echo "2) Consensus ($consensus_client_name)"
+        echo "0) $(t "back")"
+        read -p "$(t "select_option")" log_choice
+        case $log_choice in
+            1) docker logs -f $execution_client_name ;;
+            2) docker logs -f $consensus_client_name ;;
+            0) break ;;
+            *) print_error "$(t "invalid_option")" ;;
         esac
     done
 }
 
-# Функция для загрузки конфигурации ресурсов
-function load_resource_configuration() {
-    local resource_config_file="$NODE_DIR/resource_config.env"
-    if [[ -f "$resource_config_file" ]]; then
-        source "$resource_config_file"
-        print_success "\n$(t "resource_config_loaded"): $resource_config_file"
-
-        # Проверяем, включены ли ограничения ресурсов
-        if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$EXECUTION_MEMORY_LIMIT" ]]; then
-            print_info "$(t "resource_limits_enabled")"
-        else
-            print_info "$(t "resource_limits_disabled")"
-        fi
-    else
-        # Устанавливаем значения по умолчанию (без ограничений)
-        EXECUTION_MEMORY_LIMIT=""
-        CONSENSUS_MEMORY_LIMIT=""
-        EXECUTION_CPU_LIMIT=""
-        CONSENSUS_CPU_LIMIT=""
-        RESOURCE_LIMITS_ENABLED="false"
-        print_info "\n$(t "using_default_resources")"
-    fi
-}
-
-# Rest of the script remains the same, just replace all echo messages with t function calls
-# For example:
-# print_info "🔐 Генерация jwt.hex..." becomes print_info "$(t "jwt_gen")"
-# print_success "✅ Выбран клиент: $client" becomes print_success "$(t "client_selected" "$client")"
-
-NODE_DIR="/root/sepolia-node"
-DOCKER_COMPOSE_FILE="$NODE_DIR/docker-compose.yml" # This one remains unchanged as per instructions
-JWT_FILE="$NODE_DIR/jwt.hex"
-CLIENT_FILE="$NODE_DIR/client"
-EXECUTION_CLIENT_FILE="$NODE_DIR/execution_client"
-AGENT_SCRIPT="$NODE_DIR/cron_agent.sh"
-
-function print_info {
-  echo -e "${CYAN}$1${RESET}"
-}
-
-function print_success {
-  echo -e "${GREEN}$1${RESET}"
-}
-
-function print_warning {
-  echo -e "${YELLOW}$1${RESET}"
-}
-
-function print_error {
-  echo -e "${RED}$1${RESET}"
-}
-
-function generate_jwt {
-  print_info "$(t "jwt_gen")"
-  mkdir -p "$NODE_DIR"
-  head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n' > "$JWT_FILE"
-}
-
-function ask_for_custom_ports {
-  load_port_configuration # Load existing config first
-  print_info "\n$(t "ask_custom_ports_prompt")"
-  read -r custom_ports_choice
-  if [[ "${custom_ports_choice,,}" == "yes" || "${custom_ports_choice,,}" == "y" || "${custom_ports_choice,,}" == "да" || "${custom_ports_choice,,}" == "д" ]]; then
-    # Helper function for validated port input
-    get_validated_port() {
-    local prompt_key="$1"
-    local default_value="$2"
-    local current_value=""
-
-    while true; do
-        local prompt=$(t "$prompt_key" "$default_value")
-        # Удаляем возможные символы перевода строки
-        prompt=${prompt//$'\n'/}
-        prompt=${prompt//$'\r'/}
-
-        read -r -p "$prompt" user_input
-
-        if [[ -z "$user_input" ]]; then
-            current_value="$default_value"
-            break
-        elif [[ "$user_input" =~ ^[0-9]+$ && "$user_input" -ge 1024 && "$user_input" -le 65535 ]]; then
-            current_value="$user_input"
-            break
-        else
-            print_error "$(t "invalid_port_input")"
-        fi
-    done
-
-    echo "$current_value"
-}
-
-    EXECUTION_RPC_PORT=$(get_validated_port "enter_exec_rpc_port" "$EXECUTION_RPC_PORT_DEFAULT")
-    EXECUTION_P2P_PORT=$(get_validated_port "enter_exec_p2p_port" "$EXECUTION_P2P_PORT_DEFAULT")
-    EXECUTION_AUTH_RPC_PORT=$(get_validated_port "enter_exec_auth_port" "$EXECUTION_AUTH_RPC_PORT_DEFAULT")
-    CONSENSUS_RPC_PORT=$(get_validated_port "enter_consensus_rpc_port" "$CONSENSUS_RPC_PORT_DEFAULT")
-    CONSENSUS_P2P_PORT=$(get_validated_port "enter_consensus_p2p_port" "$CONSENSUS_P2P_PORT_DEFAULT")
-  fi
-
-  mkdir -p "$NODE_DIR"
-  local port_config_file="$NODE_DIR/port_config.env"
-  print_info "$(t "saving_port_config")"
-  {
-    echo "EXECUTION_RPC_PORT=\"$EXECUTION_RPC_PORT\""
-    echo "EXECUTION_P2P_PORT=\"$EXECUTION_P2P_PORT\""
-    echo "EXECUTION_AUTH_RPC_PORT=\"$EXECUTION_AUTH_RPC_PORT\""
-    echo "CONSENSUS_RPC_PORT=\"$CONSENSUS_RPC_PORT\""
-    echo "CONSENSUS_P2P_PORT=\"$CONSENSUS_P2P_PORT\""
-  } > "$port_config_file"
-  print_success "$(t "port_config_saved" "$port_config_file")"
-
-  print_success "$(t "ports_configured_message" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
-}
-
-
-function load_port_configuration {
-  local port_config_file="$NODE_DIR/port_config.env"
-  print_info "\n$(t "loading_port_config")"
-  if [[ -f "$port_config_file" ]]; then
-    # Temporarily disable errexit if set, to prevent script exit if source fails (e.g. bad file)
-    local prev_opts=""
-    if [[ $- == *e* ]]; then
-      prev_opts=$(set +o | grep errexit)
-      set +e
-    fi
-
-    source "$port_config_file"
-
-    # Restore errexit if it was previously set
-    if [[ -n "$prev_opts" ]]; then
-      set -o errexit
-    fi
-    print_success "$(t "loaded_port_config_from_file" "$port_config_file")"
-	print_info "\n$(t "current_port_config" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
-  else
-    print_info "$(t "port_config_not_found" "$port_config_file")"
-  fi
-}
-
-function choose_consensus_client {
-  mkdir -p "$NODE_DIR"
-
-  local options=("prysm" "teku" "lighthouse")
-  local labels=(
-    "$(t "client_label_prysm")"
-    "$(t "client_label_teku")"
-    "$(t "client_label_lighthouse")"
-  )
-
-  PS3="$(t "choose_client")"$'\n> '
-  select opt_label in "${labels[@]}"; do
-    case $REPLY in
-      1|2|3)
-        local selected="${options[$((REPLY-1))]}"
-        echo "$selected" > "$CLIENT_FILE"
-        print_success "$(t "client_selected" "$selected")"
-        return
-        ;;
-      *) print_error "$(t "invalid_choice")" ;;
-    esac
-  done
-}
-
-function choose_execution_client {
-  mkdir -p "$NODE_DIR"
-
-  local options=("geth" "reth" "nethermind")
-  local labels=(
-    "$(t "client_label_geth")"
-    "$(t "client_label_reth")"
-    "$(t "client_label_nethermind")"
-  )
-
-  PS3="$(t "choose_execution_client_prompt")"$'\n> '
-  select opt_label in "${labels[@]}"; do
-    case $REPLY in
-      1|2|3)
-        local selected="${options[$((REPLY-1))]}"
-        echo "$selected" > "$EXECUTION_CLIENT_FILE"
-        print_success "$(t "execution_client_selected" "$selected")"
-        return
-        ;;
-      *) print_error "$(t "invalid_choice")" ;;
-    esac
-  done
-}
-
-function install_requirements {
-  cd $HOME
-
-  print_info "$(t "update_base")"
-  sudo apt update -y && sudo apt upgrade -y
-  sudo apt install screen curl git jq nano gnupg build-essential ca-certificates wget lz4 gcc make lsb-release software-properties-common apt-transport-https iptables automake autoconf tmux htop nvme-cli libgbm1 pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip -y
-
-  if ! command -v docker &> /dev/null; then
-    print_info "$(t "install_docker")"
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sudo sh get-docker.sh
-    sudo usermod -aG docker $USER
-  else
-    print_info "$(t "docker_exists")"
-  fi
-
-  if ! command -v docker-compose &> /dev/null; then
-    print_info "$(t "install_compose")"
-    sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-  else
-    print_info "$(t "compose_exists")"
-  fi
-
-  print_info "$(t "autoremove_clean")"
-  sudo apt autoremove -y && sudo apt clean
-
-  echo ""
-  print_success "$(t "requirements_done")"
-}
-
-function create_docker_compose {
-  local consensus_client=$(cat "$CLIENT_FILE" 2>/dev/null || echo "")
-  if [[ -z "$consensus_client" ]]; then
-    print_error "$(t "unknown_client" "$consensus_client")" # This uses the consensus client variable name for now
-    exit 1
-  fi
-
-  local execution_client=$(cat "$EXECUTION_CLIENT_FILE" 2>/dev/null || echo "geth")
-  local execution_client_image=""
-  local execution_client_container_name=""
-  local execution_client_volumes=""
-  local execution_client_ports="[\"8545:8545\", \"30303:30303\", \"8551:8551\"]" # Common ports
-  local execution_client_command=""
-  local execution_client_data_dir_name="" # This will store just the client name like "geth", "reth"
-  # local execution_client_data_path_base="$NODE_DIR/execution" # Base path for execution data - REMOVED
-
-  # mkdir -p "$NODE_DIR/config" "$execution_client_data_path_base" "$NODE_DIR/consensus" # REMOVED - Assuming $NODE_DIR is created by install_node
-  # Individual client data dirs (e.g. $NODE_DIR/geth) will be implicitly created by Docker if not existing, or can be added here if strict creation is needed before compose.
-  # For this reversion, we'll rely on docker-compose to create them or ensure `install_node` handles $NODE_DIR.
-
-  case $execution_client in
-    geth)
-      execution_client_image="ethereum/client-go:stable"
-      execution_client_container_name="geth"
-      execution_client_data_dir_name="geth" # Keep this as the client name itself
-      execution_client_command="      --sepolia
-      --datadir=/data
-      --http
-      --http.addr=0.0.0.0
-      --http.api=eth,web3,net,engine
-      --http.port=$EXECUTION_RPC_PORT
-      --port=$EXECUTION_P2P_PORT
-      --authrpc.addr=0.0.0.0
-      --authrpc.port=$EXECUTION_AUTH_RPC_PORT
-      --authrpc.jwtsecret=/jwt.hex
-      --authrpc.vhosts=*
-      --http.corsdomain=\"*\"
-      --syncmode=snap
-      --rpc.txfeecap 0
-      --cache=4096"
-      ;;
-    reth)
-      execution_client_image="ghcr.io/paradigmxyz/reth:latest"
-      execution_client_container_name="reth"
-      execution_client_data_dir_name="reth" # Keep this as the client name itself
-      execution_client_command="      node
-      --chain=sepolia
-      --datadir=/data
-      --http
-      --http.port=$EXECUTION_RPC_PORT
-      --http.api=eth,net,web3,rpc,debug
-      --http.addr=0.0.0.0
-      --authrpc.addr=0.0.0.0
-      --authrpc.port=$EXECUTION_AUTH_RPC_PORT
-      --authrpc.jwtsecret=/jwt.hex
-      --metrics=0.0.0.0:9090"
-      ;;
-    nethermind)
-      execution_client_image="nethermind/nethermind:latest"
-      execution_client_container_name="nethermind"
-      execution_client_data_dir_name="nethermind" # Keep this as the client name itself
-      execution_client_command="      --config=sepolia
-      --datadir=/data
-      --Sync.SnapSync=true
-      --JsonRpc.Enabled=true
-      --JsonRpc.Host=0.0.0.0
-      --JsonRpc.Port=$EXECUTION_RPC_PORT
-      --Network.DiscoveryPort=$EXECUTION_P2P_PORT
-      --Network.P2PPort=$EXECUTION_P2P_PORT
-      --JsonRpc.EnabledModules=[debug,eth,web3,net]
-      --JsonRpc.EngineHost=0.0.0.0
-      --JsonRpc.EnginePort=$EXECUTION_AUTH_RPC_PORT
-      --JsonRpc.EngineEnabledModules=[Engine,Eth,Subscribe,Web3]
-      --JsonRpc.JwtSecretFile=/jwt.hex
-      --Metrics.Enabled=true
-      --Metrics.ExposePort=9090
-      --HealthChecks.Enabled=true"
-      ;;
-    *)
-      print_warning "$(t "unknown_execution_client" "$execution_client")"
-      # Default to Geth
-      execution_client="geth"
-      execution_client_image="ethereum/client-go:stable"
-      execution_client_container_name="geth"
-      execution_client_data_dir_name="geth"
-      execution_client_command="      --sepolia
-      --datadir=/data
-      --http
-      --http.addr=0.0.0.0
-      --http.api=eth,web3,net,engine
-      --http.port=$EXECUTION_RPC_PORT
-      --port=$EXECUTION_P2P_PORT
-      --authrpc.addr=0.0.0.0
-      --authrpc.port=$EXECUTION_AUTH_RPC_PORT
-      --authrpc.jwtsecret=/jwt.hex
-      --authrpc.vhosts=*
-      --http.corsdomain=\"*\"
-      --syncmode=snap
-      --rpc.txfeecap 0
-      --cache=4096"
-      ;;
-  esac
-
-  # mkdir -p "$execution_client_data_path_base/$execution_client_data_dir_name" # REMOVED
-
-  # Reverted to simple, non-conditional volume definition
-  # execution_client_volumes="- $NODE_DIR/$execution_client_data_dir_name:/data\n      - $JWT_FILE:/jwt.hex" # REMOVED
-
-  print_info "$(t "creating_compose" "$consensus_client / $execution_client")"
-  cat > "$DOCKER_COMPOSE_FILE" <<EOF
-services:
-  $execution_client_container_name:
-    image: $execution_client_image
-    container_name: $execution_client_container_name
-    restart: unless-stopped
-EOF
-
-  # Добавляем ограничения ресурсов только если они включены
-  if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$EXECUTION_MEMORY_LIMIT" ]]; then
-    cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    deploy:
-      resources:
-        limits:
-          memory: ${EXECUTION_MEMORY_LIMIT:-4G}
-          cpus: '${EXECUTION_CPU_LIMIT:-2.0}'
-        reservations:
-          memory: ${EXECUTION_MEMORY_LIMIT:-4G}
-          cpus: '${EXECUTION_CPU_LIMIT:-2.0}'
-EOF
-  fi
-
-  cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    volumes:
-      - $NODE_DIR/$execution_client_data_dir_name:/data
-      - $JWT_FILE:/jwt.hex
-    ports:
-      - "$EXECUTION_RPC_PORT:$EXECUTION_RPC_PORT"
-      - "$EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/tcp"
-      - "$EXECUTION_P2P_PORT:$EXECUTION_P2P_PORT/udp"
-      - "$EXECUTION_AUTH_RPC_PORT:$EXECUTION_AUTH_RPC_PORT"
-    command:
-${execution_client_command}
-EOF
-
-  local consensus_execution_endpoint="http://$execution_client_container_name:$EXECUTION_AUTH_RPC_PORT"
-
-  case $consensus_client in
-    lighthouse)
-      # mkdir -p "$NODE_DIR/consensus/lighthouse" # REMOVED
-      cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-
-  lighthouse:
-    image: sigp/lighthouse:latest
-    container_name: lighthouse
-    restart: unless-stopped
-EOF
-
-      # Добавляем ограничения ресурсов только если они включены
-      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    deploy:
-      resources:
-        limits:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-        reservations:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-EOF
-      fi
-
-      cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    volumes:
-      - $NODE_DIR/lighthouse:/root/.lighthouse
-      - $JWT_FILE:/root/jwt.hex
-    depends_on:
-      - $execution_client_container_name
-    ports:
-      - "$CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT"
-      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"
-      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"
-    command:
-      lighthouse bn
-      --network sepolia
-      --execution-endpoint=$consensus_execution_endpoint
-      --execution-jwt=/root/jwt.hex
-      --checkpoint-sync-url=https://sepolia.checkpoint-sync.ethpandaops.io
-      --http
-      --http-address=0.0.0.0
-      --listen-address=0.0.0.0
-      --http-port=$CONSENSUS_RPC_PORT
-      --enr-address=$(curl -s https://ip4only.me/api/ | cut -d',' -f2)
-      --enr-tcp-port=$CONSENSUS_P2P_PORT
-      --enr-udp-port=$CONSENSUS_P2P_PORT
-      --discovery-port=$CONSENSUS_P2P_PORT
-      --supernode
-
-EOF
-      ;;
-    prysm)
-      # mkdir -p "$NODE_DIR/consensus/prysm" # REMOVED
-      cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-
-  prysm:
-    image: gcr.io/offchainlabs/prysm/beacon-chain:stable
-    container_name: prysm
-    restart: unless-stopped
-EOF
-
-      # Добавляем ограничения ресурсов только если они включены
-      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    deploy:
-      resources:
-        limits:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-        reservations:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-EOF
-      fi
-
-      cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    volumes:
-      - $NODE_DIR/prysm:/data
-      - $JWT_FILE:/jwt.hex
-    depends_on:
-      - $execution_client_container_name
-    ports:
-      - "$CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT"
-      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"
-      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"
-    command:
-      --sepolia
-      --datadir=/data
-      --execution-endpoint=$consensus_execution_endpoint
-      --jwt-secret=/jwt.hex
-      --accept-terms-of-use
-      --checkpoint-sync-url=https://sepolia.checkpoint-sync.ethpandaops.io
-      --grpc-gateway-port=$CONSENSUS_RPC_PORT
-      --grpc-gateway-host=0.0.0.0
-      --subscribe-all-data-subnets=true
-EOF
-      ;;
-    teku)
-      mkdir -p "$NODE_DIR/teku/logs"
-      mkdir -p "$NODE_DIR/teku/validator/slashprotection"
-      mkdir -p "$NODE_DIR/teku/beacon"
-      chmod -R 777 "$NODE_DIR/teku/beacon"
-      chmod -R 777 "$NODE_DIR/teku/validator"
-      chmod -R 777 "$NODE_DIR/teku/logs"
-      cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-
-  teku:
-    image: consensys/teku:latest
-    container_name: teku
-    restart: unless-stopped
-EOF
-
-      # Добавляем ограничения ресурсов только если они включены
-      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    deploy:
-      resources:
-        limits:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-        reservations:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-EOF
-      fi
-
-      cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    volumes:
-      - $NODE_DIR/teku:/data
-      - $JWT_FILE:/jwt.hex
-    depends_on:
-      - $execution_client_container_name
-    ports:
-      - "$CONSENSUS_RPC_PORT:$CONSENSUS_RPC_PORT"
-      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"   # P2P TCP
-      - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"   # P2P UDP
-    command:
-      --network=sepolia
-      --data-path=/data
-      --ee-endpoint=$consensus_execution_endpoint
-      --ee-jwt-secret-file=/jwt.hex
-      --checkpoint-sync-url=https://sepolia.checkpoint-sync.ethpandaops.io
-      --rest-api-enabled=true
-      --rest-api-interface=0.0.0.0
-      --rest-api-port=$CONSENSUS_RPC_PORT
-      --rest-api-host-allowlist=*
-      --p2p-port=$CONSENSUS_P2P_PORT
-      --p2p-advertised-ip=$(curl -s https://ip4only.me/api/ | cut -d',' -f2)
-      --metrics-enabled=true
-      --metrics-port=8008
-      --metrics-host-allowlist=*
-      --p2p-subscribe-all-subnets-enabled=true
-EOF
-      ;;
-    *)
-      # This was already handled for consensus_client at the beginning of the function
-      print_error "$(t "unknown_client" "$consensus_client")"
-      exit 1
-      ;;
-  esac
-}
-
-function install_node {
-  print_info "$(t "node_install")"
-  mkdir -p "$NODE_DIR"
-  ask_for_custom_ports # Call the new function here
-  choose_execution_client
-  choose_consensus_client
-  generate_jwt
-  configure_docker_resources # Configure resources based on system specs
-  load_resource_configuration # Load resource configuration
-  create_docker_compose
-  if [[ ! -f "$JWT_FILE" ]]; then
-    print_error "$(t "jwt_not_found_error" "$JWT_FILE")"
-    exit 1
-  fi
-  docker compose -f "$DOCKER_COMPOSE_FILE" up -d
-  print_success "$(t "node_installed")"
-  echo -e "${BLUE}RPC:${RESET}      http://$(curl -s https://ip4only.me/api/ | cut -d',' -f2):$EXECUTION_RPC_PORT"
-  echo -e "${BLUE}BEACON:${RESET}   http://$(curl -s https://ip4only.me/api/ | cut -d',' -f2):$CONSENSUS_RPC_PORT"
-}
-
-function view_logs {
-  local execution_client_name=$(cat "$EXECUTION_CLIENT_FILE" 2>/dev/null || echo "geth")
-  local consensus_client_name=$(cat "$CLIENT_FILE" 2>/dev/null || echo "lighthouse")
-
-  # Capitalize first letter for display
-  local display_execution_client_name="${execution_client_name^}"
-  local display_consensus_client_name="${consensus_client_name^}"
-
-  print_info "$(t "select_logs")"
-  select opt in "$display_execution_client_name" "$display_consensus_client_name" "$(t "back")"; do
-    case $REPLY in
-      1) docker logs --tail 500 -f "$execution_client_name"; break ;;
-      2) docker logs --tail 500 -f "$consensus_client_name"; break ;;
-      3) break ;;
-      *) print_error "$(t "invalid_option")";;
-    esac
-  done
-}
-
-function hex_to_dec() {
-  printf "%d\n" "$((16#${1#0x}))"
-}
-
-function format_time() {
-  local seconds=$1
-  local h=$((seconds / 3600))
-  local m=$(((seconds % 3600) / 60))
-  local s=$((seconds % 60))
-  if [[ "$lang" == "en" ]]; then
-    printf "%02dh %02dm %02ds" $h $m $s
-  else
-    printf "%02dч %02dм %02dс" $h $m $s
-  fi
-}
-
+# Check synchronization
 function check_sync {
-  local consensus_client_name=$(cat "$CLIENT_FILE" 2>/dev/null || echo "prysm")
-  local execution_client_name=$(cat "$EXECUTION_CLIENT_FILE" 2>/dev/null || echo "geth")
-  local display_execution_client_name="${execution_client_name^}"
-
-  print_info "\n$(t "check_sync")"
-  print_info "\n$(t "execution" "$display_execution_client_name")"
-
-  local sync_data=$(curl -s -X POST "http://localhost:$EXECUTION_RPC_PORT" -H 'Content-Type: application/json' \
-    --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}')
-
-  # Проверяем, что получили валидный ответ от RPC
-  if [[ -z "$sync_data" ]] || ! echo "$sync_data" | jq -e . >/dev/null 2>&1; then
-    echo "$(t "execution_rpc_error")"
-    return
-  fi
-
-  # Проверяем, есть ли ошибка в ответе
-  if echo "$sync_data" | jq -e '.error != null' >/dev/null 2>&1; then
-    local error_msg=$(echo "$sync_data" | jq -r '.error.message // "Unknown error"')
-    echo "$(t "execution_rpc_error_with_details" "$error_msg")"
-    return
-  fi
-
-  # Если result == false, то нода синхронизирована
-  if echo "$sync_data" | jq -e '.result == false' >/dev/null 2>&1; then
-    echo "$(t "execution_synced" "$display_execution_client_name")"
-  else
-    # Проверяем, что result существует и не false
-    if ! echo "$sync_data" | jq -e '.result' >/dev/null 2>&1; then
-      echo "$(t "execution_no_result")"
-      return
+    print_info "$(t "check_sync")"
+    # Load execution client name if not already loaded
+    if [ -z "$execution_client_name" ]; then
+        execution_client_name=$(cat "$EXECUTION_CLIENT_FILE" 2>/dev/null || echo "geth")
     fi
-
-    if [[ "$execution_client_name" == "geth" ]]; then
-      # Старая схема для Geth
-      local current=$(echo "$sync_data" | jq -r '.result.currentBlock // .result.syncing.currentBlock // .result.syncingData.currentBlock // empty')
-      local highest=$(echo "$sync_data" | jq -r '.result.highestBlock // .result.syncing.highestBlock // .result.syncingData.highestBlock // empty')
-
-      if [[ -z "$current" || -z "$highest" || "$current" == "null" || "$highest" == "null" ]]; then
-        echo "$(t "sync_data_missing")"
-        return
-      fi
-
-      local current_dec=$((16#${current:2}))
-      local highest_dec=$((16#${highest:2}))
-
-      if [[ $highest_dec -eq 0 ]]; then
-        echo "$(t "sync_data_invalid")"
-      else
-        local remaining=$((highest_dec - current_dec))
-        local progress=$((100 * current_dec / highest_dec))
-        echo "$(t "syncing" "$display_execution_client_name")"
-        echo "$(t "current_block" "$current_dec")"
-        echo "$(t "target_block" "$highest_dec")"
-        echo "$(t "blocks_left" "$remaining")"
-        echo "$(t "progress" "$progress")"
-
-        echo "$(t "sync_speed")"
-        sleep 5
-        local sync_data2=$(curl -s -X POST "http://localhost:$EXECUTION_RPC_PORT" -H 'Content-Type: application/json' \
-          --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}')
-        local current2=$(echo "$sync_data2" | jq -r '.result.currentBlock // .result.syncing.currentBlock // .result.syncingData.currentBlock // empty')
-        local current2_dec=$((16#${current2:2}))
-
-        local delta_blocks=$((current2_dec - current_dec))
-        local speed_bps=0
-        if [[ $delta_blocks -gt 0 ]]; then
-          speed_bps=$((delta_blocks / 5))
-        fi
-
-        echo "$(t "speed" "$speed_bps")"
-
-        if [[ $speed_bps -gt 0 ]]; then
-          local est_sec=$((remaining / speed_bps))
-          echo "$(t "eta" "$(format_time $est_sec)")"
-        else
-          echo "$(t "low_speed")"
-        fi
-      fi
-
-    elif [[ "$execution_client_name" == "reth" ]]; then
-      # Новая схема для Reth через stages
-      echo "$(t "syncing" "$display_execution_client_name")"
-      echo ""
-      # Проверяем, есть ли stages в ответе
-      local stages_exist=$(echo "$sync_data" | jq '.result.stages? != null')
-      if [[ "$stages_exist" != "true" ]]; then
-        echo "$(t "reth_no_stages")"
-        return
-      fi
-
-      local execution_block=0
-      local bodies_block=0
-      local headers_block=0
-      local highest_block_hex=$(echo "$sync_data" | jq -r '.result.highestBlock')
-      local highest_block_dec=0
-      if [[ "$highest_block_hex" =~ ^0x[0-9a-fA-F]+$ ]]; then
-        highest_block_dec=$((16#${highest_block_hex:2}))
-      fi
-
-      local stages_json=$(echo "$sync_data" | jq -c '.result.stages[]')
-
-      # Для хранения блоков всех stages
-      declare -A stage_blocks
-
-      while IFS= read -r stage; do
-        local name=$(echo "$stage" | jq -r '.name')
-        local block_hex=$(echo "$stage" | jq -r '.block')
-        local block_dec=0
-        if [[ "$block_hex" =~ ^0x[0-9a-fA-F]+$ ]]; then
-          block_dec=$((16#${block_hex:2}))
-        fi
-
-        # Запоминаем блоки для известных stages
-        if [[ "$name" == "Execution" ]]; then
-          execution_block=$block_dec
-        elif [[ "$name" == "Bodies" ]]; then
-          bodies_block=$block_dec
-        elif [[ "$name" == "Headers" ]]; then
-          headers_block=$block_dec
-        fi
-
-        stage_blocks["$name"]=$block_dec
-
-      done <<< "$stages_json"
-
-      # ─── Все stages ─────────────────────────────────────────────────────
-      for stage_name in  "Headers" "Bodies" "SenderRecovery" "Execution" "AccountHashing" "StorageHashing" "MerkleUnwind" "MerkleExecute" "TransactionLookup" "IndexAccountHistory" "IndexStorageHistory" "PruneSenderRecovery" "Prune" "Finish"; do
-        local block=${stage_blocks[$stage_name]:-0}
-        if [[ $headers_block -gt 0 ]]; then
-            local percent=$((100 * block / headers_block))
-            if [[ $percent -eq 0 ]]; then
-                echo "⚠️ $stage_name $(t sync_progress_process) $block $(t sync_progress_not_valid)"
+    # Load consensus client name if not already loaded
+    if [ -z "$consensus_client_name" ]; then
+        consensus_client_name=$(cat "$CLIENT_FILE" 2>/dev/null)
+    fi
+    # Execution client sync check
+    print_info "$(t "execution" "$execution_client_name")"
+    case $execution_client_name in
+        "geth")
+            response=$(curl -s -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:$EXECUTION_RPC_PORT)
+            if echo "$response" | grep -q '"result":false'; then
+                print_success "$(t "execution_synced" "$execution_client_name")"
             else
-                print_success "🧮 $stage_name $(t sync_progress_process) $block / $headers_block = $percent%"
+                current_block=$(echo "$response" | jq -r '.result.currentBlock' | tr -d '"')
+                highest_block=$(echo "$response" | jq -r '.result.highestBlock' | tr -d '"')
+                current_block_dec=$(( $current_block ))
+                highest_block_dec=$(( $highest_block ))
+                blocks_left=$((highest_block_dec - current_block_dec))
+                progress=$(( (current_block_dec * 100) / highest_block_dec ))
+                print_warning "$(t "execution_syncing" "$execution_client_name")"
+                print_info "$(t "current_block" "$current_block_dec")"
+                print_info "$(t "target_block" "$highest_block_dec")"
+                print_info "$(t "blocks_left" "$blocks_left")"
+                print_info "$(t "progress" "$progress")"
             fi
-        else
-            echo "⚠️ $stage_name $(t sync_progress_process) $block $(t sync_progress_not_valid)"
-        fi
-      done
-
-    elif [[ "$execution_client_name" == "nethermind" ]]; then
-      # Initial Full Sync Check (eth_syncing)
-      if echo "$sync_data" | jq -e '.result == false' >/dev/null 2>&1; then
-        echo "$(t "nethermind_synced_fully")"
-      fi
-
-      echo ""
-      echo "$(t nethermind_sync_stage_title)"
-
-      local stage_rpc_payload='{"jsonrpc":"2.0","id":0,"method":"debug_getSyncStage","params":[]}'
-      local stage_data=$(curl -s -X POST "http://localhost:$EXECUTION_RPC_PORT" \
-                    -H 'Content-Type: application/json' --data "$stage_rpc_payload")
-
-      if [[ -n "$stage_data" ]] && \
-         echo "$stage_data" | jq -e '.error == null and .result != null' >/dev/null; then
-          stage_name_display=$(echo "$stage_data" | jq -r '.result.currentStage // "N/A"')
-          printf "%s\n" "$(t nethermind_current_stage "$stage_name_display")"
-      elif echo "$stage_data" | jq -e '.error != null' >/dev/null; then
-          error_message=$(echo "$stage_data" | jq -r '.error.message // "Unknown RPC error"')
-          printf "%s\n" "$(t nethermind_rpc_error "debug_getSyncStage") Details: $error_message"
-      else
-          printf "%s\n" "$(t nethermind_rpc_error "debug_getSyncStage") Details: Empty or invalid response"
-      fi
-
-      # Block Sync Progress (from eth_syncing data, only if not reported as fully synced by eth_syncing)
-      if ! (echo "$sync_data" | jq -e '.result == false' >/dev/null 2>&1); then
-        echo ""
-        echo "$(t "nethermind_block_progress_title")"
-        local current_hex=$(echo "$sync_data" | jq -r '.result.currentBlock // empty')
-        local highest_hex=$(echo "$sync_data" | jq -r '.result.highestBlock // empty')
-
-        if [[ -z "$current_hex" || "$current_hex" == "null" || -z "$highest_hex" || "$highest_hex" == "null" ]]; then
-          echo "$(t "nethermind_sync_data_missing")"
-        else
-          local current_dec=$(hex_to_dec "$current_hex")
-          local highest_dec=$(hex_to_dec "$highest_hex")
-
-          if [[ $highest_dec -eq 0 && $current_dec -gt 0 ]]; then
-            echo "$(t "sync_data_invalid")"
-          elif [[ $highest_dec -eq 0 && $current_dec -eq 0 && "$stage_name_display" != "Finished" && "$stage_name_display" != "SnapSync" && "$stage_name_display" != "FastSync" && "$stage_name_display" != "FullSync" && "$stage_name_display" != "N/A" ]] ; then
-            echo "$(t "nethermind_sync_data_missing")"
-          elif [[ $highest_dec -ge $current_dec ]]; then
-            local remaining=$((highest_dec - current_dec))
-            local progress_pct=0
-            if [[ $highest_dec -gt 0 ]]; then
-                if [[ $current_dec -ge $highest_dec ]]; then
-                    progress_pct=100
+            ;;
+        "reth")
+            syncing_response=$(curl -s -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:$EXECUTION_RPC_PORT)
+            if echo "$syncing_response" | grep -q '"result":false'; then
+                print_success "$(t "reth_synced_fully")"
+            else
+                print_warning "$(t "execution_syncing" "$execution_client_name")"
+                # Get sync stage details
+                stage_response=$(curl -s -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"reth_syncing","params":[],"id":1}' http://localhost:$EXECUTION_RPC_PORT)
+                if [ -n "$stage_response" ]; then
+                    print_info "$(t "reth_sync_details_title")"
+                    stages=$(echo "$stage_response" | jq -r '.result.stages | keys[]')
+                    for stage in $stages; do
+                        current_progress=$(echo "$stage_response" | jq -r ".result.stages.$stage.current")
+                        done_progress=$(echo "$stage_response" | jq -r ".result.stages.$stage.done")
+                        total_progress=$(echo "$stage_response" | jq -r ".result.stages.$stage.total")
+                        if [ "$done_progress" != "null" ] && [ "$total_progress" != "null" ]; then
+                            percentage=$(awk "BEGIN {print ($done_progress / $total_progress) * 100}")
+                            print_info "$(t "reth_stage_progress" "$stage" "$done_progress" "$total_progress" "$percentage")"
+                        else
+                            print_info "$(t "reth_no_stages")"
+                        fi
+                    done
+                    headers_target=$(echo "$stage_response" | jq -r '.result.chain_head_target.headers')
+                    if [ "$headers_target" != "null" ]; then
+                        print_info "$(t "reth_headers_target" "$headers_target")"
+                    fi
                 else
-                    progress_pct=$((current_dec * 100 / highest_dec))
+                    print_warning "$(t "reth_no_stages")"
                 fi
-            elif [[ $current_dec -gt 0 ]]; then
-                 progress_pct=0
             fi
-
-            echo "$(t "current_block" "$current_dec")"
-            echo "$(t "target_block" "$highest_dec")"
-            echo "$(t "blocks_left" "$remaining")"
-            echo "$(t "progress" "$progress_pct")"
-          else
-             echo "$(t "execution_synced" "$display_execution_client_name")"
-          fi
-        fi
-      fi
-
-      # --- Health Status Check -----------------------------------------------
-      echo ""
-      echo "$(t nethermind_health_status_title)"
-
-      local health_output
-      local health_status_overall="Unknown"
-      local health_details_str=""
-
-      health_output=$(curl -s -X GET "http://localhost:$EXECUTION_RPC_PORT/health" -H 'Content-Type: application/json')
-
-      if [[ -n "$health_output" ]]; then
-        if echo "$health_output" | jq -e '.status' >/dev/null 2>&1; then
-          health_status_overall=$(echo "$health_output" | jq -r '.status')
-        elif ! echo "$health_output" | jq -e . >/dev/null 2>&1; then
-          health_status_overall="$health_output"
-          health_details_str="$health_output"
-        fi
-
-        if [[ -z "$health_details_str" ]]; then
-          if echo "$health_output" | jq -e . >/dev/null 2>&1; then
-            health_details_str=$(echo "$health_output" | jq '.')
-          else
-            health_details_str="$health_output"
-          fi
-        fi
-
-        printf "$(t nethermind_health_info)\n" "$health_status_overall" "$health_details_str"
-      else
-        printf "$(t nethermind_health_info)\n" "Unknown" "$(t nethermind_health_request_failed)"
-      fi
-
-    else
-      echo "⚠️ $(t "unknown_execution_client" "$execution_client_name"). $(t "sync_check_basic")"
-      echo "$sync_data" | jq '.result'
-    fi
-  fi
-
-  echo ""
-  echo "$(t "consensus" "$consensus_client_name")"
-
-  case "$consensus_client_name" in
-    prysm|teku)
-      local syncing_resp=$(curl -s "http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/syncing")
-
-      # Проверяем, что получили валидный ответ
-      if [[ -z "$syncing_resp" ]] || ! echo "$syncing_resp" | jq -e . >/dev/null 2>&1; then
-        echo "$(t "consensus_rpc_error")"
-        return
-      fi
-
-      # Проверяем, есть ли ошибка в ответе
-      if echo "$syncing_resp" | jq -e '.code != null' >/dev/null 2>&1; then
-        local error_msg=$(echo "$syncing_resp" | jq -r '.message // "Unknown error"')
-        echo "$(t "consensus_rpc_error_with_details" "$error_msg")"
-        return
-      fi
-
-      # Проверяем, что data существует
-      if ! echo "$syncing_resp" | jq -e '.data' >/dev/null 2>&1; then
-        echo "$(t "consensus_no_data")"
-        return
-      fi
-
-      if [[ "$syncing_resp" == "{}" || "$(echo "$syncing_resp" | jq -r '.data')" == "null" ]]; then
-        echo "$(t "${consensus_client_name}_no_sync_data")"
-        local fin_resp=$(curl -s "http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/finality")
-        if [[ -z "$fin_resp" ]]; then
-          fin_resp=$(curl -s "http://localhost:$CONSENSUS_RPC_PORT/eth/v1/beacon/states/head/finality_checkpoints")
-        fi
-        if [[ -n "$fin_resp" ]] && echo "$fin_resp" | jq -e . >/dev/null 2>&1; then
-          echo "$(t "${consensus_client_name}_beacon_active")"
-          echo "$fin_resp" | jq
-        else
-          echo "$(t "${consensus_client_name}_no_finality")"
-        fi
-      else
-        echo "$syncing_resp" | jq
-        local is_syncing=$(echo "$syncing_resp" | jq -r '.data.is_syncing')
-        if [[ "$is_syncing" == "false" ]]; then
-          echo "$(t "${consensus_client_name}_synced")"
-        else
-          echo "$(t "${consensus_client_name}_syncing")"
-        fi
-      fi
-      ;;
-
-    lighthouse)
-      local syncing_resp=$(curl -s "http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/syncing")
-
-      # Проверяем, что получили валидный ответ
-      if [[ -z "$syncing_resp" ]] || ! echo "$syncing_resp" | jq -e . >/dev/null 2>&1; then
-        echo "$(t "consensus_rpc_error")"
-        return
-      fi
-
-      # Проверяем, есть ли ошибка в ответе
-      if echo "$syncing_resp" | jq -e '.code != null' >/dev/null 2>&1; then
-        local error_msg=$(echo "$syncing_resp" | jq -r '.message // "Unknown error"')
-        echo "$(t "consensus_rpc_error_with_details" "$error_msg")"
-        return
-      fi
-
-      # Проверяем, что data существует
-      if ! echo "$syncing_resp" | jq -e '.data' >/dev/null 2>&1; then
-        echo "$(t "consensus_no_data")"
-        return
-      fi
-
-      if [[ "$syncing_resp" == "{}" || "$(echo "$syncing_resp" | jq -r '.data')" == "null" ]]; then
-        echo "$(t "lighthouse_no_sync_data")"
-      else
-        echo "$syncing_resp" | jq
-        local is_syncing=$(echo "$syncing_resp" | jq -r '.data.is_syncing')
-        if [[ "$is_syncing" == "false" ]]; then
-          echo "$(t "lighthouse_synced")"
-        else
-          echo "$(t "lighthouse_syncing")"
-        fi
-      fi
-      ;;
-
-    *)
-      echo "$(t "unknown_client" "$consensus_client_name")"
-      ;;
-  esac
+            ;;
+        "nethermind")
+            syncing_response=$(curl -s -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:$EXECUTION_RPC_PORT)
+            if echo "$syncing_response" | grep -q '"result":false'; then
+                print_success "$(t "nethermind_synced_fully")"
+            else
+                if [ -n "$syncing_response" ] && echo "$syncing_response" | grep -q '"result":'; then
+                    print_warning "$(t "execution_syncing" "$execution_client_name")"
+                    current_block=$(echo "$syncing_response" | jq -r '.result.currentBlock' | tr -d '"')
+                    highest_block=$(echo "$syncing_response" | jq -r '.result.highestBlock' | tr -d '"')
+                    current_block_dec=$(( $current_block ))
+                    highest_block_dec=$(( $highest_block ))
+                    blocks_left=$((highest_block_dec - current_block_dec))
+                    progress=$(( (current_block_dec * 100) / highest_block_dec ))
+                    print_info "$(t "nethermind_block_progress_title")"
+                    print_info "$(t "current_block" "$current_block_dec")"
+                    print_info "$(t "target_block" "$highest_block_dec")"
+                    print_info "$(t "blocks_left" "$blocks_left")"
+                    print_info "$(t "progress" "$progress")"
+                else
+                    print_warning "$(t "nethermind_sync_data_missing")"
+                fi
+            fi
+            # Get current sync stage
+            stage_response=$(curl -s -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"nethermind_sync_stage","params":[],"id":1}' http://localhost:$EXECUTION_RPC_PORT)
+            if [ -n "$stage_response" ]; then
+                current_stage=$(echo "$stage_response" | jq -r '.result' | tr -d '"')
+                print_info "$(t "nethermind_sync_stage_title")"
+                print_info "$(t "nethermind_current_stage" "$current_stage")"
+            else
+                print_warning "$(t "nethermind_rpc_error" "nethermind_sync_stage")"
+            fi
+            # Get health status
+            health_response=$(curl -s -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"nethermind_health","params":[],"id":1}' http://localhost:$EXECUTION_RPC_PORT)
+            if [ -n "$health_response" ]; then
+                status=$(echo "$health_response" | jq -r '.result.status' | tr -d '"')
+                details=$(echo "$health_response" | jq -r '.result.details' | tr -d '"')
+                print_info "$(t "nethermind_health_status_title")"
+                print_info "$(t "nethermind_health_info" "$status" "$details")"
+            else
+                print_warning "$(t "nethermind_health_request_failed")"
+            fi
+            ;;
+    esac
+    # Consensus client sync check
+    print_info "$(t "consensus" "$consensus_client_name")"
+    case $consensus_client_name in
+        "prysm")
+            response=$(curl -s http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/syncing)
+            if [ -n "$response" ]; then
+                is_syncing=$(echo "$response" | jq -r '.data.is_syncing')
+                head_slot=$(echo "$response" | jq -r '.data.head_slot')
+                sync_distance=$(echo "$response" | jq -r '.data.sync_distance')
+                if [ "$is_syncing" == "false" ]; then
+                    print_success "$(t "prysm_synced")"
+                else
+                    print_warning "$(t "prysm_syncing")"
+                    target_slot=$((head_slot + sync_distance))
+                    progress=$(( (head_slot * 100) / target_slot ))
+                    print_info "$(t "current_block" "$head_slot")"
+                    print_info "$(t "target_block" "$target_slot")"
+                    print_info "$(t "blocks_left" "$sync_distance")"
+                    print_info "$(t "progress" "$progress")"
+                fi
+            else
+                print_warning "$(t "prysm_no_sync_data")"
+            fi
+            ;;
+        "teku")
+            response=$(curl -s http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/syncing)
+            if [ -n "$response" ]; then
+                is_syncing=$(echo "$response" | jq -r '.data.is_syncing')
+                head_slot=$(echo "$response" | jq -r '.data.head_slot')
+                sync_distance=$(echo "$response" | jq -r '.data.sync_distance')
+                if [ "$is_syncing" == "false" ]; then
+                    print_success "$(t "teku_synced")"
+                else
+                    print_warning "$(t "teku_syncing")"
+                    target_slot=$((head_slot + sync_distance))
+                    progress=$(( (head_slot * 100) / target_slot ))
+                    print_info "$(t "current_block" "$head_slot")"
+                    print_info "$(t "target_block" "$target_slot")"
+                    print_info "$(t "blocks_left" "$sync_distance")"
+                    print_info "$(t "progress" "$progress")"
+                fi
+            else
+                print_warning "$(t "teku_no_sync_data")"
+            fi
+            ;;
+        "lighthouse")
+            response=$(curl -s http://localhost:$CONSENSUS_RPC_PORT/eth/v1/node/syncing)
+            if [ -n "$response" ]; then
+                is_syncing=$(echo "$response" | jq -r '.data.is_syncing')
+                head_slot=$(echo "$response" | jq -r '.data.head_slot')
+                sync_distance=$(echo "$response" | jq -r '.data.sync_distance')
+                if [ "$is_syncing" == "false" ]; then
+                    print_success "$(t "lighthouse_synced")"
+                else
+                    print_warning "$(t "lighthouse_syncing")"
+                    target_slot=$((head_slot + sync_distance))
+                    progress=$(( (head_slot * 100) / target_slot ))
+                    print_info "$(t "current_block" "$head_slot")"
+                    print_info "$(t "target_block" "$target_slot")"
+                    print_info "$(t "blocks_left" "$sync_distance")"
+                    print_info "$(t "progress" "$progress")"
+                fi
+            else
+                print_warning "$(t "lighthouse_no_sync_data")"
+            fi
+            ;;
+    esac
 }
 
+# Setup cron agent with Telegram notifications
 function setup_cron_agent {
-  local consensus_client_name=$(cat "$CLIENT_FILE" 2>/dev/null || echo "prysm") # Default to prysm if not set
-  local consensus_client_display_name="${consensus_client_name^}"
-  local execution_client_name_cron=$(cat "$EXECUTION_CLIENT_FILE" 2>/dev/null || echo "geth")
-  local execution_client_display_name_cron="${execution_client_name_cron^}"
-
-  # Function to validate Telegram bot token
+    # Load client names for cron
+    execution_client_name_cron=$(cat "$EXECUTION_CLIENT_FILE" 2>/dev/null || echo "geth")
+    execution_client_display_name_cron=$execution_client_name_cron
+    consensus_client_name=$(cat "$CLIENT_FILE" 2>/dev/null || echo "prysm")
+    consensus_client_display_name=$consensus_client_name
+    # Function to validate Telegram token (updated version)
   validate_telegram_token() {
     local token=$1
-    if [[ ! "$token" =~ ^[0-9]+:[a-zA-Z0-9_-]+$ ]]; then
+    # Check token format
+    if [[ ! "$token" =~ ^[0-9]+:[A-Za-z0-9_-]+$ ]]; then
       return 1
     fi
-    # Test token by making API call
+    # Test token by getting bot info
     local response=$(curl -s "https://api.telegram.org/bot${token}/getMe")
     if [[ "$response" == *"ok\":true"* ]]; then
       return 0
@@ -1799,7 +1449,6 @@ function setup_cron_agent {
       return 1
     fi
   }
-
   # Function to validate Telegram chat ID (updated version)
   validate_telegram_chat() {
     local token=$1
@@ -1809,19 +1458,16 @@ function setup_cron_agent {
       -d chat_id="${chat_id}" \
       -d text="$(t "chatid_linked")" \
       -d parse_mode="Markdown")
-
     if [[ "$response" == *"ok\":true"* ]]; then
       return 0
     else
       return 1
     fi
   }
-
   # Get and validate Telegram bot token
   while true; do
     echo -e "\n${BLUE}$(t "enter_tg_token")${NC}"
     read -p "> " tg_token
-
     if validate_telegram_token "$tg_token"; then
       break
     else
@@ -1829,12 +1475,10 @@ function setup_cron_agent {
       echo -e "${YELLOW}$(t "token_format")${NC}"
     fi
   done
-
   # Get and validate Telegram chat ID
   while true; do
     echo -e "\n${BLUE}$(t "enter_tg_chat")${NC}"
     read -p "> " tg_chat_id
-
     if [[ "$tg_chat_id" =~ ^-?[0-9]+$ ]]; then
       if validate_telegram_chat "$tg_token" "$tg_chat_id"; then
         break
@@ -1845,15 +1489,9 @@ function setup_cron_agent {
       echo -e "${RED}$(t "chatid_number")${NC}"
     fi
   done
-
-  #read -p "$(t "enter_tg_token")" tg_token
-  #read -p "$(t "enter_tg_chat")" tg_chat_id
-
-  echo " "
-  echo "$(t "select_cron")"
+  echo "\n$(t "select_cron")"
   echo "$(t "cron_options")"
   read -p "$(t "select_option")" interval_choice
-
   case $interval_choice in
     1) cron_schedule="*/5 * * * *" ;;
     2) cron_schedule="*/10 * * * *" ;;
@@ -1865,11 +1503,9 @@ function setup_cron_agent {
       cron_schedule="*/10 * * * *"
       ;;
   esac
-
   mkdir -p "$NODE_DIR" # Ensure the node directory exists
   touch "$AGENT_SCRIPT"
   chmod +x "$AGENT_SCRIPT"
-
   cat <<EOF > "$AGENT_SCRIPT"
 #!/bin/bash
 CLIENT="$consensus_client_name" # Consensus client name
@@ -1880,17 +1516,16 @@ TG_TOKEN="$tg_token"
 TG_CHAT_ID="$tg_chat_id"
 
 # Check Execution Client
-execution_sync_response=\$(curl -s -X POST http://localhost:${EXECUTION_RPC_PORT} \\
-  -H "Content-Type: application/json" \\
+execution_sync_response=\$(curl -s -X POST http://localhost:${EXECUTION_RPC_PORT} \
+  -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}')
-
 if echo "\$execution_sync_response" | grep -q '"result":false'; then
   execution_status="✅ \$EXECUTION_CLIENT_DISPLAY_NAME synced"
 elif echo "\$execution_sync_response" | grep -q '"result":'; then
   execution_status="⚠️ \$EXECUTION_CLIENT_DISPLAY_NAME syncing in progress"
 else
-  curl -s -X POST "https://api.telegram.org/bot\$TG_TOKEN/sendMessage" \\
-    --data-urlencode "chat_id=\$TG_CHAT_ID" \\
+  curl -s -X POST "https://api.telegram.org/bot\$TG_TOKEN/sendMessage" \
+    --data-urlencode "chat_id=\$TG_CHAT_ID" \
     --data-urlencode "text=❌ \$EXECUTION_CLIENT_DISPLAY_NAME not responding or returned invalid data!"
   exit 1
 fi
@@ -1904,8 +1539,8 @@ if [ "\$is_syncing" == "false" ]; then
 elif [ "\$is_syncing" == "true" ]; then
   consensus_status="⚠️ \$CLIENT_DISPLAY_NAME syncing in progress" # CLIENT_DISPLAY_NAME here is consensus_client_name
 else
-  curl -s -X POST "https://api.telegram.org/bot\$TG_TOKEN/sendMessage" \\
-    --data-urlencode "chat_id=\$TG_CHAT_ID" \\
+  curl -s -X POST "https://api.telegram.org/bot\$TG_TOKEN/sendMessage" \
+    --data-urlencode "chat_id=\$TG_CHAT_ID" \
     --data-urlencode "text=❌ \$CLIENT_DISPLAY_NAME not responding or returned invalid data!" # CLIENT_DISPLAY_NAME here is consensus_client_name
   exit 1
 fi
@@ -1920,8 +1555,8 @@ STATUS_MSG="[Sepolia Node Monitor]
 Execution client: \$execution_status
 Consensus client: \$consensus_status"
 
-curl -s -X POST "https://api.telegram.org/bot\$TG_TOKEN/sendMessage" \\
-  --data-urlencode "chat_id=\$TG_CHAT_ID" \\
+curl -s -X POST "https://api.telegram.org/bot\$TG_TOKEN/sendMessage" \
+  --data-urlencode "chat_id=\$TG_CHAT_ID" \
   --data-urlencode "text=\$STATUS_MSG"
 EOF
 
@@ -2022,22 +1657,22 @@ function firewall_setup() {
       echo -e "${BLUE}$(t "checking_docker_user_chain")${RESET}"
 
       # Проверяем существование цепочки DOCKER-USER
-      if ! iptables -L DOCKER-USER >/dev/null 2>&1; then
+      if ! sudo iptables -L DOCKER-USER >/dev/null 2>&1; then
           echo -e "\n${RED}$(t "docker_user_chain_not_found")${RESET}"
           echo -e "\n${YELLOW}$(t "creating_docker_user_chain")${RESET}"
-          iptables -N DOCKER-USER
+          sudo iptables -N DOCKER-USER
           echo -e "${GREEN}$(t "docker_user_chain_created")${RESET}"
 
           # Добавляем переход FORWARD -> DOCKER-USER
-          iptables -I FORWARD -j DOCKER-USER
+          sudo iptables -I FORWARD -j DOCKER-USER
           echo -e "\n${YELLOW}$(t "added_forward_to_docker_user")${RESET}"
       else
           echo -e "${GREEN}$(t "docker_user_chain_available")${RESET}"
 
           # Проверяем наличие перехода FORWARD -> DOCKER-USER
-          if ! iptables -L FORWARD | grep -q "DOCKER-USER"; then
+          if ! sudo iptables -L FORWARD | grep -q "DOCKER-USER"; then
               echo -e "\n${YELLOW}$(t "adding_forward_to_docker_user")${RESET}"
-              iptables -I FORWARD -j DOCKER-USER
+              sudo iptables -I FORWARD -j DOCKER-USER
               echo -e "${GREEN}$(t "forward_to_docker_user_added")${RESET}"
           else
               echo -e "${GREEN}$(t "forward_to_docker_user_exists")${RESET}"
@@ -2046,7 +1681,7 @@ function firewall_setup() {
 
       # Проверяем правила DOCKER для указанных портов
       echo -e "\n${BLUE}$(t "checking_docker_chain_rules")${RESET}"
-      if iptables -L DOCKER -n >/dev/null 2>&1; then
+      if sudo iptables -L DOCKER -n >/dev/null 2>&1; then
           echo -e "${GREEN}$(t "docker_chain_available")${RESET}"
 
           # Функция для добавления правил
@@ -2057,7 +1692,7 @@ function firewall_setup() {
               local rules
 
               echo -e "\n${CYAN}$(t "checking_${type}_rpc_port") $port${RESET}"
-              rules=$(iptables -L DOCKER -n | grep -E "tcp dpt:$port($| )")
+              rules=$(sudo iptables -L DOCKER -n | grep -E "tcp dpt:$port($| )")
               while read -r line; do
                   dest_ip=$(echo "$line" | awk 'match($0, /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(\/[0-9]+)?[[:space:]]+tcp dpt:[0-9]+/) {
                       split(substr($0, RSTART, RLENGTH), parts, /[[:space:]]+/);
@@ -2068,9 +1703,9 @@ function firewall_setup() {
                       echo -e "${YELLOW}$(t "found_rule_for_port") $port: $(t "destination_ip") ${GREEN}$dest_ip${RESET}"
 
                       # Улучшенная проверка существования правила
-                      if ! iptables -n -L DOCKER-USER | grep -q -E "ACCEPT +tcp +-- +${dest_ip//./\\.} +0\.0\.0\.0\/0"; then
+                      if ! sudo iptables -n -L DOCKER-USER | grep -q -E "ACCEPT +tcp +-- +${dest_ip//./\\.} +0\.0\.0\.0\/0"; then
                           echo -e "${YELLOW}$(t "adding_accept_rule_for_ip") $dest_ip${RESET}"
-                          iptables -I DOCKER-USER -p tcp -s $dest_ip -j ACCEPT
+                          sudo iptables -I DOCKER-USER -p tcp -s $dest_ip -j ACCEPT
                           added=$((added + 1))
                       else
                           echo -e "${GREEN}$(t "accept_rule_already_exists") $dest_ip${RESET}"
@@ -2104,19 +1739,19 @@ function firewall_setup() {
 
       # Проверяем статус UFW
       echo -e "\n${BLUE}$(t "checking_ufw_status")${RESET}"
-      if ufw status | grep -q "Status: active"; then
+      if sudo ufw status | grep -q "Status: active"; then
           echo -e "${GREEN}$(t "ufw_already_enabled")${RESET}"
       else
           echo -e "${YELLOW}$(t "ufw_disabled_configuring")${RESET}"
           # Разрешаем SSH соединения
           echo -e "${YELLOW}$(t "adding_ssh_port_rule")${RESET}"
-          ufw allow 22
+          sudo ufw allow 22
           echo -e "${YELLOW}$(t "adding_ssh_name_rule")${RESET}"
-          ufw allow ssh
+          sudo ufw allow ssh
 
           # Включаем UFW с подтверждением
           echo -e "${YELLOW}$(t "enabling_ufw")${RESET}"
-          if ! ufw enable; then
+          if ! echo "y" | sudo ufw enable; then
               echo -e "${RED}$(t "failed_to_enable_ufw")${RESET}"
               return 1
           fi
@@ -2126,9 +1761,9 @@ function firewall_setup() {
 	# Добавляем правила для портов (общее для обоих случаев)
 	echo -e "\n${YELLOW}$(t "adding_exec_p2p_port_rule")${RESET}"
 	for port in "$EXECUTION_P2P_PORT" "$CONSENSUS_P2P_PORT" "$alt_consensus_p2p_port"; do
-		if ! ufw status | grep -q "$port/tcp"; then
-			ufw allow "$port"/tcp
-			ufw allow "$port"/udp
+		if ! sudo ufw status | grep -q "$port/tcp"; then
+			sudo ufw allow "$port"/tcp
+			sudo ufw allow "$port"/udp
 		else
 			echo -e "${GREEN}$(t "port_rule_exists") $port${RESET}"
 		fi
@@ -2136,7 +1771,7 @@ function firewall_setup() {
 
       # Показываем статус
       echo -e "\n${CYAN}$(t "current_ufw_status")${RESET}"
-      ufw status numbered
+      sudo ufw status numbered
 
       return 0
   }
@@ -2144,7 +1779,7 @@ function firewall_setup() {
     # Проверка существования правила
     rule_exists() {
         local rule="$@"
-        if iptables -C DOCKER-USER $rule >/dev/null 2>&1; then
+        if sudo iptables -C DOCKER-USER $rule >/dev/null 2>&1; then
             return 0
         else
             return 1
@@ -2168,8 +1803,8 @@ function firewall_setup() {
 		add_drop_rule() {
 			local port=$1
 			local protocol=$2
-			if ! iptables -C DOCKER-USER -p $protocol --dport "$port" -j DROP 2>/dev/null; then
-				iptables -A DOCKER-USER -p $protocol --dport "$port" -j DROP 2>/dev/null
+			if ! sudo iptables -C DOCKER-USER -p $protocol --dport "$port" -j DROP 2>/dev/null; then
+				sudo iptables -A DOCKER-USER -p $protocol --dport "$port" -j DROP 2>/dev/null
 				new_rules+=("$port ($protocol)")
 				return 0
 			else
@@ -2205,9 +1840,9 @@ function firewall_setup() {
     # Добавление правила с проверкой и поддержанием DROP в конце
     add_rule() {
         # Добавляем новое правило
-        echo -e "\n${BLUE}$(t "adding_rule")${RESET} ${CYAN}iptables -I DOCKER-USER $@${RESET}"
+        echo -e "\n${BLUE}$(t "adding_rule")${RESET} ${CYAN}sudo iptables -I DOCKER-USER $@${RESET}"
         if ! rule_exists "$@"; then
-            if iptables -I DOCKER-USER "$@"; then
+            if sudo iptables -I DOCKER-USER "$@"; then
                 echo -e "${GREEN}$(t "rule_added")${RESET}"
             else
                 echo -e "${RED}$(t "failed_to_add_rule")${RESET}"
@@ -2224,11 +1859,11 @@ function firewall_setup() {
 	show_port_rules() {
 		echo -e "\n${YELLOW}$(t "current_port_rules")${RESET}"
 		echo -e "${CYAN}$(t "docker_user_port_rules")${RESET}"
-		iptables -L DOCKER-USER -n --line-numbers | grep -E "dpt:|spt:"
+		sudo iptables -L DOCKER-USER -n --line-numbers | grep -E "dpt:|spt:"
 
 		# Правила UFW для портов
 		echo -e "\n${CYAN}$(t "ufw_port_rules")${RESET}"
-		ufw status numbered | grep -v '^Status:' | grep -E '([0-9]+/[a-zA-Z]+)|(ANYWHERE)|$'
+		sudo ufw status numbered | grep -v '^Status:' | grep -E '([0-9]+/[a-zA-Z]+)|(ANYWHERE)|$'
 
 		print_info "\n$(t "current_port_config" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
 	}
@@ -2241,7 +1876,7 @@ function firewall_setup() {
 
 		# Правила UFW для IP
 		echo -e "\n${CYAN}$(t "ufw_ip_rules")${RESET}"
-		ufw status numbered | grep -v '^Status:' | grep -E '([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(/[0-9]+)?)|(ANYWHERE)|$'
+		sudo ufw status numbered | grep -v '^Status:' | grep -E '([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(/[0-9]+)?)|(ANYWHERE)|$'
 
 		print_info "\n$(t "current_port_config" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
 	}
@@ -2335,12 +1970,12 @@ function firewall_setup() {
 									# Добавляем соответствующее правило для UFW
 									if [ "$ufw_direction" == "both" ]; then
 										echo -e "\n${BLUE}$(t "adding_ufw_rule") $port/$proto ($(t "in_and_out"))${RESET}"
-										ufw allow $port/$proto
-										ufw allow out $port/$proto
+										sudo ufw allow $port/$proto
+										sudo ufw allow out $port/$proto
 										echo -e "\n${BLUE}────────${RESET}"
 									else
 										echo -e "\n${BLUE}$(t "adding_ufw_rule") $port/$proto, $(t "direction") $ufw_direction${RESET}"
-										ufw allow $ufw_direction $port/$proto
+										sudo ufw allow $ufw_direction $port/$proto
 										echo -e "\n${BLUE}────────${RESET}"
 									fi
 								done
@@ -2397,10 +2032,10 @@ function firewall_setup() {
 
 							deleted_count=0
 							for rule_num in "${sorted_rules[@]}"; do
-								if iptables -L DOCKER-USER -n --line-numbers | grep -q "^${rule_num}\>"; then
-									local rule=$(iptables -S DOCKER-USER $rule_num)
+								if sudo iptables -L DOCKER-USER -n --line-numbers | grep -q "^${rule_num}\>"; then
+									local rule=$(sudo iptables -S DOCKER-USER $rule_num)
 									echo -e "${BLUE}$(t "deleting_iptables_rule") №$rule_num: $rule${RESET}"
-									iptables -D DOCKER-USER $rule_num
+									sudo iptables -D DOCKER-USER $rule_num
 									((deleted_count++))
 								else
 									echo -e "${YELLOW}$(t "rule_not_found_skipping") №$rule_num${RESET}"
@@ -2448,7 +2083,7 @@ function firewall_setup() {
 							deleted_count=0
 							for rule_num in "${sorted_rules[@]}"; do
 								echo -e "${BLUE}$(t "deleting_ufw_rule") №$rule_num${RESET}"
-								if yes | ufw --force delete $rule_num; then
+								if echo "y" | sudo ufw --force delete $rule_num; then
 									((deleted_count++))
 								else
 									echo -e "${YELLOW}$(t "failed_to_delete_rule") №$rule_num${RESET}"
@@ -2498,10 +2133,10 @@ function firewall_setup() {
 
 							iptables_deleted=0
 							for rule_num in "${sorted_iptables[@]}"; do
-								if iptables -L DOCKER-USER -n --line-numbers | grep -q "^${rule_num}\>"; then
-									local rule=$(iptables -S DOCKER-USER $rule_num)
+								if sudo iptables -L DOCKER-USER -n --line-numbers | grep -q "^${rule_num}\>"; then
+									local rule=$(sudo iptables -S DOCKER-USER $rule_num)
 									echo -e "${BLUE}$(t "deleting_iptables_rule") №$rule_num: $rule${RESET}"
-									iptables -D DOCKER-USER $rule_num
+									sudo iptables -D DOCKER-USER $rule_num
 									((iptables_deleted++))
 								else
 									echo -e "${YELLOW}$(t "rule_not_found_skipping") №$rule_num${RESET}"
@@ -2537,7 +2172,7 @@ function firewall_setup() {
 							ufw_deleted=0
 							for rule_num in "${sorted_ufw[@]}"; do
 								echo -e "${BLUE}$(t "deleting_ufw_rule") №$rule_num${RESET}"
-								if yes | ufw --force delete $rule_num; then
+								if echo "y" | sudo ufw --force delete $rule_num; then
 									((ufw_deleted++))
 								else
 									echo -e "${YELLOW}$(t "failed_to_delete_rule") №$rule_num${RESET}"
@@ -2560,7 +2195,7 @@ function firewall_setup() {
 
 					# Также блокируем входящие соединения в UFW
 					echo -e "\n${BLUE}$(t "changing_ufw_policy_to_block_all")${RESET}"
-					ufw default deny incoming
+					sudo ufw default deny incoming
 					;;
 				0)
 					break
@@ -2686,7 +2321,7 @@ function firewall_setup() {
 
 								# Добавляем правило UFW
 								echo -e "\n${BLUE}$(t "adding_ufw_rule_for_all_traffic_from") $ip...${RESET}"
-								ufw allow from $ip
+								sudo ufw allow from $ip
 								echo -e "\n${BLUE}────────${RESET}"
 							else
 								# Обрабатываем каждый порт
@@ -2701,16 +2336,16 @@ function firewall_setup() {
 											# Добавляем соответствующее правило UFW
 											if [ "$ufw_direction" == "both" ]; then
 												echo -e "\n${BLUE}$(t "adding_ufw_rule_for_port") $port/$proto $(t "from") $ip ($(t "in_and_out"))...${RESET}"
-												ufw allow from $ip to any port $port proto $proto
-												ufw allow out from any to $ip port $port proto $proto
+												sudo ufw allow from $ip to any port $port proto $proto
+												sudo ufw allow out from any to $ip port $port proto $proto
 												echo -e "\n${BLUE}────────${RESET}"
 											else
 												echo -e "\n${BLUE}$(t "adding_ufw_rule_for_port") $port/$proto $(t "from") $ip ($(t "direction") $ufw_direction)...${RESET}"
 												if [ "$ufw_direction" == "in" ]; then
-													ufw allow from $ip to any port $port proto $proto
+													sudo ufw allow from $ip to any port $port proto $proto
 													echo -e "\n${BLUE}────────${RESET}"
 												else
-													ufw allow out from any to $ip port $port proto $proto
+													sudo ufw allow out from any to $ip port $port proto $proto
 													echo -e "\n${BLUE}────────${RESET}"
 												fi
 											fi
@@ -2773,10 +2408,10 @@ function firewall_setup() {
 
 							deleted_count=0
 							for rule_num in "${sorted_rules[@]}"; do
-								if iptables -L DOCKER-USER -n --line-numbers | grep -q "^${rule_num}\>"; then
-									local rule=$(iptables -S DOCKER-USER $rule_num)
+								if sudo iptables -L DOCKER-USER -n --line-numbers | grep -q "^${rule_num}\>"; then
+									local rule=$(sudo iptables -S DOCKER-USER $rule_num)
 									echo -e "${BLUE}$(t "deleting_iptables_rule") №$rule_num: $rule${RESET}"
-									iptables -D DOCKER-USER $rule_num
+									sudo iptables -D DOCKER-USER $rule_num
 									((deleted_count++))
 								else
 									echo -e "${YELLOW}$(t "rule_not_found_skipping") №$rule_num${RESET}"
@@ -2825,7 +2460,7 @@ function firewall_setup() {
 							deleted_count=0
 							for rule_num in "${sorted_rules[@]}"; do
 								echo -e "${BLUE}$(t "deleting_ufw_rule") №$rule_num${RESET}"
-								if yes | ufw --force delete $rule_num; then
+								if echo "y" | sudo ufw --force delete $rule_num; then
 									((deleted_count++))
 								else
 									echo -e "${YELLOW}$(t "failed_to_delete_rule") №$rule_num${RESET}"
@@ -2876,10 +2511,10 @@ function firewall_setup() {
 
 							iptables_deleted=0
 							for rule_num in "${sorted_iptables[@]}"; do
-								if iptables -L DOCKER-USER -n --line-numbers | grep -q "^${rule_num}\>"; then
-									local rule=$(iptables -S DOCKER-USER $rule_num)
+								if sudo iptables -L DOCKER-USER -n --line-numbers | grep -q "^${rule_num}\>"; then
+									local rule=$(sudo iptables -S DOCKER-USER $rule_num)
 									echo -e "${BLUE}$(t "deleting_iptables_rule") №$rule_num: $rule${RESET}"
-									iptables -D DOCKER-USER $rule_num
+									sudo iptables -D DOCKER-USER $rule_num
 									((iptables_deleted++))
 								else
 									echo -e "${YELLOW}$(t "rule_not_found_skipping") №$rule_num${RESET}"
@@ -2916,7 +2551,7 @@ function firewall_setup() {
 							ufw_deleted=0
 							for rule_num in "${sorted_ufw[@]}"; do
 								echo -e "${BLUE}$(t "deleting_ufw_rule") №$rule_num${RESET}"
-								if yes | ufw --force delete $rule_num; then
+								if echo "y" | sudo ufw --force delete $rule_num; then
 									((ufw_deleted++))
 								else
 									echo -e "${YELLOW}$(t "failed_to_delete_rule") №$rule_num${RESET}"
@@ -2957,7 +2592,7 @@ function firewall_setup() {
 
 		# Вывод правил iptables
 		echo -e "\n${CYAN}$(t "current_docker_user_chain_rules")${RESET}"
-		local iptables_rules=$(iptables -L DOCKER-USER -n --line-numbers)
+		local iptables_rules=$(sudo iptables -L DOCKER-USER -n --line-numbers)
 		if [ -z "$(echo "$iptables_rules" | grep -v '^Chain' | grep -v '^num')" ]; then
 			echo -e "${YELLOW}$(t "no_rules_in_docker_user_chain")${RESET}"
 		else
@@ -2966,7 +2601,7 @@ function firewall_setup() {
 
 		# Вывод правил UFW
 		echo -e "\n${CYAN}$(t "current_ufw_rules")${RESET}"
-		local ufw_rules=$(ufw status numbered | grep -v '^Status:')
+		local ufw_rules=$(sudo ufw status numbered | grep -v '^Status:')
 		if [ -z "$ufw_rules" ]; then
 			echo -e "${YELLOW}$(t "no_active_ufw_rules")${RESET}"
 		else
@@ -2975,18 +2610,18 @@ function firewall_setup() {
 
 		# Статистика iptables
 		echo -e "\n${CYAN}$(t "iptables_rules_stats")${RESET}"
-		local total_rules=$(iptables -L DOCKER-USER -n | grep -c "^ACCEPT")
-		local denied_rules=$(iptables -L DOCKER-USER -n | grep -c "^DROP")
+		local total_rules=$(sudo iptables -L DOCKER-USER -n | grep -c "^ACCEPT")
+		local denied_rules=$(sudo iptables -L DOCKER-USER -n | grep -c "^DROP")
 		echo -e "$(t "total_accept_rules") ${GREEN}$total_rules${RESET}"
 		echo -e "$(t "total_drop_reject_rules") ${RED}$denied_rules${RESET}"
 
 		# Статистика UFW
 		echo -e "\n${CYAN}$(t "ufw_rules_stats")${RESET}"
-		local ufw_policy=$(ufw status verbose | grep "Default:")
+		local ufw_policy=$(sudo ufw status verbose | grep "Default:")
 		local ufw_policy_in=$(echo "$ufw_policy" | awk '{print $2}' | tr -d ',')
 		local ufw_policy_out=$(echo "$ufw_policy" | awk '{print $4}')
-		local ufw_allow=$(ufw status numbered | grep -c "ALLOW")
-		local ufw_deny=$(ufw status numbered | grep -c "DENY")
+		local ufw_allow=$(sudo ufw status numbered | grep -c "ALLOW")
+		local ufw_deny=$(sudo ufw status numbered | grep -c "DENY")
 
 		echo -e "$(t "default_policy")"
 		echo -e "  $(t "incoming") ${BLUE}$ufw_policy_in${RESET}"
@@ -3006,7 +2641,7 @@ function firewall_setup() {
 		read -p "$(echo -e "${RED}$(t "are_you_sure_prompt") ${RESET}")" confirm
 		if [[ $confirm =~ ^[Yy]$ ]]; then
 			echo -e "\n${BLUE}1. $(t "clearing_docker_user_chain")...${RESET}"
-			if iptables -F DOCKER-USER; then
+			if sudo iptables -F DOCKER-USER; then
 				echo -e "${GREEN}$(t "all_docker_user_rules_deleted")${RESET}"
 			else
 				echo -e "${RED}$(t "failed_to_clear_docker_user")${RESET}"
@@ -3014,19 +2649,19 @@ function firewall_setup() {
 			fi
 
 			echo -e "\n${BLUE}2. $(t "resetting_ufw_rules")...${RESET}"
-			if ufw --force reset; then
+			if echo "y" | sudo ufw --force reset; then
 				echo -e "${GREEN}$(t "all_ufw_rules_reset")${RESET}"
 			else
 				echo -e "${RED}$(t "failed_to_reset_ufw")${RESET}"
 			fi
 
 			echo -e "\n${BLUE}3. $(t "restarting_docker")...${RESET}"
-			if systemctl restart docker; then
+			if sudo systemctl restart docker; then
 				echo -e "${GREEN}$(t "docker_restarted_successfully")${RESET}"
 				echo -e "\n${YELLOW}$(t "current_docker_user_status")${RESET}"
-				iptables -L DOCKER-USER -n
+				sudo iptables -L DOCKER-USER -n
 				echo -e "\n${YELLOW}$(t "current_ufw_status")${RESET}"
-				ufw status
+				sudo ufw status
 			else
 				echo -e "${RED}$(t "failed_to_restart_docker")${RESET}"
 			fi

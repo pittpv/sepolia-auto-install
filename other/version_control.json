@@ -68,5 +68,10 @@
     "VERSION": "1.7.1",
     "UPDATE_DATE": "02.09.2025",
     "CHANGES": ["Fix for update node function"]
+  },
+  {
+    "VERSION": "1.7.2",
+    "UPDATE_DATE": "13.10.2025",
+    "CHANGES": ["Fusaka Sepolia Update"]
   }
 ]
