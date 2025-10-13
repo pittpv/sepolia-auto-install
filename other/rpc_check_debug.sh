@@ -248,8 +248,8 @@ EXECUTION_CLIENT_FILE="$HOME/sepolia-node/execution_client"
 if [[ -f "$EXECUTION_CLIENT_FILE" ]]; then
     EXECUTION_CLIENT=$(cat "$EXECUTION_CLIENT_FILE" | tr -d '[:space:]')
     if [[ "$EXECUTION_CLIENT" == "geth" ]]; then
-        echo -e "\n● Geth Version Check"
-        printf "✓ Checking Geth version ..."
+        #echo -e "\n● Geth Version Check"
+        #printf "✓ Checking Geth version ..."
         GETH_RESPONSE=$(curl -s --connect-timeout 5 -w "\n%{http_code}" -X POST "$EXEC_RPC" \
             -H "Content-Type: application/json" \
             -d '{"jsonrpc":"2.0","method":"web3_clientVersion","params":[],"id":1}')
@@ -261,7 +261,7 @@ if [[ -f "$EXECUTION_CLIENT_FILE" ]]; then
             if [[ "$CLIENT_VERSION" != "null" && "$CLIENT_VERSION" != "" ]]; then
                 # Extract Geth version (e.g., "Geth/v1.16.4-stable-41714b49" from full string)
                 GETH_VERSION=$(echo "$CLIENT_VERSION" | grep -o 'Geth/[^/]*' | head -1)
-                echo -e "${GREEN}✓ Geth detected${RESET} (Version: ${GETH_VERSION})"
+                #echo -e "${GREEN}✓ Geth detected${RESET} (Version: ${GETH_VERSION})"
             else
                 echo -e "${YELLOW}⚠ Could not parse Geth version${RESET}"
             fi
