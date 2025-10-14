@@ -47,7 +47,7 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 - **Preparation for the Fusaka update**
   - Updating the image address for Prysm
   - Enabling supernode mode for beacon clients
-- Added version check for execution clients in RPC check option
+- Added version check for execution clients in RPC check option (option 14)
 
 All changes will apply to nodes installed with script version **1.7.2** dated 14.10.2025. If you installed your node earlier, please follow the instructions in the messages:
 - Telegram: Join chat https://t.me/+DLsyG6ol3SFjM2Vk and read message [https://t.me/c/2645253866/6841](https://t.me/c/2645253866/6841)
