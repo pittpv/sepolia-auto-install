@@ -43,14 +43,15 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 8 cores and more                   |
 | **Disk**           | 800 GB SSD (can grow up to 1.5 TB) |
 
-## 📌 Latest Updates 13-10-2025
-* **Preparation for the Fusaka update**
-    * Updating the image address for Prysm
-    * Enabling supernode mode for beacon clients
+## 📌 Latest Updates 14-10-2025
+- **Preparation for the Fusaka update**
+  - Updating the image address for Prysm
+  - Enabling supernode mode for beacon clients
+- Added version check for execution clients in RPC check option
 
 All changes will apply to nodes installed with script version **1.7.2** dated 14.10.2025. If you installed your node earlier, please follow the instructions in the messages:
-* Telegram: Join chat https://t.me/+DLsyG6ol3SFjM2Vk and read message [https://t.me/c/2645253866/6841](https://t.me/c/2645253866/6841)
-* Discord: [https://discord.com/channels/1144692727120937080/1381732042630500363/1427261609327460372](https://discord.com/channels/1144692727120937080/1381732042630500363/1427261609327460372)
+- Telegram: Join chat https://t.me/+DLsyG6ol3SFjM2Vk and read message [https://t.me/c/2645253866/6841](https://t.me/c/2645253866/6841)
+- Discord: [https://discord.com/channels/1144692727120937080/1381732042630500363/1427261609327460372](https://discord.com/channels/1144692727120937080/1381732042630500363/1427261609327460372)
 
 ---
 

@@ -266,7 +266,7 @@ if [[ "$SEPOLIA_HTTP_CODE" == "200" ]]; then
         FULL_VERSION=$(echo "$VERSION_BODY" | jq -r '.result' 2>/dev/null)
         if [[ "$FULL_VERSION" != "null" && "$FULL_VERSION" != "" ]]; then
             # Extract client version (e.g., "Geth/v1.16.4-stable-41714b49", "Nethermind/v1.25.1", etc.)
-            CLIENT_VERSION=$(echo "$FULL_VERSION" | grep -oE '(Geth|Nethermind|Besu|Erigon)/[^/]*' | head -1)
+            CLIENT_VERSION=$(echo "$FULL_VERSION" | grep -oE '(Geth|Nethermind|Reth|Besu|Erigon)/[^/]*' | head -1)
             if [[ -z "$CLIENT_VERSION" ]]; then
                 CLIENT_VERSION="Unknown Client"
             fi

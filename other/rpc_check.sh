@@ -250,11 +250,40 @@ SEPOLIA_RESPONSE=$(curl -s --connect-timeout 5 -w "\n%{http_code}" -X POST "$EXE
 printf "\r\033[K"
 SEPOLIA_HTTP_CODE=$(echo "$SEPOLIA_RESPONSE" | tail -n1)
 SEPOLIA_BODY=$(echo "$SEPOLIA_RESPONSE" | sed '$d')
+
+# Get execution client version (for all execution clients)
+CLIENT_VERSION=""
+if [[ "$SEPOLIA_HTTP_CODE" == "200" ]]; then
+    printf "✓ Checking client version ..."
+    VERSION_RESPONSE=$(curl -s --connect-timeout 5 -w "\n%{http_code}" -X POST "$EXEC_RPC" \
+        -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0","method":"web3_clientVersion","params":[],"id":1}')
+    printf "\r\033[K"
+    VERSION_HTTP_CODE=$(echo "$VERSION_RESPONSE" | tail -n1)
+    VERSION_BODY=$(echo "$VERSION_RESPONSE" | sed '$d')
+
+    if [[ "$VERSION_HTTP_CODE" == "200" ]]; then
+        FULL_VERSION=$(echo "$VERSION_BODY" | jq -r '.result' 2>/dev/null)
+        if [[ "$FULL_VERSION" != "null" && "$FULL_VERSION" != "" ]]; then
+            # Extract client version (e.g., "Geth/v1.16.4-stable-41714b49", "Nethermind/v1.25.1", etc.)
+            CLIENT_VERSION=$(echo "$FULL_VERSION" | grep -oE '(Geth|Nethermind|Reth|Besu|Erigon)/[^/]*' | head -1)
+            if [[ -z "$CLIENT_VERSION" ]]; then
+                CLIENT_VERSION="Unknown Client"
+            fi
+        else
+            CLIENT_VERSION="Version Unavailable"
+        fi
+    else
+        CLIENT_VERSION="Version Check Failed"
+    fi
+fi
+
+# Process Sepolia RPC response
 if [[ "$SEPOLIA_HTTP_CODE" == "200" ]]; then
     SEPOLIA_BLOCKNUM=$(echo "$SEPOLIA_BODY" | jq -r '.result' 2>/dev/null)
     if [[ "$SEPOLIA_BLOCKNUM" != "null" && "$SEPOLIA_BLOCKNUM" != "" ]]; then
         DEC_BLOCKNUM=$((16#${SEPOLIA_BLOCKNUM:2}))
-        echo -e "${GREEN}✓ Healthy${RESET} (Block: ${DEC_BLOCKNUM})"
+        echo -e "${GREEN}✓ Healthy${RESET} (Block: ${DEC_BLOCKNUM}, ${CLIENT_VERSION})"
         SEPOLIA_OK=1
     else
         echo -e "${RED}✗ Unhealthy${RESET}"

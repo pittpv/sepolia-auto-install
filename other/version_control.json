@@ -73,5 +73,10 @@
     "VERSION": "1.7.2",
     "UPDATE_DATE": "13.10.2025",
     "CHANGES": ["Fusaka Sepolia Update"]
+  },
+  {
+    "VERSION": "1.7.3",
+    "UPDATE_DATE": "14.10.2025",
+    "CHANGES": ["Added version check for execution clients in RPC check option"]
   }
 ]
