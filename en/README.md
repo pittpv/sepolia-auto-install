@@ -43,15 +43,24 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 8 cores and more                   |
 | **Disk**           | 800 GB SSD (can grow up to 1.5 TB) |
 
-## 📌 Latest Updates 01-09-2025
-- Added an option that allows configuring CPU and RAM usage limits for EL and CL clients.
-  - When this option is enabled, 20% of the server’s operating system resources are always reserved. The remaining resources are divided in a 60:40 ratio between EL and CL clients.
-  - The option is automatically activated when installing the RPC node (you can opt out of setting limits) or can be launched separately on an already running node (requires a restart of the node containers).
+## 📌 Latest Updates 13-10-2025
+* **Preparation for the Fusaka update**
+    * Updating the image address for Prysm
+    * Enabling supernode mode for beacon clients
+
+All changes will apply to nodes installed with script version **1.7.2** dated 14.10.2025. If you installed your node earlier, please follow the instructions in the messages:
+* Telegram: [https://t.me/c/2645253866/6841](https://t.me/c/2645253866/6841)
+* Discord: [https://discord.com/channels/1144692727120937080/1381732042630500363/1427261609327460372](https://discord.com/channels/1144692727120937080/1381732042630500363/1427261609327460372)
 
 ---
 
 <details>
 <summary>📅 Version History</summary>
+
+### 01-09-2025
+- Added an option that allows configuring CPU and RAM usage limits for EL and CL clients.
+    - When this option is enabled, 20% of the server’s operating system resources are always reserved. The remaining resources are divided in a 60:40 ratio between EL and CL clients.
+    - The option is automatically activated when installing the RPC node (you can opt out of setting limits) or can be launched separately on an already running node (requires a restart of the node containers).
 
 ### 21-08-2025
 - Updated RPC check script to latest version. Thanks @web3.creed (Discord)
