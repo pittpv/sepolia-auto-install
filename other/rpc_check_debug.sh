@@ -239,35 +239,40 @@ echo -e "\n${CYAN}--- Your Beacon RPC ---${RESET}"
 echo -e "\n${RESET}$BEACON_RPC${RESET}"
 
 ################################################################################
-# Geth Version Check (if execution_client is geth)
+# Execution Client Version Check (for all execution clients)
 ################################################################################
 
-GETH_VERSION=""
-EXECUTION_CLIENT_FILE="$HOME/sepolia-node/execution_client"
+CLIENT_VERSION=""
+echo -e "\n● Execution Client Version Check"
+printf "✓ Checking client version ..."
+VERSION_RESPONSE=$(curl -s --connect-timeout 5 -w "\n%{http_code}" -X POST "$EXEC_RPC" \
+    -H "Content-Type: application/json" \
+    -d '{"jsonrpc":"2.0","method":"web3_clientVersion","params":[],"id":1}')
+printf "\r\033[K"
+VERSION_HTTP_CODE=$(echo "$VERSION_RESPONSE" | tail -n1)
+VERSION_BODY=$(echo "$VERSION_RESPONSE" | sed '$d')
 
-if [[ -f "$EXECUTION_CLIENT_FILE" ]]; then
-    EXECUTION_CLIENT=$(cat "$EXECUTION_CLIENT_FILE" | tr -d '[:space:]')
-    if [[ "$EXECUTION_CLIENT" == "geth" ]]; then
-        #echo -e "\n● Geth Version Check"
-        #printf "✓ Checking Geth version ..."
-        GETH_RESPONSE=$(curl -s --connect-timeout 5 -w "\n%{http_code}" -X POST "$EXEC_RPC" \
-            -H "Content-Type: application/json" \
-            -d '{"jsonrpc":"2.0","method":"web3_clientVersion","params":[],"id":1}')
-        printf "\r\033[K"
-        GETH_HTTP_CODE=$(echo "$GETH_RESPONSE" | tail -n1)
-        GETH_BODY=$(echo "$GETH_RESPONSE" | sed '$d')
-        if [[ "$GETH_HTTP_CODE" == "200" ]]; then
-            CLIENT_VERSION=$(echo "$GETH_BODY" | jq -r '.result' 2>/dev/null)
-            if [[ "$CLIENT_VERSION" != "null" && "$CLIENT_VERSION" != "" ]]; then
-                # Extract Geth version (e.g., "Geth/v1.16.4-stable-41714b49" from full string)
-                GETH_VERSION=$(echo "$CLIENT_VERSION" | grep -o 'Geth/[^/]*' | head -1)
-                #echo -e "${GREEN}✓ Geth detected${RESET} (Version: ${GETH_VERSION})"
-            else
-                echo -e "${YELLOW}⚠ Could not parse Geth version${RESET}"
-            fi
+if [[ "$VERSION_HTTP_CODE" == "200" ]]; then
+    FULL_VERSION=$(echo "$VERSION_BODY" | jq -r '.result' 2>/dev/null)
+    if [[ "$FULL_VERSION" != "null" && "$FULL_VERSION" != "" ]]; then
+        # Extract client version (e.g., "Geth/v1.16.4-stable-41714b49", "Nethermind/v1.25.1", etc.)
+        CLIENT_VERSION=$(echo "$FULL_VERSION" | grep -oE '(Geth|Nethermind|Besu|Erigon)/[^/]*' | head -1)
+        if [[ -n "$CLIENT_VERSION" ]]; then
+            echo -e "${GREEN}✓ Client detected${RESET} (Version: ${CLIENT_VERSION})"
         else
-            echo -e "${YELLOW}⚠ Could not fetch Geth version (HTTP $GETH_HTTP_CODE)${RESET}"
+            CLIENT_VERSION="Unknown Client"
+            echo -e "${YELLOW}⚠ Unknown execution client${RESET} (Raw: ${FULL_VERSION:0:50}...)"
         fi
+    else
+        CLIENT_VERSION="Version Unavailable"
+        echo -e "${YELLOW}⚠ Could not parse client version${RESET}"
+    fi
+else
+    CLIENT_VERSION="Version Check Failed"
+    if [[ -z "$VERSION_HTTP_CODE" || "$VERSION_HTTP_CODE" == "000" ]]; then
+        echo -e "${YELLOW}⚠ Could not fetch client version (Connection Timeout)${RESET}"
+    else
+        echo -e "${YELLOW}⚠ Could not fetch client version (HTTP $VERSION_HTTP_CODE)${RESET}"
     fi
 fi
 
@@ -287,11 +292,7 @@ if [[ "$SEPOLIA_HTTP_CODE" == "200" ]]; then
     SEPOLIA_BLOCKNUM=$(echo "$SEPOLIA_BODY" | jq -r '.result' 2>/dev/null)
     if [[ "$SEPOLIA_BLOCKNUM" != "null" && "$SEPOLIA_BLOCKNUM" != "" ]]; then
         DEC_BLOCKNUM=$((16#${SEPOLIA_BLOCKNUM:2}))
-        if [[ -n "$GETH_VERSION" ]]; then
-            echo -e "${GREEN}✓ Healthy${RESET} (Block: ${DEC_BLOCKNUM}, ${GETH_VERSION})"
-        else
-            echo -e "${GREEN}✓ Healthy${RESET} (Block: ${DEC_BLOCKNUM})"
-        fi
+        echo -e "${GREEN}✓ Healthy${RESET} (Block: ${DEC_BLOCKNUM}, ${CLIENT_VERSION})"
         SEPOLIA_OK=1
     else
         echo -e "${RED}✗ Unhealthy${RESET}"
