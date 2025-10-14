@@ -239,44 +239,6 @@ echo -e "\n${CYAN}--- Your Beacon RPC ---${RESET}"
 echo -e "\n${RESET}$BEACON_RPC${RESET}"
 
 ################################################################################
-# Execution Client Version Check (for all execution clients)
-################################################################################
-
-CLIENT_VERSION=""
-echo -e "\n● Execution Client Version Check"
-printf "✓ Checking client version ..."
-VERSION_RESPONSE=$(curl -s --connect-timeout 5 -w "\n%{http_code}" -X POST "$EXEC_RPC" \
-    -H "Content-Type: application/json" \
-    -d '{"jsonrpc":"2.0","method":"web3_clientVersion","params":[],"id":1}')
-printf "\r\033[K"
-VERSION_HTTP_CODE=$(echo "$VERSION_RESPONSE" | tail -n1)
-VERSION_BODY=$(echo "$VERSION_RESPONSE" | sed '$d')
-
-if [[ "$VERSION_HTTP_CODE" == "200" ]]; then
-    FULL_VERSION=$(echo "$VERSION_BODY" | jq -r '.result' 2>/dev/null)
-    if [[ "$FULL_VERSION" != "null" && "$FULL_VERSION" != "" ]]; then
-        # Extract client version (e.g., "Geth/v1.16.4-stable-41714b49", "Nethermind/v1.25.1", etc.)
-        CLIENT_VERSION=$(echo "$FULL_VERSION" | grep -oE '(Geth|Nethermind|Besu|Erigon)/[^/]*' | head -1)
-        if [[ -n "$CLIENT_VERSION" ]]; then
-            echo -e "${GREEN}✓ Client detected${RESET} (Version: ${CLIENT_VERSION})"
-        else
-            CLIENT_VERSION="Unknown Client"
-            echo -e "${YELLOW}⚠ Unknown execution client${RESET} (Raw: ${FULL_VERSION:0:50}...)"
-        fi
-    else
-        CLIENT_VERSION="Version Unavailable"
-        echo -e "${YELLOW}⚠ Could not parse client version${RESET}"
-    fi
-else
-    CLIENT_VERSION="Version Check Failed"
-    if [[ -z "$VERSION_HTTP_CODE" || "$VERSION_HTTP_CODE" == "000" ]]; then
-        echo -e "${YELLOW}⚠ Could not fetch client version (Connection Timeout)${RESET}"
-    else
-        echo -e "${YELLOW}⚠ Could not fetch client version (HTTP $VERSION_HTTP_CODE)${RESET}"
-    fi
-fi
-
-################################################################################
 # Sepolia RPC Check (Timeout, Connection Feedback, Clear Error State)
 ################################################################################
 
@@ -288,6 +250,35 @@ SEPOLIA_RESPONSE=$(curl -s --connect-timeout 5 -w "\n%{http_code}" -X POST "$EXE
 printf "\r\033[K"
 SEPOLIA_HTTP_CODE=$(echo "$SEPOLIA_RESPONSE" | tail -n1)
 SEPOLIA_BODY=$(echo "$SEPOLIA_RESPONSE" | sed '$d')
+
+# Get execution client version (for all execution clients)
+CLIENT_VERSION=""
+if [[ "$SEPOLIA_HTTP_CODE" == "200" ]]; then
+    printf "✓ Checking client version ..."
+    VERSION_RESPONSE=$(curl -s --connect-timeout 5 -w "\n%{http_code}" -X POST "$EXEC_RPC" \
+        -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0","method":"web3_clientVersion","params":[],"id":1}')
+    printf "\r\033[K"
+    VERSION_HTTP_CODE=$(echo "$VERSION_RESPONSE" | tail -n1)
+    VERSION_BODY=$(echo "$VERSION_RESPONSE" | sed '$d')
+
+    if [[ "$VERSION_HTTP_CODE" == "200" ]]; then
+        FULL_VERSION=$(echo "$VERSION_BODY" | jq -r '.result' 2>/dev/null)
+        if [[ "$FULL_VERSION" != "null" && "$FULL_VERSION" != "" ]]; then
+            # Extract client version (e.g., "Geth/v1.16.4-stable-41714b49", "Nethermind/v1.25.1", etc.)
+            CLIENT_VERSION=$(echo "$FULL_VERSION" | grep -oE '(Geth|Nethermind|Besu|Erigon)/[^/]*' | head -1)
+            if [[ -z "$CLIENT_VERSION" ]]; then
+                CLIENT_VERSION="Unknown Client"
+            fi
+        else
+            CLIENT_VERSION="Version Unavailable"
+        fi
+    else
+        CLIENT_VERSION="Version Check Failed"
+    fi
+fi
+
+# Process Sepolia RPC response
 if [[ "$SEPOLIA_HTTP_CODE" == "200" ]]; then
     SEPOLIA_BLOCKNUM=$(echo "$SEPOLIA_BODY" | jq -r '.result' 2>/dev/null)
     if [[ "$SEPOLIA_BLOCKNUM" != "null" && "$SEPOLIA_BLOCKNUM" != "" ]]; then
