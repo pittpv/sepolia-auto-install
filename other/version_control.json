@@ -78,5 +78,10 @@
     "VERSION": "1.7.3",
     "UPDATE_DATE": "14.10.2025",
     "CHANGES": ["Added version check for execution clients in RPC check option"]
+  },
+  {
+    "VERSION": "1.7.4",
+    "UPDATE_DATE": "10.11.2025",
+    "CHANGES": ["Default checkpoint URL changed"]
   }
 ]

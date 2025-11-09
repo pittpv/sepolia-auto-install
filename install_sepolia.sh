@@ -9,7 +9,7 @@ BLUE='\033[1;34m'
 VIOLET='\033[0;35m'
 RESET='\033[0m'
 
-SCRIPT_VERSION="1.7.3"
+SCRIPT_VERSION="1.7.4"
 
 # Default Port Configurations
 # These variables define the default port numbers for various services.
@@ -1267,7 +1267,7 @@ EOF
       --network sepolia
       --execution-endpoint=$consensus_execution_endpoint
       --execution-jwt=/root/jwt.hex
-      --checkpoint-sync-url=https://sepolia.checkpoint-sync.ethpandaops.io
+      --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/
       --http
       --http-address=0.0.0.0
       --listen-address=0.0.0.0
@@ -1320,7 +1320,7 @@ EOF
       --execution-endpoint=$consensus_execution_endpoint
       --jwt-secret=/jwt.hex
       --accept-terms-of-use
-      --checkpoint-sync-url=https://sepolia.checkpoint-sync.ethpandaops.io
+      --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/
       --grpc-gateway-port=$CONSENSUS_RPC_PORT
       --grpc-gateway-host=0.0.0.0
       --subscribe-all-data-subnets=true
@@ -1370,7 +1370,7 @@ EOF
       --data-path=/data
       --ee-endpoint=$consensus_execution_endpoint
       --ee-jwt-secret-file=/jwt.hex
-      --checkpoint-sync-url=https://sepolia.checkpoint-sync.ethpandaops.io
+      --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/
       --rest-api-enabled=true
       --rest-api-interface=0.0.0.0
       --rest-api-port=$CONSENSUS_RPC_PORT
