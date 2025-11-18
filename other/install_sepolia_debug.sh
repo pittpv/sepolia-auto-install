@@ -1098,7 +1098,7 @@ function load_port_configuration {
       set -o errexit
     fi
     print_success "$(t "loaded_port_config_from_file" "$port_config_file")"
-	print_info "\n$(t "current_port_config" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
+	print_info "$(t "current_port_config" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
   else
     print_info "$(t "port_config_not_found" "$port_config_file")"
   fi
@@ -1108,9 +1108,9 @@ function load_network_configuration {
   local network_file="$NETWORK_FILE"
   if [[ -f "$network_file" ]]; then
     CURRENT_NETWORK=$(cat "$network_file")
-    print_success "✅ Network configuration loaded: $CURRENT_NETWORK"
+    print_success "\n✅ Network configuration loaded: $CURRENT_NETWORK"
   else
-    print_info "ℹ️ No network configuration found. Using default: $NETWORK_DEFAULT"
+    print_info "\nℹ️ No network configuration found. Using default: $NETWORK_DEFAULT"
     CURRENT_NETWORK=$NETWORK_DEFAULT
   fi
 }
@@ -1507,7 +1507,7 @@ EOF
 }
 
 function install_node {
-  print_info "$(t "node_install")"
+  print_info "\n$(t "node_install")"
   mkdir -p "$NODE_DIR"
   choose_network
   ask_for_custom_ports # Call the new function here
