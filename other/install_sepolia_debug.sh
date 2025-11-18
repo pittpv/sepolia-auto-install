@@ -174,7 +174,7 @@ function t {
             "cron_options") echo $'1) Every 5 minutes\n2) Every 10 minutes\n3) Every 15 minutes\n4) Every 30 minutes\n5) Every hour' ;;
             "invalid_interval") echo "Invalid choice. Setting default interval: every 10 minutes." ;;
             "cron_installed") echo "✅ Cron agent installed with interval: $1" ;;
-            "cron_removed") echo "🗑️ Agent and cron task removed." ;;
+            "cron_removed") echo "🗑️ Telegram notification and cron task removed." ;;
             "stop_containers") echo "🛑 Stopping containers... " ;;
             "containers_stopped") echo "✅ Containers stopped." ;;
             "no_compose") echo "⚠️ docker-compose.yml not found." ;;
@@ -497,7 +497,7 @@ function t {
             "cron_options") echo $'1) Каждые 5 минут\n2) Каждые 10 минут\n3) Каждые 15 минут\n4) Каждые 30 минут\n5) Каждый час' ;;
             "invalid_interval") echo "Некорректный выбор. Устанавливаю интервал по умолчанию: каждые 10 минут." ;;
             "cron_installed") echo "✅ Cron-агент установлен и будет запускаться с интервалом: $1" ;;
-            "cron_removed") echo "🗑️ Агент и задача cron удалены." ;;
+            "cron_removed") echo "🗑️ Telegram уведомление и задача cron удалены." ;;
             "stop_containers") echo "🛑 Остановка контейнеров... " ;;
             "containers_stopped") echo "✅ Контейнеры остановлены." ;;
             "no_compose") echo "⚠️ Файл docker-compose.yml не найден." ;;
@@ -2066,7 +2066,7 @@ EOF
 function remove_cron_agent {
   crontab -l 2>/dev/null | grep -v "$AGENT_SCRIPT" | crontab -
   rm -f "$AGENT_SCRIPT"
-  print_success "$(t "cron_removed")"
+  print_success "\n$(t "cron_removed")"
 }
 
 function stop_containers {
