@@ -1399,6 +1399,7 @@ EOF
       --enr-tcp-port=$CONSENSUS_P2P_PORT
       --enr-udp-port=$CONSENSUS_P2P_PORT
       --discovery-port=$CONSENSUS_P2P_PORT
+      --target-peers=50
       --supernode
 
 EOF
@@ -1504,6 +1505,7 @@ EOF
       --metrics-enabled=true
       --metrics-port=8008
       --metrics-host-allowlist=*
+      --p2p-peer-upper-bound=50
       --p2p-subscribe-all-subnets-enabled=true
 EOF
       ;;
