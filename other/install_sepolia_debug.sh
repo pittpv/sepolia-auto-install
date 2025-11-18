@@ -2119,7 +2119,7 @@ function check_disk_usage {
 }
 
 function delete_node {
-  print_warning "$(t "confirm_delete")"
+  print_warning "\n$(t "confirm_delete")"
   read -r confirm
   if [[ "$confirm" == "y" ]]; then
     stop_containers
