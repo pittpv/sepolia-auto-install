@@ -1447,7 +1447,7 @@ EOF
       --grpc-gateway-port=$CONSENSUS_RPC_PORT
       --grpc-gateway-host=0.0.0.0
       --subscribe-all-data-subnets=true
-      --p2p-max-peers=35
+      --p2p-max-peers=50
 EOF
       ;;
     teku)
