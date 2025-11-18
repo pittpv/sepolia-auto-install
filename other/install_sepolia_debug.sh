@@ -3209,7 +3209,7 @@ function main_menu {
   load_network_configuration
   load_resource_configuration # Load resource config at the start of the menu
   while true; do
-    echo -e "\n${RED}DEV NOT FOR PUBLIC USE${RESET} ${BLUE}$(t "menu_title")${RESET} ${RED}DEV NOT FOR PUBLIC USE${RESET}"
+    echo -e "\n${RED}DEV - NOT FOR PUBLIC USE${RESET} ${BLUE}$(t "menu_title")${RESET} ${RED}DEV - NOT FOR PUBLIC USE${RESET}"
     echo -e "$(t "menu_options")"
     echo -e "${BLUE}==================================${RESET}"
     read -p "$(t "select_option")" choice
