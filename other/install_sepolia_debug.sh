@@ -186,7 +186,7 @@ function t {
             "confirm_delete") echo "⚠️ This will delete all node data. Continue? (y/n)" ;;
             "deleted") echo "🗑️ Node completely removed." ;;
             "cancelled") echo "❌ Deletion cancelled." ;;
-            "menu_title") echo "DEV NOT FOR PUBLIC USE ====== Sepolia Node Manager ====== DEV NOT FOR PUBLIC USE" ;;
+            "menu_title") echo "====== Sepolia Node Manager ======" ;;
             "menu_options") echo -e '1) Install prerequisites (Docker and other software)\n2) Install node\n3) Update node\n4) Check logs\n5) Check sync status\n6) Setup cron agent wiht Tg notifications\n7) Remove cron agent\n8) Stop containers\n9) Start containers\n\033[31m10) Delete node\033[0m\n11) Change ports for installed node\n12) Check disk usage\n13) Firewall management\n14) Check RPC server\n15) Configure Docker resources\n\033[31m0) Exit\033[0m' ;;
             "goodbye") echo "👋 Goodbye!" ;;
             "invalid_option") echo "❌ Invalid choice, try again." ;;
@@ -509,7 +509,7 @@ function t {
             "confirm_delete") echo "⚠️ Это действие удалит все данные ноды. Продолжить? (y/n)" ;;
             "deleted") echo "🗑️ Нода полностью удалена." ;;
             "cancelled") echo "❌ Удаление отменено." ;;
-            "menu_title") echo "DEV NOT FOR PUBLIC USE ====== Sepolia Node Manager ====== DEV NOT FOR PUBLIC USE" ;;
+            "menu_title") echo "====== Sepolia Node Manager ======" ;;
             "menu_options") echo -e '1) Установить требования (Docker и другое ПО)\n2) Установить ноду\n3) Обновить ноду\n4) Проверить логи\n5) Проверить статус синхронизации\n6) Установить cron-агент с Тг уведомлениями\n7) Удалить cron-агент\n8) Остановить контейнеры\n9) Запустить контейнеры\n\033[31m10) Удалить ноду\033[0m\n11) Изменить порты для установленной ноды\n12) Проверить занимаемое место\n13) Управление файрволлом\n14) Проверить RPC-сервер\n15) Настроить ресурсы Docker\n\033[31m0) Выйти\033[0m' ;;
             "goodbye") echo "👋 До свидания!" ;;
             "invalid_option") echo "❌ Неверный выбор, попробуйте снова." ;;
@@ -3209,7 +3209,7 @@ function main_menu {
   load_network_configuration
   load_resource_configuration # Load resource config at the start of the menu
   while true; do
-    echo -e "\n${BLUE}$(t "menu_title")${RESET}"
+    echo -e "\n${RED}DEV NOT FOR PUBLIC USE${RESET} ${BLUE}$(t "menu_title")${RESET} ${RED}DEV NOT FOR PUBLIC USE${RESET}"
     echo -e "$(t "menu_options")"
     echo -e "${BLUE}==================================${RESET}"
     read -p "$(t "select_option")" choice
