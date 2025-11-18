@@ -1447,7 +1447,7 @@ EOF
       --grpc-gateway-port=$CONSENSUS_RPC_PORT
       --grpc-gateway-host=0.0.0.0
       --subscribe-all-data-subnets=true
-      --p2p-max-peers=60
+      --p2p-max-peers=35
 EOF
       ;;
     teku)
@@ -3220,7 +3220,7 @@ function main_menu {
   while true; do
     echo -e "\n${RED}DEV - NOT FOR PUBLIC USE${RESET} ${BLUE}$(t "menu_title")${RESET} ${RED}DEV - NOT FOR PUBLIC USE${RESET}"
     echo -e "$(t "menu_options")"
-    echo -e "${BLUE}================${RED}DEV - NOT FOR PUBLIC USE${RESET}==================${RESET}"
+    echo -e "${BLUE}================${RED}DEV - NOT FOR PUBLIC USE${RESET}${BLUE}==================${RESET}"
     read -p "$(t "select_option")" choice
     case $choice in
       1) install_requirements ;;
