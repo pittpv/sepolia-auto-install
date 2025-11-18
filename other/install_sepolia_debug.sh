@@ -1311,7 +1311,7 @@ function create_docker_compose {
   # Reverted to simple, non-conditional volume definition
   # execution_client_volumes="- $NODE_DIR/$execution_client_data_dir_name:/data\n      - $JWT_FILE:/jwt.hex" # REMOVED
 
-  print_info "$(t "creating_compose" "$consensus_client / $execution_client")"
+  print_info "\n$(t "creating_compose" "$consensus_client / $execution_client")"
   cat > "$DOCKER_COMPOSE_FILE" <<EOF
 services:
   $execution_client_container_name:
@@ -1531,7 +1531,7 @@ function install_node {
     exit 1
   fi
   docker compose -f "$DOCKER_COMPOSE_FILE" up -d
-  print_success "$(t "node_installed")"
+  print_success "\n$(t "node_installed")"
   echo -e "${BLUE}RPC:${RESET}      http://$(curl -s https://ip4only.me/api/ | cut -d',' -f2):$EXECUTION_RPC_PORT"
   echo -e "${BLUE}BEACON:${RESET}   http://$(curl -s https://ip4only.me/api/ | cut -d',' -f2):$CONSENSUS_RPC_PORT"
 }
