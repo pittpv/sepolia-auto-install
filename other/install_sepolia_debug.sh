@@ -3203,10 +3203,6 @@ function apply_resource_limits_to_existing_node {
         return 1
     fi
 
-    # Stop containers first
-    print_info "$(t "stop_containers")"
-    docker compose -f "$DOCKER_COMPOSE_FILE" down
-
     # Configure new resource limits
     configure_docker_resources
 
@@ -3223,6 +3219,10 @@ function apply_resource_limits_to_existing_node {
     fi
 
     create_docker_compose
+
+    # Stop containers first
+    print_info "$(t "stop_containers")"
+    docker compose -f "$DOCKER_COMPOSE_FILE" down
 
     # Start containers with new limits
     print_info "$(t "start_containers")"
