@@ -83,5 +83,10 @@
     "VERSION": "1.7.4",
     "UPDATE_DATE": "10.11.2025",
     "CHANGES": ["Default checkpoint URL changed"]
+  },
+  {
+    "VERSION": "1.8.0",
+    "UPDATE_DATE": "20.11.2025",
+    "CHANGES": ["Update of the Docker resource usage restriction function","Distance display for beacon in notification","Added installation in mainnet, Holesky, Hoodi, Sepolia","Minor improvements"]
   }
 ]

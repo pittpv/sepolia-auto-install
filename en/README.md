@@ -1,15 +1,15 @@
-# 🛰️ Sepolia RPC Node Installer All in one
+# 🛰️ Ethereum RPC Node Installer All in one
 
 🇷🇺 [for Russian](https://github.com/pittpv/sepolia-auto-install/blob/main/ "Russian version of description")
 
 ![First screen](https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/img-en-2025-05-22-15-29-52.png)
 
-An interactive bash script for installing, managing and monitoring an Ethereum Sepolia node with support for choosing an execution client (Geth (recommended), Reth, Nethermind) and a consensus client (Prysm (recommended), Lighthouse, Teku), synchronization monitoring and a cron agent with notifications about the node's status in Telegram.
+An interactive bash script for installing, managing and monitoring an Ethereum RPC node in mainnet, Holesky, Hoodi, Sepolia networks with support for choosing an execution client (Geth (recommended), Reth, Nethermind) and a consensus client (Prysm (recommended), Lighthouse, Teku), synchronization monitoring and a cron agent with notifications about the node's status in Telegram.
 
 ## 📦 Features
 
 * 📦 System update and prerequisites install
-* 🔧 Install and run Sepolia node with selected consensus client
+* 🔧 Install and run RPC node with selected EL and CL
 * 🐳 Automatically generate `docker-compose.yml`
 * 📊 Check sync status (execution and consensus)
 * 📋 View logs
@@ -39,18 +39,31 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | Component          | Requirement                        |
 |--------------------|------------------------------------|
 | **OS**             | Ubuntu 20.04 or later              |
-| **RAM**            | 16 GB and more                     |
+| **RAM**            | 24 GB and more                     |
 | **CPU**            | 8 cores and more                   |
 | **Disk**           | 800 GB SSD (can grow up to 1.5 TB) |
 
-## 📌 Latest Updates 10-11-2025
+## 📌 Latest Updates 20-11-2025
 
-- The default checkpoint URL has been changed for BEACON clients.
+⚠️ Update the script ➡️ Delete the old RPC node ➡️ Install a new RPC node
+
+- Beacon node operation has been stabilized
+- Update of the Docker resource usage restriction function (Option 15, also when installing the node)
+  - Restrictions are assigned only to the execution client
+  - New calculation logic for RAM
+  - New calculation logic for CPU
+  - Minimum requirements 24 RAM, 8 CPU
+- Distance display for beacon has been added to the synchronization status notification.
+- Added installation in mainnet, Holesky, Hoodi, Sepolia
+- Minor improvements
 
 ---
 
 <details>
 <summary>📅 Version History</summary>
+
+### 10-11-2025
+- The default checkpoint URL has been changed for BEACON clients.
 
 ### 14-10-2025
 - **Preparation for the Fusaka update**
@@ -145,8 +158,8 @@ The script offers the following menu (available in English or Russian):
 3. Update containers
 4. View logs
 5. Check sync status
-6. Set up cron agent with Tg notifications
-7. Remove cron agent
+6. Set up Telegram notifications with sync status
+7. Remove Telegram notifications
 8. Stop containers
 9. Start containers
 10. Delete node

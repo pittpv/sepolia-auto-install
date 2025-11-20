@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# ✦ Made by Pittpv
+# ✦ Feedback & Support in Tg: https://t.me/+DLsyG6ol3SFjM2Vk
+# ✦ https://x.com/pittpv
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -9,7 +13,7 @@ BLUE='\033[1;34m'
 VIOLET='\033[0;35m'
 RESET='\033[0m'
 
-SCRIPT_VERSION="1.7.4"
+SCRIPT_VERSION="1.8.0"
 
 # Default Port Configurations
 # These variables define the default port numbers for various services.
@@ -28,8 +32,13 @@ EXECUTION_AUTH_RPC_PORT=$EXECUTION_AUTH_RPC_PORT_DEFAULT
 CONSENSUS_RPC_PORT=$CONSENSUS_RPC_PORT_DEFAULT
 CONSENSUS_P2P_PORT=$CONSENSUS_P2P_PORT_DEFAULT
 
+NETWORK_FILE="$NODE_DIR/network"
+NETWORK_DEFAULT="sepolia"
+
+CURRENT_NETWORK=$NETWORK_DEFAULT
+
 function show_logo() {
-    echo -e "${BLUE}$(t "welcome")${RESET}"
+    echo -e "\n${BLUE}$(t "welcome")${RESET}"
     curl -s https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/logo.sh | bash
 }
 
@@ -58,14 +67,14 @@ function t {
 
     if [[ "$lang" == "en" ]]; then
         case "$key" in
-            "welcome") echo "              Welcome to the Sepolia Ethereum Node Setup and Management Script" ;;
+            "welcome") echo "Welcome to the Ethereum RPC Node Setup and Management Script" ;;
             "jwt_gen") echo "🔐 Generating jwt.hex..." ;;
             "choose_client") echo "🔧 Choose consensus client:" ;;
             "client_selected") echo "✅ Selected client: $1" ;;
             "invalid_choice") echo "❌ Invalid choice. Please try again." ;;
             "creating_compose") echo "🛠️ Creating docker-compose.yml for client $1..." ;;
             "unknown_client") echo "❌ Unknown client: $1" ;;
-            "node_install") echo "🚀 Installing Sepolia node..." ;;
+            "node_install") echo "🚀 Installing RPC node..." ;;
             "node_installed") echo "✅ Node installed and running." ;;
             "node_update") echo "🔄 Updating containers..." ;;
             "node_updated") echo "✅ Update completed." ;;
@@ -101,7 +110,7 @@ function t {
             "cron_options") echo $'1) Every 5 minutes\n2) Every 10 minutes\n3) Every 15 minutes\n4) Every 30 minutes\n5) Every hour' ;;
             "invalid_interval") echo "Invalid choice. Setting default interval: every 10 minutes." ;;
             "cron_installed") echo "✅ Cron agent installed with interval: $1" ;;
-            "cron_removed") echo "🗑️ Agent and cron task removed." ;;
+            "cron_removed") echo "🗑️ Telegram notification and cron task removed." ;;
             "stop_containers") echo "🛑 Stopping containers... " ;;
             "containers_stopped") echo "✅ Containers stopped." ;;
             "no_compose") echo "⚠️ docker-compose.yml not found." ;;
@@ -113,8 +122,8 @@ function t {
             "confirm_delete") echo "⚠️ This will delete all node data. Continue? (y/n)" ;;
             "deleted") echo "🗑️ Node completely removed." ;;
             "cancelled") echo "❌ Deletion cancelled." ;;
-            "menu_title") echo "====== Sepolia Node Manager ======" ;;
-            "menu_options") echo -e '1) Install prerequisites (Docker and other software)\n2) Install node\n3) Update node\n4) Check logs\n5) Check sync status\n6) Setup cron agent wiht Tg notifications\n7) Remove cron agent\n8) Stop containers\n9) Start containers\n\033[31m10) Delete node\033[0m\n11) Change ports for installed node\n12) Check disk usage\n13) Firewall management\n14) Check RPC server\n15) Configure Docker resources\n\033[31m0) Exit\033[0m' ;;
+            "menu_title") echo "====== RPC Node Manager ======" ;;
+            "menu_options") echo -e '1) Install prerequisites (Docker and other software)\n\033[0;32m2) Install node\033[0m\n3) Update node\n4) Check logs\n5) Check sync status\n\033[0;32m6) Set up Telegram notifications with sync status\033[0m\n\033[31m7) Remove Telegram notifications\033[0m\n8) Stop containers\n9) Start containers\n\033[31m10) Delete node\033[0m\n11) Change ports for installed node\n12) Check disk usage\n13) Firewall management\n14) Check RPC server\n15) Configure Docker resources\n\033[31m0) Exit\033[0m' ;;
             "goodbye") echo "👋 Goodbye!" ;;
             "invalid_option") echo "❌ Invalid choice, try again." ;;
             "select_option") echo "Select option: " ;;
@@ -174,7 +183,7 @@ function t {
             "nethermind_synced_fully") echo "Nethermind: Fully Synced (eth_syncing returned false)." ;;
             "nethermind_sync_data_missing") echo "Nethermind: Sync data missing from eth_syncing (after confirming not fully synced)." ;;
             "nethermind_rpc_error") printf "Nethermind: Error calling RPC method %s." "$1" ;;
-            "chatid_linked") echo "✅ ChatID successfully linked to Sepolia node" ;;
+            "chatid_linked") echo "✅ ChatID successfully linked to RPC node" ;;
             "invalid_token") echo "Invalid Telegram bot token. Please try again." ;;
             "token_format") echo "Token should be in format: 1234567890:ABCdefGHIJKlmNoPQRsTUVwxyZ" ;;
             "invalid_chatid") echo "Invalid Telegram chat ID or the bot doesn't have access to this chat. Please try again." ;;
@@ -190,7 +199,7 @@ function t {
             "restart_required") echo "♻️ To apply changes, restart the node containers, remove the old cron agent, and create a new one." ;;
             "current_script_version") echo "📌 Current script version:" ;;
             "new_version_avialable") echo "🚀 New version available:" ;;
-            "new_version_update") echo "Please update your Sepolia script" ;;
+            "new_version_update") echo "Please update your RPC script" ;;
             "version_up_to_date") echo "✅ You are using the latest version" ;;
             # Basic messages
             "press_enter_to_continue") echo "Press Enter to continue..." ;;
@@ -342,7 +351,7 @@ function t {
             # Main menu
             "script_works_in_iptables") echo "Script works with iptables using DOCKER-USER chain and duplicates rules for ufw." ;;
             "port_ip_management_logic") echo "Port/IP management logic is based on adding/removing allow rules." ;;
-            "on_first_run") echo "Before working with the function, run the Sepolia node installation. On first run:" ;;
+            "on_first_run") echo "Before working with the function, run the RPC node installation. On first run:" ;;
             "first_run_option_1") echo "First run option 1. Confirm ufw activation and ensure iptables are configured;" ;;
             "first_run_option_2") echo "Then using option 2 (item 1 within the option), open the required ports for your node to work. For example for Aztec: 8080,40400" ;;
             "first_run_option_3") echo "Finally using option 2 (item 3 within the option), block RPC and BEACON ports for incoming connections." ;;
@@ -381,14 +390,14 @@ function t {
         esac
     else
         case "$key" in
-            "welcome") echo "          Добро пожаловать в скрипт установки и управления нодой Sepolia Ethereum" ;;
+            "welcome") echo "Добро пожаловать в скрипт установки и управления нодой RPC Ethereum" ;;
             "jwt_gen") echo "🔐 Генерация jwt.hex..." ;;
             "choose_client") echo "🔧 Выберите consensus клиент:" ;;
             "client_selected") echo "✅ Выбран клиент: $1" ;;
             "invalid_choice") echo "❌ Неверный выбор. Попробуйте снова." ;;
             "creating_compose") echo "🛠️ Создание docker-compose.yml для клиента $1..." ;;
             "unknown_client") echo "❌ Неизвестный клиент: $1" ;;
-            "node_install") echo "🚀 Установка Sepolia-ноды..." ;;
+            "node_install") echo "🚀 Установка RPC-ноды..." ;;
             "node_installed") echo "✅ Нода установлена и запущена." ;;
             "node_update") echo "🔄 Обновление контейнеров..." ;;
             "node_updated") echo "✅ Обновление завершено." ;;
@@ -424,7 +433,7 @@ function t {
             "cron_options") echo $'1) Каждые 5 минут\n2) Каждые 10 минут\n3) Каждые 15 минут\n4) Каждые 30 минут\n5) Каждый час' ;;
             "invalid_interval") echo "Некорректный выбор. Устанавливаю интервал по умолчанию: каждые 10 минут." ;;
             "cron_installed") echo "✅ Cron-агент установлен и будет запускаться с интервалом: $1" ;;
-            "cron_removed") echo "🗑️ Агент и задача cron удалены." ;;
+            "cron_removed") echo "🗑️ Telegram уведомление и задача cron удалены." ;;
             "stop_containers") echo "🛑 Остановка контейнеров... " ;;
             "containers_stopped") echo "✅ Контейнеры остановлены." ;;
             "no_compose") echo "⚠️ Файл docker-compose.yml не найден." ;;
@@ -436,8 +445,8 @@ function t {
             "confirm_delete") echo "⚠️ Это действие удалит все данные ноды. Продолжить? (y/n)" ;;
             "deleted") echo "🗑️ Нода полностью удалена." ;;
             "cancelled") echo "❌ Удаление отменено." ;;
-            "menu_title") echo "====== Sepolia Node Manager ======" ;;
-            "menu_options") echo -e '1) Установить требования (Docker и другое ПО)\n2) Установить ноду\n3) Обновить ноду\n4) Проверить логи\n5) Проверить статус синхронизации\n6) Установить cron-агент с Тг уведомлениями\n7) Удалить cron-агент\n8) Остановить контейнеры\n9) Запустить контейнеры\n\033[31m10) Удалить ноду\033[0m\n11) Изменить порты для установленной ноды\n12) Проверить занимаемое место\n13) Управление файрволлом\n14) Проверить RPC-сервер\n15) Настроить ресурсы Docker\n\033[31m0) Выйти\033[0m' ;;
+            "menu_title") echo "====== RPC Node Manager ======" ;;
+            "menu_options") echo -e '1) Установить требования (Docker и другое ПО)\n\033[0;32m2) Установить ноду\033[0m\n3) Обновить ноду\n4) Проверить логи\n5) Проверить статус синхронизации\n\033[0;32m6) Настроить Telegram уведомления со сатусом синхронизации\033[0m\n\033[31m7) Удалить Telegram уведомления\033[0m\n8) Остановить контейнеры\n9) Запустить контейнеры\n\033[31m10) Удалить ноду\033[0m\n11) Изменить порты для установленной ноды\n12) Проверить занимаемое место\n13) Управление файрволлом\n14) Проверить RPC-сервер\n15) Настроить ресурсы Docker\n\033[31m0) Выйти\033[0m' ;;
             "goodbye") echo "👋 До свидания!" ;;
             "invalid_option") echo "❌ Неверный выбор, попробуйте снова." ;;
             "select_option") echo "Выберите опцию: " ;;
@@ -497,7 +506,7 @@ function t {
             "nethermind_synced_fully") echo "Nethermind: Полностью синхронизирован (eth_syncing вернул false)." ;;
             "nethermind_sync_data_missing") echo "Nethermind: Данные синхронизации отсутствуют в eth_syncing (после подтверждения неполной синхронизации)." ;;
             "nethermind_rpc_error") printf "Nethermind: Ошибка при вызове RPC метода %s." "$1" ;;
-            "chatid_linked") echo "✅ ChatID успешно связан с Sepolia node" ;;
+            "chatid_linked") echo "✅ ChatID успешно связан с RPC нодой" ;;
             "invalid_token") echo "Неверный токен Telegram бота. Пожалуйста, попробуйте снова." ;;
             "token_format") echo "Токен должен быть в формате: 1234567890:ABCdefGHIJKlmNoPQRsTUVwxyZ" ;;
             "invalid_chatid") echo "Неверный Chat ID или бот не имеет доступа к этому чату. Пожалуйста, попробуйте снова." ;;
@@ -513,7 +522,7 @@ function t {
             "restart_required") echo "♻️ Для применения изменений перезапустите контейнеры ноды, удалите старого cron-агента и создайте нового." ;;
             "current_script_version") echo "📌 Текущая версия скрипта:" ;;
             "new_version_avialable") echo "🚀 Доступна новая версия:" ;;
-            "new_version_update") echo "Пожалуйста, обновите Sepolia скрипт" ;;
+            "new_version_update") echo "Пожалуйста, обновите RPC скрипт" ;;
             "version_up_to_date") echo "✅ Установлена актуальная версия" ;;
             "ufw_wrong_ip") echo "Неверный IP-адрес. Попробуйте снова" ;;
             # Основные сообщения
@@ -666,7 +675,7 @@ function t {
             # Главное меню
             "script_works_in_iptables") echo "Скрипт работает в iptables c цепочкой DOCKER-USER и дублирует правила для ufw." ;;
             "port_ip_management_logic") echo "Логика управления портами/адресами построена на добавлении/удалении разрешающих правил." ;;
-            "on_first_run") echo "Перед работой с функцией запустите установку Sepolia ноды. При первом запуске:" ;;
+            "on_first_run") echo "Перед работой с функцией запустите установку RPC ноды. При первом запуске:" ;;
             "first_run_option_1") echo "Cначала запустите опцию 1. Подтвердите включение ufw и убедитесь что iptables настроены;" ;;
             "first_run_option_2") echo "Затем, используя опцию 2 (пункт 1 внутри опции), откройте необходимые порты для работы вашей ноды. Например для Aztec: 8080,40400" ;;
             "first_run_option_3") echo "В завершение, используя опцию 2 (пункт 3 внутри опции), выполните блокировку RPC и BEACON портов для входящих соединений." ;;
@@ -739,6 +748,74 @@ function check_version() {
 
 }
 
+function choose_network {
+  mkdir -p "$NODE_DIR"
+
+  local options=("mainnet" "sepolia" "holesky" "hoodi")
+  local labels=(
+    "Ethereum Mainnet"
+    "Sepolia Testnet"
+    "Holesky Testnet"
+    "Hoodi Testnet"
+  )
+
+  PS3="🌐 Choose network:"$'\n> '
+  select opt_label in "${labels[@]}"; do
+    case $REPLY in
+      1|2|3|4)
+        local selected="${options[$((REPLY-1))]}"
+        echo "$selected" > "$NETWORK_FILE"
+        print_success "✅ Selected network: $selected"
+        CURRENT_NETWORK=$selected
+        return
+        ;;
+      *) print_error "❌ Invalid choice. Please try again." ;;
+    esac
+  done
+}
+
+function get_network_params {
+  local network=$1
+  case $network in
+    mainnet)
+      echo "--network mainnet --checkpoint-sync-url=https://sync-mainnet.beaconcha.in/"
+      ;;
+    sepolia)
+      echo "--network sepolia --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/"
+      ;;
+    holesky)
+      echo "--network holesky --checkpoint-sync-url=https://beaconstate-holesky.chainsafe.io/"
+      ;;
+    hoodi)
+      echo "--network hoodi --checkpoint-sync-url=https://beaconstate-hoodi.chainsafe.io/"
+      ;;
+    *)
+      echo "--network sepolia --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/"
+      ;;
+  esac
+}
+
+function get_execution_network_flag {
+  local network=$1
+  case $network in
+    mainnet)
+      echo "--mainnet"
+      ;;
+    sepolia)
+      echo "--sepolia"
+      ;;
+    holesky)
+      echo "--holesky"
+      ;;
+    hoodi)
+      echo "--hoodi"
+      ;;
+    *)
+      echo "--sepolia"
+      ;;
+  esac
+}
+
 # Функция для автоматической настройки ресурсов Docker контейнеров
 function configure_docker_resources() {
     print_info "\n$(t "configuring_docker_resources")"
@@ -755,43 +832,109 @@ function configure_docker_resources() {
     echo "   CPU Threads: ${cpu_threads}"
 
     # Рассчитываем оптимальные настройки
-    # Оставляем 20% ресурсов для системы Ubuntu
-    local system_reserve_ram_mb=$((total_ram_mb * 20 / 100))
-    local system_reserve_cpu=$((cpu_cores * 20 / 100))
+    # Оставляем ресурсы для системы Ubuntu
+    # Для RAM: резервируем 2GB или 25% от общей памяти (что больше)
+    local system_reserve_ram_mb=$((total_ram_mb * 25 / 100))
+    local min_system_ram_mb=2048  # 2GB минимум для Ubuntu
+    if [[ $system_reserve_ram_mb -lt $min_system_ram_mb ]]; then
+        system_reserve_ram_mb=$min_system_ram_mb
+    fi
+    # Но не более 4GB для системы
+    if [[ $system_reserve_ram_mb -gt 4096 ]]; then
+        system_reserve_ram_mb=4096
+    fi
+
+    # Для CPU: резервируем 2 ядра или 25% (что больше)
+    local system_reserve_cpu=$((cpu_cores * 25 / 100))
+    local min_system_cpu=1  # 1 ядро минимум для Ubuntu
+    if [[ $system_reserve_cpu -lt $min_system_cpu ]]; then
+        system_reserve_cpu=$min_system_cpu
+    fi
+    # Но не более 4 ядер для системы
+    if [[ $system_reserve_cpu -gt 4 ]]; then
+        system_reserve_cpu=4
+    fi
 
     # Доступные ресурсы для контейнеров
     local available_ram_mb=$((total_ram_mb - system_reserve_ram_mb))
+    local available_ram_gb=$((available_ram_mb / 1024))
     local available_cpu=$((cpu_cores - system_reserve_cpu))
 
-    # Распределяем ресурсы между execution и consensus клиентами
-    # Execution клиент получает 60% ресурсов, consensus - 40%
-    local execution_ram_mb=$((available_ram_mb * 60 / 100))
-    local consensus_ram_mb=$((available_ram_mb * 40 / 100))
-    local execution_cpu=$((available_cpu * 60 / 100))
-    local consensus_cpu=$((available_cpu * 40 / 100))
-
-    # Минимальные значения для работы
-    if [[ $execution_ram_mb -lt 2048 ]]; then
-        execution_ram_mb=2048  # Минимум 2GB для execution клиента
-    fi
-    if [[ $consensus_ram_mb -lt 1024 ]]; then
-        consensus_ram_mb=1024  # Минимум 1GB для consensus клиента
-    fi
-    if [[ $execution_cpu -lt 1 ]]; then
-        execution_cpu=1
-    fi
-    if [[ $consensus_cpu -lt 1 ]]; then
-        consensus_cpu=1
+    # ПРОВЕРКА МИНИМАЛЬНЫХ ТРЕБОВАНИЙ
+    if [[ $available_ram_gb -lt 20 ]]; then
+        print_error "ERROR: Not enough RAM. Minimum 24 GB total required. Only $available_ram_gb GB available for EL/CL clients."
+        exit 1
     fi
 
-    # Конвертируем в формат для Docker
-    local execution_ram_gb=$(printf "%.1f" $(echo "scale=1; $execution_ram_mb/1024" | bc -l))
-    local consensus_ram_gb=$(printf "%.1f" $(echo "scale=1; $consensus_ram_mb/1024" | bc -l))
+    if [[ $available_cpu -lt 6 ]]; then
+        print_error "ERROR: Not enough CPU. Minimum 8 CPU total required. Only $available_cpu CPU available for EL/CL client."
+        exit 1
+    fi
+
+    # УСТАНАВЛИВАЕМ ОГРАНИЧЕНИЯ ТОЛЬКО ДЛЯ EXECUTION CLIENT
+    # Consensus client работает без ограничений
+
+    # RAM ДЛЯ EXECUTION CLIENT
+    if [[ $available_ram_gb -ge 32 ]]; then
+        # Богатая конфигурация (≥32 GB доступно) - пропорционально больше
+        execution_limit_ram_gb=$((available_ram_gb * 70 / 100))  # 70% от доступной
+        execution_reserve_ram_gb=$((available_ram_gb * 50 / 100)) # 50% от доступной
+    elif [[ $available_ram_gb -ge 24 ]]; then
+        # Оптимальная конфигурация (24-31 GB доступно)
+        execution_limit_ram_gb=18
+        execution_reserve_ram_gb=12
+    elif [[ $available_ram_gb -ge 20 ]]; then
+        # Средняя конфигурация (20-23 GB доступно)
+        execution_limit_ram_gb=16
+        execution_reserve_ram_gb=10
+    else
+        # Минимальная конфигурация (14-19 GB доступно)
+        execution_limit_ram_gb=14
+        execution_reserve_ram_gb=12
+    fi
+
+    # CPU ДЛЯ EXECUTION CLIENT
+    if [[ $available_cpu -ge 16 ]]; then
+        # Богатая конфигурация (≥16 CPU доступно) - пропорционально больше
+        execution_limit_cpu=$((available_cpu * 70 / 100))  # 70% от доступных
+        execution_reserve_cpu=$((available_cpu * 50 / 100)) # 50% от доступных
+    elif [[ $available_cpu -ge 12 ]]; then
+        # Оптимальная конфигурация (12-15 CPU доступно)
+        execution_limit_cpu=8
+        execution_reserve_cpu=6
+    elif [[ $available_cpu -ge 8 ]]; then
+        # Средняя конфигурация (8-11 CPU доступно)
+        execution_limit_cpu=6
+        execution_reserve_cpu=4
+    else
+        # Минимальная конфигурация (4-7 CPU доступно)
+        execution_limit_cpu=4
+        execution_reserve_cpu=4
+    fi
+
+    # ГАРАНТИРУЕМ, ЧТО EXECUTION РЕЗЕРВЫ НЕ ПРЕВЫШАЮТ ДОСТУПНУЮ ПАМЯТЬ
+    if [[ $execution_reserve_ram_gb -gt $available_ram_gb ]]; then
+        execution_reserve_ram_gb=$available_ram_gb
+    fi
+
+    # ГАРАНТИРУЕМ, ЧТО EXECUTION ЛИМИТЫ НЕ ПРЕВЫШАЮТ ДОСТУПНУЮ ПАМЯТЬ
+    if [[ $execution_limit_ram_gb -gt $available_ram_gb ]]; then
+        execution_limit_ram_gb=$available_ram_gb
+    fi
+
+    # ГАРАНТИРУЕМ, ЧТО EXECUTION РЕЗЕРВЫ НЕ ПРЕВЫШАЮТ ЛИМИТЫ
+    if [[ $execution_reserve_ram_gb -gt $execution_limit_ram_gb ]]; then
+        execution_reserve_ram_gb=$execution_limit_ram_gb
+    fi
+    if [[ $execution_reserve_cpu -gt $execution_limit_cpu ]]; then
+        execution_reserve_cpu=$execution_limit_cpu
+    fi
 
     print_info "\n$(t "calculated_resources")"
     echo "   System Reserve: ${system_reserve_ram_mb}MB RAM, ${system_reserve_cpu} CPU cores"
-    echo "   Execution Client: ${execution_ram_gb}GB RAM, ${execution_cpu} CPU cores"
-    echo "   Consensus Client: ${consensus_ram_gb}GB RAM, ${consensus_cpu} CPU cores"
+    echo "   Execution Client RAM: limit=${execution_limit_ram_gb}G, reservation=${execution_reserve_ram_gb}G"
+    echo "   Execution Client CPU: limit=${execution_limit_cpu} CPU cores, reservation=${execution_reserve_cpu} CPU cores"
+    echo "   Consensus Client is not limited for stability of work"
 
     # Запрашиваем согласие пользователя
     echo ""
@@ -809,18 +952,18 @@ function configure_docker_resources() {
                 print_info "\n$(t "applying_resource_limits")"
 
                 # Сохраняем настройки в переменные для использования в create_docker_compose
-                EXECUTION_MEMORY_LIMIT="${execution_ram_gb}G"
-                CONSENSUS_MEMORY_LIMIT="${consensus_ram_gb}G"
-                EXECUTION_CPU_LIMIT="${execution_cpu}.0"
-                CONSENSUS_CPU_LIMIT="${consensus_cpu}.0"
+                EXECUTION_MEMORY_LIMIT="${execution_limit_ram_gb}G"
+                EXECUTION_MEMORY_RESERVATION="${execution_reserve_ram_gb}G"
+                EXECUTION_CPU_LIMIT="${execution_limit_cpu}.0"
+                EXECUTION_CPU_RESERVATION="${execution_reserve_cpu}.0"
 
                 # Сохраняем настройки в файл для последующего использования
                 local resource_config_file="$NODE_DIR/resource_config.env"
                 {
                     echo "EXECUTION_MEMORY_LIMIT=\"$EXECUTION_MEMORY_LIMIT\""
-                    echo "CONSENSUS_MEMORY_LIMIT=\"$CONSENSUS_MEMORY_LIMIT\""
+                    echo "EXECUTION_MEMORY_RESERVATION=\"$EXECUTION_MEMORY_RESERVATION\""
                     echo "EXECUTION_CPU_LIMIT=\"$EXECUTION_CPU_LIMIT\""
-                    echo "CONSENSUS_CPU_LIMIT=\"$CONSENSUS_CPU_LIMIT\""
+                    echo "EXECUTION_CPU_RESERVATION=\"$EXECUTION_CPU_RESERVATION\""
                     echo "TOTAL_RAM_GB=\"$total_ram_gb\""
                     echo "CPU_CORES=\"$cpu_cores\""
                     echo "RESOURCE_LIMITS_ENABLED=\"true\""
@@ -836,17 +979,17 @@ function configure_docker_resources() {
 
                 # Устанавливаем значения без ограничений
                 EXECUTION_MEMORY_LIMIT=""
-                CONSENSUS_MEMORY_LIMIT=""
+                EXECUTION_MEMORY_RESERVATION=""
                 EXECUTION_CPU_LIMIT=""
-                CONSENSUS_CPU_LIMIT=""
+                EXECUTION_CPU_RESERVATION=""
 
                 # Сохраняем настройки в файл
                 local resource_config_file="$NODE_DIR/resource_config.env"
                 {
                     echo "EXECUTION_MEMORY_LIMIT=\"\""
-                    echo "CONSENSUS_MEMORY_LIMIT=\"\""
+                    echo "EXECUTION_MEMORY_RESERVATION=\"\""
                     echo "EXECUTION_CPU_LIMIT=\"\""
-                    echo "CONSENSUS_CPU_LIMIT=\"\""
+                    echo "EXECUTION_CPU_RESERVATION=\"\""
                     echo "TOTAL_RAM_GB=\"$total_ram_gb\""
                     echo "CPU_CORES=\"$cpu_cores\""
                     echo "RESOURCE_LIMITS_ENABLED=\"false\""
@@ -880,9 +1023,9 @@ function load_resource_configuration() {
     else
         # Устанавливаем значения по умолчанию (без ограничений)
         EXECUTION_MEMORY_LIMIT=""
-        CONSENSUS_MEMORY_LIMIT=""
+        EXECUTION_MEMORY_RESERVATION=""
         EXECUTION_CPU_LIMIT=""
-        CONSENSUS_CPU_LIMIT=""
+        EXECUTION_CPU_RESERVATION=""
         RESOURCE_LIMITS_ENABLED="false"
         print_info "\n$(t "using_default_resources")"
     fi
@@ -977,7 +1120,6 @@ function ask_for_custom_ports {
   print_success "$(t "ports_configured_message" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
 }
 
-
 function load_port_configuration {
   local port_config_file="$NODE_DIR/port_config.env"
   print_info "\n$(t "loading_port_config")"
@@ -996,9 +1138,20 @@ function load_port_configuration {
       set -o errexit
     fi
     print_success "$(t "loaded_port_config_from_file" "$port_config_file")"
-	print_info "\n$(t "current_port_config" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
+	print_info "$(t "current_port_config" "$EXECUTION_RPC_PORT" "$EXECUTION_P2P_PORT" "$EXECUTION_AUTH_RPC_PORT" "$CONSENSUS_RPC_PORT" "$CONSENSUS_P2P_PORT")"
   else
     print_info "$(t "port_config_not_found" "$port_config_file")"
+  fi
+}
+
+function load_network_configuration {
+  local network_file="$NETWORK_FILE"
+  if [[ -f "$network_file" ]]; then
+    CURRENT_NETWORK=$(cat "$network_file")
+    print_success "\n✅ Network configuration loaded: $CURRENT_NETWORK"
+  else
+    print_info "\nℹ️ No network configuration found. Using default: $NETWORK_DEFAULT"
+    CURRENT_NETWORK=$NETWORK_DEFAULT
   fi
 }
 
@@ -1106,7 +1259,7 @@ function create_docker_compose {
       execution_client_image="ethereum/client-go:stable"
       execution_client_container_name="geth"
       execution_client_data_dir_name="geth" # Keep this as the client name itself
-      execution_client_command="      --sepolia
+      execution_client_command="      --$CURRENT_NETWORK
       --datadir=/data
       --http
       --http.addr=0.0.0.0
@@ -1127,7 +1280,7 @@ function create_docker_compose {
       execution_client_container_name="reth"
       execution_client_data_dir_name="reth" # Keep this as the client name itself
       execution_client_command="      node
-      --chain=sepolia
+      --chain=$CURRENT_NETWORK
       --datadir=/data
       --http
       --http.port=$EXECUTION_RPC_PORT
@@ -1142,7 +1295,7 @@ function create_docker_compose {
       execution_client_image="nethermind/nethermind:latest"
       execution_client_container_name="nethermind"
       execution_client_data_dir_name="nethermind" # Keep this as the client name itself
-      execution_client_command="      --config=sepolia
+      execution_client_command="      --config=$CURRENT_NETWORK
       --datadir=/data
       --Sync.SnapSync=true
       --JsonRpc.Enabled=true
@@ -1166,7 +1319,7 @@ function create_docker_compose {
       execution_client_image="ethereum/client-go:stable"
       execution_client_container_name="geth"
       execution_client_data_dir_name="geth"
-      execution_client_command="      --sepolia
+      execution_client_command="      --$CURRENT_NETWORK
       --datadir=/data
       --http
       --http.addr=0.0.0.0
@@ -1189,7 +1342,7 @@ function create_docker_compose {
   # Reverted to simple, non-conditional volume definition
   # execution_client_volumes="- $NODE_DIR/$execution_client_data_dir_name:/data\n      - $JWT_FILE:/jwt.hex" # REMOVED
 
-  print_info "$(t "creating_compose" "$consensus_client / $execution_client")"
+  print_info "\n$(t "creating_compose" "$consensus_client / $execution_client")"
   cat > "$DOCKER_COMPOSE_FILE" <<EOF
 services:
   $execution_client_container_name:
@@ -1207,8 +1360,8 @@ EOF
           memory: ${EXECUTION_MEMORY_LIMIT:-4G}
           cpus: '${EXECUTION_CPU_LIMIT:-2.0}'
         reservations:
-          memory: ${EXECUTION_MEMORY_LIMIT:-4G}
-          cpus: '${EXECUTION_CPU_LIMIT:-2.0}'
+          memory: ${EXECUTION_MEMORY_RESERVATION:-4G}
+          cpus: '${EXECUTION_CPU_RESERVATION:-2.0}'
 EOF
   fi
 
@@ -1229,7 +1382,7 @@ EOF
 
   case $consensus_client in
     lighthouse)
-      # mkdir -p "$NODE_DIR/consensus/lighthouse" # REMOVED
+
       cat >> "$DOCKER_COMPOSE_FILE" <<EOF
 
   lighthouse:
@@ -1238,20 +1391,7 @@ EOF
     restart: unless-stopped
 EOF
 
-      # Добавляем ограничения ресурсов только если они включены
-      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    deploy:
-      resources:
-        limits:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-        reservations:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-EOF
-      fi
-
+      local network_params=$(get_network_params "$CURRENT_NETWORK")
       cat >> "$DOCKER_COMPOSE_FILE" <<EOF
     volumes:
       - $NODE_DIR/lighthouse:/root/.lighthouse
@@ -1264,10 +1404,10 @@ EOF
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"
     command:
       lighthouse bn
-      --network sepolia
+      --network $CURRENT_NETWORK
       --execution-endpoint=$consensus_execution_endpoint
       --execution-jwt=/root/jwt.hex
-      --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/
+      --checkpoint-sync-url=$(echo $(get_network_params "$CURRENT_NETWORK") | grep -o 'https://[^ ]*')
       --http
       --http-address=0.0.0.0
       --listen-address=0.0.0.0
@@ -1290,20 +1430,6 @@ EOF
     restart: unless-stopped
 EOF
 
-      # Добавляем ограничения ресурсов только если они включены
-      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    deploy:
-      resources:
-        limits:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-        reservations:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-EOF
-      fi
-
       cat >> "$DOCKER_COMPOSE_FILE" <<EOF
     volumes:
       - $NODE_DIR/prysm:/data
@@ -1315,12 +1441,12 @@ EOF
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"
     command:
-      --sepolia
+      --$CURRENT_NETWORK
       --datadir=/data
       --execution-endpoint=$consensus_execution_endpoint
       --jwt-secret=/jwt.hex
       --accept-terms-of-use
-      --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/
+      --checkpoint-sync-url=$(echo $(get_network_params "$CURRENT_NETWORK") | grep -o 'https://[^ ]*')
       --grpc-gateway-port=$CONSENSUS_RPC_PORT
       --grpc-gateway-host=0.0.0.0
       --subscribe-all-data-subnets=true
@@ -1341,20 +1467,6 @@ EOF
     restart: unless-stopped
 EOF
 
-      # Добавляем ограничения ресурсов только если они включены
-      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    deploy:
-      resources:
-        limits:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-        reservations:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-EOF
-      fi
-
       cat >> "$DOCKER_COMPOSE_FILE" <<EOF
     volumes:
       - $NODE_DIR/teku:/data
@@ -1366,11 +1478,11 @@ EOF
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/tcp"   # P2P TCP
       - "$CONSENSUS_P2P_PORT:$CONSENSUS_P2P_PORT/udp"   # P2P UDP
     command:
-      --network=sepolia
+      --network=$CURRENT_NETWORK
       --data-path=/data
       --ee-endpoint=$consensus_execution_endpoint
       --ee-jwt-secret-file=/jwt.hex
-      --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/
+      --checkpoint-sync-url=$(echo $(get_network_params "$CURRENT_NETWORK") | grep -o 'https://[^ ]*')
       --rest-api-enabled=true
       --rest-api-interface=0.0.0.0
       --rest-api-port=$CONSENSUS_RPC_PORT
@@ -1392,8 +1504,9 @@ EOF
 }
 
 function install_node {
-  print_info "$(t "node_install")"
+  print_info "\n$(t "node_install")"
   mkdir -p "$NODE_DIR"
+  choose_network
   ask_for_custom_ports # Call the new function here
   choose_execution_client
   choose_consensus_client
@@ -1406,7 +1519,7 @@ function install_node {
     exit 1
   fi
   docker compose -f "$DOCKER_COMPOSE_FILE" up -d
-  print_success "$(t "node_installed")"
+  print_success "\n$(t "node_installed")"
   echo -e "${BLUE}RPC:${RESET}      http://$(curl -s https://ip4only.me/api/ | cut -d',' -f2):$EXECUTION_RPC_PORT"
   echo -e "${BLUE}BEACON:${RESET}   http://$(curl -s https://ip4only.me/api/ | cut -d',' -f2):$CONSENSUS_RPC_PORT"
 }
@@ -1898,11 +2011,12 @@ fi
 # Check Consensus Client
 consensus_response=\$(curl -s http://localhost:${CONSENSUS_RPC_PORT}/eth/v1/node/syncing)
 is_syncing=\$(echo "\$consensus_response" | jq -r '.data.is_syncing' 2>/dev/null)
+sync_distance=\$(echo "\$consensus_response" | jq -r '.data.sync_distance' 2>/dev/null)
 
 if [ "\$is_syncing" == "false" ]; then
-  consensus_status="✅ \$CLIENT_DISPLAY_NAME synced" # CLIENT_DISPLAY_NAME here is consensus_client_name
+  consensus_status="✅ \$CLIENT_DISPLAY_NAME synced (sync_distance: \$sync_distance)" # CLIENT_DISPLAY_NAME here is consensus_client_name
 elif [ "\$is_syncing" == "true" ]; then
-  consensus_status="⚠️ \$CLIENT_DISPLAY_NAME syncing in progress" # CLIENT_DISPLAY_NAME here is consensus_client_name
+  consensus_status="⚠️ \$CLIENT_DISPLAY_NAME syncing in progress (sync_distance: \$sync_distance)" # CLIENT_DISPLAY_NAME here is consensus_client_name
 else
   curl -s -X POST "https://api.telegram.org/bot\$TG_TOKEN/sendMessage" \\
     --data-urlencode "chat_id=\$TG_CHAT_ID" \\
@@ -1915,7 +2029,7 @@ get_ip_address() {
 }
 ip=\$(get_ip_address)
 
-STATUS_MSG="[Sepolia Node Monitor]
+STATUS_MSG="[RPC Node Monitor]
 🌐 Server: \$ip
 Execution client: \$execution_status
 Consensus client: \$consensus_status"
@@ -1940,7 +2054,7 @@ EOF
 function remove_cron_agent {
   crontab -l 2>/dev/null | grep -v "$AGENT_SCRIPT" | crontab -
   rm -f "$AGENT_SCRIPT"
-  print_success "$(t "cron_removed")"
+  print_success "\n$(t "cron_removed")"
 }
 
 function stop_containers {
@@ -1993,7 +2107,7 @@ function check_disk_usage {
 }
 
 function delete_node {
-  print_warning "$(t "confirm_delete")"
+  print_warning "\n$(t "confirm_delete")"
   read -r confirm
   if [[ "$confirm" == "y" ]]; then
     stop_containers
@@ -3084,14 +3198,67 @@ function run_rpc_check {
   bash <(curl -s "$URL") || print_error "Failed to run RPC check script."
 }
 
+function apply_resource_limits_to_existing_node {
+    print_info "\n🔧 Applying resource limits to existing node..."
+
+    # Check if node is installed
+    if [[ ! -f "$DOCKER_COMPOSE_FILE" ]]; then
+        print_error "❌ Node is not installed. Please install node first."
+        return 1
+    fi
+
+    # Configure new resource limits
+    configure_docker_resources
+
+    # Reload resource configuration to get the new values
+    load_resource_configuration
+
+    # Recreate docker-compose with new resource limits
+    local consensus_client=$(cat "$CLIENT_FILE" 2>/dev/null || echo "")
+    local execution_client=$(cat "$EXECUTION_CLIENT_FILE" 2>/dev/null || echo "geth")
+
+    if [[ -z "$consensus_client" ]]; then
+        print_error "$(t "unknown_client" "$consensus_client")"
+        return 1
+    fi
+
+    create_docker_compose
+
+    # Stop containers first
+    print_info "$(t "stop_containers")"
+    docker compose -f "$DOCKER_COMPOSE_FILE" down
+
+    # Start containers with new limits
+    print_info "$(t "start_containers")"
+    docker compose -f "$DOCKER_COMPOSE_FILE" up -d
+
+    print_success "✅ Resource limits successfully applied to existing node!"
+
+    # Show current resource configuration
+    if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$EXECUTION_MEMORY_LIMIT" ]]; then
+        print_info "\n📊 Current resource limits:"
+        echo "   Execution Client RAM: limit=${EXECUTION_MEMORY_LIMIT}, reservation=${EXECUTION_MEMORY_RESERVATION}"
+        echo "   Execution Client CPU: limit=${EXECUTION_CPU_LIMIT}, reservation=${EXECUTION_CPU_RESERVATION}"
+        echo "   Consensus Client: No limits applied (for stability)"
+        print_info "$(t "resource_limits_enabled")"
+    else
+        print_info "$(t "resource_limits_disabled")"
+    fi
+}
+
+# ✦ Made by Pittpv
+# ✦ Feedback & Support in Tg: https://t.me/+DLsyG6ol3SFjM2Vk
+# ✦ https://x.com/pittpv
+
 # Main menu
 function main_menu {
   show_logo
   check_version
   load_port_configuration # Load config at the start of the menu
+  load_network_configuration
   load_resource_configuration # Load resource config at the start of the menu
   while true; do
-    echo -e "\n${BLUE}$(t "menu_title")${RESET}"
+    echo -e "\n${BLUE}$(t "menu_title")${RESET}${RESET}"
     echo -e "$(t "menu_options")"
     echo -e "${BLUE}==================================${RESET}"
     read -p "$(t "select_option")" choice
@@ -3110,7 +3277,7 @@ function main_menu {
       12) check_disk_usage ;;
       13) firewall_setup ;;
       14) run_rpc_check ;;
-      15) configure_docker_resources ;;
+      15) apply_resource_limits_to_existing_node ;;
       0) print_info "$(t "goodbye")"; exit 0 ;;
       *) print_error "$(t "invalid_option")" ;;
     esac
