@@ -69,8 +69,8 @@ Or use the guide to update without deleting data - [Update-from-1-7-x-to-1-8-0.m
 
 ### 14-10-2025
 - **Preparation for the Fusaka update**
-    - Updating the image address for Prysm
-    - Enabling supernode mode for beacon clients
+  - Updating the image address for Prysm
+  - Enabling supernode mode for beacon clients
 - Added version check for execution clients in RPC check option (option 14)
 
 All changes will apply to nodes installed with script version **1.7.2** dated 14.10.2025. If you installed your node earlier, please follow the instructions in the messages:
@@ -79,8 +79,8 @@ All changes will apply to nodes installed with script version **1.7.2** dated 14
 
 ### 01-09-2025
 - Added an option that allows configuring CPU and RAM usage limits for EL and CL clients.
-    - When this option is enabled, 20% of the server’s operating system resources are always reserved. The remaining resources are divided in a 60:40 ratio between EL and CL clients.
-    - The option is automatically activated when installing the RPC node (you can opt out of setting limits) or can be launched separately on an already running node (requires a restart of the node containers).
+  - When this option is enabled, 20% of the server’s operating system resources are always reserved. The remaining resources are divided in a 60:40 ratio between EL and CL clients.
+  - The option is automatically activated when installing the RPC node (you can opt out of setting limits) or can be launched separately on an already running node (requires a restart of the node containers).
 
 ### 21-08-2025
 - Updated RPC check script to latest version. Thanks @web3.creed (Discord)
@@ -90,12 +90,12 @@ All changes will apply to nodes installed with script version **1.7.2** dated 14
 
 ### 07-08-2025
 - The Firewall Management function has been completely rewritten. Rules now actually work properly. Thanks to @luce1970 (Discord) for identifying the bug.
-   - Can manage both ports and IP addresses
-   - Incoming/outgoing, TCP/UDP, all directions
-   - Add/remove rules by rule number correctly
-   - Separate or simultaneous deletion of iptables and ufw rules
-   - Block all incoming connections
-   - The function manages IPTABLES rules and duplicates them in UFW
+  - Can manage both ports and IP addresses
+  - Incoming/outgoing, TCP/UDP, all directions
+  - Add/remove rules by rule number correctly
+  - Separate or simultaneous deletion of iptables and ufw rules
+  - Block all incoming connections
+  - The function manages IPTABLES rules and duplicates them in UFW
 - Added flag in Geth to remove the 1 ETH limit
 - Minor improvements
 
