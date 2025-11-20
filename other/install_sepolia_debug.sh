@@ -936,7 +936,7 @@ function configure_docker_resources() {
     echo "   System Reserve: ${system_reserve_ram_mb}MB RAM, ${system_reserve_cpu} CPU cores"
     echo "   Execution Client RAM: limit=${execution_limit_ram_gb}G, reservation=${execution_reserve_ram_gb}G"
     echo "   Execution Client CPU: limit=${execution_limit_cpu} CPU cores, reservation=${execution_reserve_cpu} CPU cores"
-    echo "   Consensus client is not limited for stability of work"
+    echo "   Consensus Client is not limited for stability of work"
     #echo "   Consensus Client: limit=${consensus_limit_ram_gb}G, reservation=${consensus_reserve_ram_gb}G, ${consensus_cpu} CPU cores"
 
     # Запрашиваем согласие пользователя
@@ -959,8 +959,9 @@ function configure_docker_resources() {
                 EXECUTION_MEMORY_RESERVATION="${execution_reserve_ram_gb}G"
                 CONSENSUS_MEMORY_LIMIT="${consensus_limit_ram_gb}G"
                 CONSENSUS_MEMORY_RESERVATION="${consensus_reserve_ram_gb}G"
-                EXECUTION_CPU_LIMIT="${execution_cpu}.0"
-                CONSENSUS_CPU_LIMIT="${consensus_cpu}.0"
+                EXECUTION_CPU_LIMIT="${execution_limit_cpu}.0"
+                EXECUTION_CPU_RESERVATION="${execution_reserve_cpu}.0"
+                #CONSENSUS_CPU_LIMIT="${execution_reserve_cpu}.0"
 
                 # Сохраняем настройки в файл для последующего использования
                 local resource_config_file="$NODE_DIR/resource_config.env"
@@ -970,7 +971,8 @@ function configure_docker_resources() {
                     echo "CONSENSUS_MEMORY_LIMIT=\"$CONSENSUS_MEMORY_LIMIT\""
                     echo "CONSENSUS_MEMORY_RESERVATION=\"$CONSENSUS_MEMORY_RESERVATION\""
                     echo "EXECUTION_CPU_LIMIT=\"$EXECUTION_CPU_LIMIT\""
-                    echo "CONSENSUS_CPU_LIMIT=\"$CONSENSUS_CPU_LIMIT\""
+                    echo "EXECUTION_CPU_RESERVATION=\"$EXECUTION_CPU_RESERVATION\""
+                    #echo "CONSENSUS_CPU_LIMIT=\"$CONSENSUS_CPU_LIMIT\""
                     echo "TOTAL_RAM_GB=\"$total_ram_gb\""
                     echo "CPU_CORES=\"$cpu_cores\""
                     echo "RESOURCE_LIMITS_ENABLED=\"true\""
@@ -990,7 +992,8 @@ function configure_docker_resources() {
                 CONSENSUS_MEMORY_LIMIT=""
                 CONSENSUS_MEMORY_RESERVATION=""
                 EXECUTION_CPU_LIMIT=""
-                CONSENSUS_CPU_LIMIT=""
+                EXECUTION_CPU_RESERVATION=""
+                #CONSENSUS_CPU_LIMIT=""
 
                 # Сохраняем настройки в файл
                 local resource_config_file="$NODE_DIR/resource_config.env"
@@ -1000,7 +1003,8 @@ function configure_docker_resources() {
                     echo "CONSENSUS_MEMORY_LIMIT=\"\""
                     echo "CONSENSUS_MEMORY_RESERVATION=\"\""
                     echo "EXECUTION_CPU_LIMIT=\"\""
-                    echo "CONSENSUS_CPU_LIMIT=\"\""
+                    echo "EXECUTION_CPU_RESERVATION=\"\""
+                    #echo "CONSENSUS_CPU_LIMIT=\"\""
                     echo "TOTAL_RAM_GB=\"$total_ram_gb\""
                     echo "CPU_CORES=\"$cpu_cores\""
                     echo "RESOURCE_LIMITS_ENABLED=\"false\""
@@ -1038,7 +1042,9 @@ function load_resource_configuration() {
         CONSENSUS_MEMORY_LIMIT=""
         CONSENSUS_MEMORY_RESERVATION=""
         EXECUTION_CPU_LIMIT=""
-        CONSENSUS_CPU_LIMIT=""
+        EXECUTION_CPU_RESERVATION=""
+        #CONSENSUS_CPU_LIMIT=""
+        #CONSENSUS_CPU_RESERVATION=""
         RESOURCE_LIMITS_ENABLED="false"
         print_info "\n$(t "using_default_resources")"
     fi
@@ -1374,7 +1380,7 @@ EOF
           cpus: '${EXECUTION_CPU_LIMIT:-2.0}'
         reservations:
           memory: ${EXECUTION_MEMORY_RESERVATION:-4G}
-          cpus: '${EXECUTION_CPU_LIMIT:-2.0}'
+          cpus: '${EXECUTION_CPU_RESERVATION:-2.0}'
 EOF
   fi
 
