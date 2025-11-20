@@ -13,7 +13,7 @@ BLUE='\033[1;34m'
 VIOLET='\033[0;35m'
 RESET='\033[0m'
 
-SCRIPT_VERSION="1.8.0"
+SCRIPT_VERSION="1.7.4"
 
 # Default Port Configurations
 # These variables define the default port numbers for various services.
