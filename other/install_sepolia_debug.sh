@@ -934,7 +934,9 @@ function configure_docker_resources() {
 
     print_info "\n$(t "calculated_resources")"
     echo "   System Reserve: ${system_reserve_ram_mb}MB RAM, ${system_reserve_cpu} CPU cores"
-    echo "   Execution Client: limit=${execution_limit_ram_gb}G, reservation=${execution_reserve_ram_gb}G, ${execution_cpu} CPU cores"
+    echo "   Execution Client RAM: limit=${execution_limit_ram_gb}G, reservation=${execution_reserve_ram_gb}G"
+    echo "   Execution Client CPU: limit=${execution_limit_cpu} CPU cores, reservation=${execution_reserve_cpu} CPU cores"
+    echo "   Consensus client is not limited for stability of work"
     #echo "   Consensus Client: limit=${consensus_limit_ram_gb}G, reservation=${consensus_reserve_ram_gb}G, ${consensus_cpu} CPU cores"
 
     # Запрашиваем согласие пользователя
