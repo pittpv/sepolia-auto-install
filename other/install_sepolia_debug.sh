@@ -857,13 +857,13 @@ function configure_docker_resources() {
     local available_cpu=$((cpu_cores - system_reserve_cpu))
 
     # ПРОВЕРКА МИНИМАЛЬНЫХ ТРЕБОВАНИЙ
-    if [[ $available_ram_gb -lt 14 ]]; then
-        echo "ERROR: Not enough RAM. Minimum 24 GB total, $available_ram_gb GB available for execution client."
+    if [[ $available_ram_gb -lt 20 ]]; then
+        print_error "ERROR: Not enough RAM. Minimum 24 GB total required. Only $available_ram_gb GB available for EL/CL clients."
         exit 1
     fi
 
-    if [[ $available_cpu -lt 4 ]]; then
-        echo "ERROR: Not enough CPU. Minimum 8 CPU total, $available_cpu available for execution client."
+    if [[ $available_cpu -lt 6 ]]; then
+        print_error "ERROR: Not enough CPU. Minimum 8 CPU total required. Only $available_cpu CPU available for EL/CL client."
         exit 1
     fi
 
@@ -3194,6 +3194,54 @@ function run_rpc_check {
   bash <(curl -s "$URL") || print_error "Failed to run RPC check script."
 }
 
+function apply_resource_limits_to_existing_node {
+    print_info "\n🔧 Applying resource limits to existing node..."
+
+    # Check if node is installed
+    if [[ ! -f "$DOCKER_COMPOSE_FILE" ]]; then
+        print_error "❌ Node is not installed. Please install node first."
+        return 1
+    fi
+
+    # Stop containers first
+    print_info "$(t "stop_containers")"
+    docker compose -f "$DOCKER_COMPOSE_FILE" down
+
+    # Configure new resource limits
+    configure_docker_resources
+
+    # Reload resource configuration to get the new values
+    load_resource_configuration
+
+    # Recreate docker-compose with new resource limits
+    local consensus_client=$(cat "$CLIENT_FILE" 2>/dev/null || echo "")
+    local execution_client=$(cat "$EXECUTION_CLIENT_FILE" 2>/dev/null || echo "geth")
+
+    if [[ -z "$consensus_client" ]]; then
+        print_error "$(t "unknown_client" "$consensus_client")"
+        return 1
+    fi
+
+    create_docker_compose
+
+    # Start containers with new limits
+    print_info "$(t "start_containers")"
+    docker compose -f "$DOCKER_COMPOSE_FILE" up -d
+
+    print_success "✅ Resource limits successfully applied to existing node!"
+
+    # Show current resource configuration
+    if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$EXECUTION_MEMORY_LIMIT" ]]; then
+        print_info "\n📊 Current resource limits:"
+        echo "   Execution Client RAM: limit=${EXECUTION_MEMORY_LIMIT}, reservation=${EXECUTION_MEMORY_RESERVATION}"
+        echo "   Execution Client CPU: limit=${EXECUTION_CPU_LIMIT}, reservation=${EXECUTION_CPU_RESERVATION}"
+        echo "   Consensus Client: No limits applied (for stability)"
+        print_info "$(t "resource_limits_enabled")"
+    else
+        print_info "$(t "resource_limits_disabled")"
+    fi
+}
+
 # Main menu
 function main_menu {
   show_logo
@@ -3221,7 +3269,7 @@ function main_menu {
       12) check_disk_usage ;;
       13) firewall_setup ;;
       14) run_rpc_check ;;
-      15) configure_docker_resources ;;
+      15) apply_resource_limits_to_existing_node ;;
       0) print_info "$(t "goodbye")"; exit 0 ;;
       *) print_error "$(t "invalid_option")" ;;
     esac
