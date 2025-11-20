@@ -45,7 +45,8 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 
 ## 📌 Latest Updates 20-11-2025
 
-⚠️ Update the script ➡️ Delete the old RPC node ➡️ Install a new RPC node
+⚠️ Update the script ➡️ Delete the old RPC node ➡️ Install a new RPC node, setup new monitoring
+Or use the guide to update without deleting data - other/Update-from-1-7-4-to-1-8-0.md
 
 - Added installation in mainnet, Holesky, Hoodi, Sepolia
 - Beacon node operation has been stabilized
