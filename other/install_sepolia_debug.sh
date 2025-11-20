@@ -828,72 +828,114 @@ function configure_docker_resources() {
     echo "   CPU Threads: ${cpu_threads}"
 
     # Рассчитываем оптимальные настройки
-    # Оставляем 20% ресурсов для системы Ubuntu
-    local system_reserve_ram_mb=$((total_ram_mb * 20 / 100))
-    local system_reserve_cpu=$((cpu_cores * 20 / 100))
+    # Оставляем ресурсы для системы Ubuntu
+    # Для RAM: резервируем 2GB или 25% от общей памяти (что больше)
+    local system_reserve_ram_mb=$((total_ram_mb * 25 / 100))
+    local min_system_ram_mb=2048  # 2GB минимум для Ubuntu
+    if [[ $system_reserve_ram_mb -lt $min_system_ram_mb ]]; then
+        system_reserve_ram_mb=$min_system_ram_mb
+    fi
+    # Но не более 4GB для системы
+    if [[ $system_reserve_ram_mb -gt 4096 ]]; then
+        system_reserve_ram_mb=4096
+    fi
+
+    # Для CPU: резервируем 2 ядра или 25% (что больше)
+    local system_reserve_cpu=$((cpu_cores * 25 / 100))
+    local min_system_cpu=1  # 1 ядро минимум для Ubuntu
+    if [[ $system_reserve_cpu -lt $min_system_cpu ]]; then
+        system_reserve_cpu=$min_system_cpu
+    fi
+    # Но не более 4 ядер для системы
+    if [[ $system_reserve_cpu -gt 4 ]]; then
+        system_reserve_cpu=4
+    fi
 
     # Доступные ресурсы для контейнеров
     local available_ram_mb=$((total_ram_mb - system_reserve_ram_mb))
     local available_ram_gb=$((available_ram_mb / 1024))
     local available_cpu=$((cpu_cores - system_reserve_cpu))
 
-    # Распределяем ресурсы между execution и consensus клиентами
-    # Оба клиента могут использовать одну и ту же RAM с разными гарантиями
-    local execution_limit_ram_gb=$((available_ram_gb * 70 / 100))  # 70% от доступной
-    local execution_reserve_ram_gb=$((available_ram_gb * 50 / 100)) # 50% от доступной
-
-    local consensus_limit_ram_gb=$((available_ram_gb * 70 / 100))   # 70% от доступной
-    local consensus_reserve_ram_gb=$((available_ram_gb * 40 / 100)) # 40% от доступной
-
-    # Минимальные значения для работы
-    if [[ $execution_limit_ram_gb -lt 2 ]]; then
-        execution_limit_ram_gb=2
-        execution_reserve_ram_gb=2
-    fi
-    if [[ $execution_reserve_ram_gb -lt 2 ]]; then
-        execution_reserve_ram_gb=2
+    # ПРОВЕРКА МИНИМАЛЬНЫХ ТРЕБОВАНИЙ
+    if [[ $available_ram_gb -lt 14 ]]; then
+        echo "ERROR: Not enough RAM. Minimum 24 GB total, $available_ram_gb GB available for execution client."
+        exit 1
     fi
 
-    if [[ $consensus_limit_ram_gb -lt 1 ]]; then
-        consensus_limit_ram_gb=1
-        consensus_reserve_ram_gb=1
-    fi
-    if [[ $consensus_reserve_ram_gb -lt 1 ]]; then
-        consensus_reserve_ram_gb=1
+    if [[ $available_cpu -lt 4 ]]; then
+        echo "ERROR: Not enough CPU. Minimum 8 CPU total, $available_cpu available for execution client."
+        exit 1
     fi
 
-    # Проверяем, чтобы reservations не превышали limits
+    # УСТАНАВЛИВАЕМ ОГРАНИЧЕНИЯ ТОЛЬКО ДЛЯ EXECUTION CLIENT
+    # Consensus client работает без ограничений
+
+    # RAM ДЛЯ EXECUTION CLIENT
+    if [[ $available_ram_gb -ge 32 ]]; then
+        # Богатая конфигурация (≥32 GB доступно) - пропорционально больше
+        execution_limit_ram_gb=$((available_ram_gb * 70 / 100))  # 70% от доступной
+        execution_reserve_ram_gb=$((available_ram_gb * 50 / 100)) # 50% от доступной
+    elif [[ $available_ram_gb -ge 24 ]]; then
+        # Оптимальная конфигурация (24-31 GB доступно)
+        execution_limit_ram_gb=18
+        execution_reserve_ram_gb=12
+    elif [[ $available_ram_gb -ge 20 ]]; then
+        # Средняя конфигурация (20-23 GB доступно)
+        execution_limit_ram_gb=16
+        execution_reserve_ram_gb=10
+    else
+        # Минимальная конфигурация (14-19 GB доступно)
+        execution_limit_ram_gb=14
+        execution_reserve_ram_gb=12
+    fi
+
+    # CPU ДЛЯ EXECUTION CLIENT
+    if [[ $available_cpu -ge 16 ]]; then
+        # Богатая конфигурация (≥16 CPU доступно) - пропорционально больше
+        execution_limit_cpu=$((available_cpu * 70 / 100))  # 70% от доступных
+        execution_reserve_cpu=$((available_cpu * 50 / 100)) # 50% от доступных
+    elif [[ $available_cpu -ge 12 ]]; then
+        # Оптимальная конфигурация (12-15 CPU доступно)
+        execution_limit_cpu=8
+        execution_reserve_cpu=6
+    elif [[ $available_cpu -ge 8 ]]; then
+        # Средняя конфигурация (8-11 CPU доступно)
+        execution_limit_cpu=6
+        execution_reserve_cpu=4
+    else
+        # Минимальная конфигурация (4-7 CPU доступно)
+        execution_limit_cpu=4
+        execution_reserve_cpu=4
+    fi
+
+    # CONSENSUS CLIENT - БЕЗ ОГРАНИЧЕНИЙ (использует оставшиеся ресурсы)
+    consensus_limit_ram_gb=0  # 0 означает нет ограничения
+    consensus_reserve_ram_gb=0
+    consensus_limit_cpu=0
+    consensus_reserve_cpu=0
+
+    # ГАРАНТИРУЕМ, ЧТО EXECUTION РЕЗЕРВЫ НЕ ПРЕВЫШАЮТ ДОСТУПНУЮ ПАМЯТЬ
+    if [[ $execution_reserve_ram_gb -gt $available_ram_gb ]]; then
+        execution_reserve_ram_gb=$available_ram_gb
+    fi
+
+    # ГАРАНТИРУЕМ, ЧТО EXECUTION ЛИМИТЫ НЕ ПРЕВЫШАЮТ ДОСТУПНУЮ ПАМЯТЬ
+    if [[ $execution_limit_ram_gb -gt $available_ram_gb ]]; then
+        execution_limit_ram_gb=$available_ram_gb
+    fi
+
+    # ГАРАНТИРУЕМ, ЧТО EXECUTION РЕЗЕРВЫ НЕ ПРЕВЫШАЮТ ЛИМИТЫ
     if [[ $execution_reserve_ram_gb -gt $execution_limit_ram_gb ]]; then
         execution_reserve_ram_gb=$execution_limit_ram_gb
     fi
-    if [[ $consensus_reserve_ram_gb -gt $consensus_limit_ram_gb ]]; then
-        consensus_reserve_ram_gb=$consensus_limit_ram_gb
-    fi
-
-    # CPU распределение с минимальными значениями 4, но без превышения доступных
-    local execution_cpu=$((available_cpu * 60 / 100))
-    local consensus_cpu=$((available_cpu * 40 / 100))
-
-    # Минимальные значения 4, но не более available_cpu
-    if [[ $execution_cpu -lt 4 ]]; then
-        execution_cpu=4
-    fi
-    if [[ $consensus_cpu -lt 4 ]]; then
-        consensus_cpu=4
-    fi
-
-    # Проверяем, чтобы сумма не превышала available_cpu
-    local total_required=$((execution_cpu + consensus_cpu))
-    if [[ $total_required -gt $available_cpu ]]; then
-        # Перераспределяем пропорционально
-        execution_cpu=$((available_cpu * 50 / 100))
-        consensus_cpu=$((available_cpu - execution_cpu))
+    if [[ $execution_reserve_cpu -gt $execution_limit_cpu ]]; then
+        execution_reserve_cpu=$execution_limit_cpu
     fi
 
     print_info "\n$(t "calculated_resources")"
     echo "   System Reserve: ${system_reserve_ram_mb}MB RAM, ${system_reserve_cpu} CPU cores"
     echo "   Execution Client: limit=${execution_limit_ram_gb}G, reservation=${execution_reserve_ram_gb}G, ${execution_cpu} CPU cores"
-    echo "   Consensus Client: limit=${consensus_limit_ram_gb}G, reservation=${consensus_reserve_ram_gb}G, ${consensus_cpu} CPU cores"
+    #echo "   Consensus Client: limit=${consensus_limit_ram_gb}G, reservation=${consensus_reserve_ram_gb}G, ${consensus_cpu} CPU cores"
 
     # Запрашиваем согласие пользователя
     echo ""
@@ -1360,19 +1402,19 @@ EOF
     restart: unless-stopped
 EOF
 
-      # Добавляем ограничения ресурсов только если они включены
-      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    deploy:
-      resources:
-        limits:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-        reservations:
-          memory: ${CONSENSUS_MEMORY_RESERVATION:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-EOF
-      fi
+#      # Добавляем ограничения ресурсов только если они включены
+#      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
+#        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
+#    deploy:
+#      resources:
+#        limits:
+#          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
+#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
+#        reservations:
+#          memory: ${CONSENSUS_MEMORY_RESERVATION:-2G}
+#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
+#EOF
+#      fi
 
       local network_params=$(get_network_params "$CURRENT_NETWORK")
       cat >> "$DOCKER_COMPOSE_FILE" <<EOF
@@ -1399,7 +1441,6 @@ EOF
       --enr-tcp-port=$CONSENSUS_P2P_PORT
       --enr-udp-port=$CONSENSUS_P2P_PORT
       --discovery-port=$CONSENSUS_P2P_PORT
-      --target-peers=50
       --supernode
 
 EOF
@@ -1414,19 +1455,19 @@ EOF
     restart: unless-stopped
 EOF
 
-      # Добавляем ограничения ресурсов только если они включены
-      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    deploy:
-      resources:
-        limits:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-        reservations:
-          memory: ${CONSENSUS_MEMORY_RESERVATION:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-EOF
-      fi
+#      # Добавляем ограничения ресурсов только если они включены
+#      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
+#        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
+#    deploy:
+#      resources:
+#        limits:
+#          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
+#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
+#        reservations:
+#          memory: ${CONSENSUS_MEMORY_RESERVATION:-2G}
+#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
+#EOF
+#      fi
 
       cat >> "$DOCKER_COMPOSE_FILE" <<EOF
     volumes:
@@ -1448,7 +1489,6 @@ EOF
       --grpc-gateway-port=$CONSENSUS_RPC_PORT
       --grpc-gateway-host=0.0.0.0
       --subscribe-all-data-subnets=true
-      --p2p-max-peers=50
 EOF
       ;;
     teku)
@@ -1466,19 +1506,19 @@ EOF
     restart: unless-stopped
 EOF
 
-      # Добавляем ограничения ресурсов только если они включены
-      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-    deploy:
-      resources:
-        limits:
-          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-        reservations:
-          memory: ${CONSENSUS_MEMORY_RESERVATION:-2G}
-          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-EOF
-      fi
+#      # Добавляем ограничения ресурсов только если они включены
+#      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
+#        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
+#    deploy:
+#      resources:
+#        limits:
+#          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
+#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
+#        reservations:
+#          memory: ${CONSENSUS_MEMORY_RESERVATION:-2G}
+#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
+#EOF
+#      fi
 
       cat >> "$DOCKER_COMPOSE_FILE" <<EOF
     volumes:
@@ -1505,7 +1545,6 @@ EOF
       --metrics-enabled=true
       --metrics-port=8008
       --metrics-host-allowlist=*
-      --p2p-peer-upper-bound=50
       --p2p-subscribe-all-subnets-enabled=true
 EOF
       ;;
