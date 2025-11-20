@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# ✦ Made by Pittpv
+# ✦ Feedback & Support in Tg: https://t.me/+DLsyG6ol3SFjM2Vk
+# ✦ https://x.com/pittpv
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -9,7 +13,7 @@ BLUE='\033[1;34m'
 VIOLET='\033[0;35m'
 RESET='\033[0m'
 
-SCRIPT_VERSION="1.7.4"
+SCRIPT_VERSION="1.8.0"
 
 # Default Port Configurations
 # These variables define the default port numbers for various services.
@@ -33,77 +37,9 @@ NETWORK_DEFAULT="sepolia"
 
 CURRENT_NETWORK=$NETWORK_DEFAULT
 
-function choose_network {
-  mkdir -p "$NODE_DIR"
-
-  local options=("mainnet" "sepolia" "holesky" "hoodi")
-  local labels=(
-    "Ethereum Mainnet"
-    "Sepolia Testnet"
-    "Holesky Testnet"
-    "Hoodi Testnet"
-  )
-
-  PS3="🌐 Choose network:"$'\n> '
-  select opt_label in "${labels[@]}"; do
-    case $REPLY in
-      1|2|3|4)
-        local selected="${options[$((REPLY-1))]}"
-        echo "$selected" > "$NETWORK_FILE"
-        print_success "✅ Selected network: $selected"
-        CURRENT_NETWORK=$selected
-        return
-        ;;
-      *) print_error "❌ Invalid choice. Please try again." ;;
-    esac
-  done
-}
-
-function get_network_params {
-  local network=$1
-  case $network in
-    mainnet)
-      echo "--network mainnet --checkpoint-sync-url=https://sync-mainnet.beaconcha.in/"
-      ;;
-    sepolia)
-      echo "--network sepolia --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/"
-      ;;
-    holesky)
-      echo "--network holesky --checkpoint-sync-url=https://beaconstate-holesky.chainsafe.io/"
-      ;;
-    hoodi)
-      echo "--network hoodi --checkpoint-sync-url=https://beaconstate-hoodi.chainsafe.io/"
-      ;;
-    *)
-      echo "--network sepolia --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/"
-      ;;
-  esac
-}
-
-function get_execution_network_flag {
-  local network=$1
-  case $network in
-    mainnet)
-      echo "--mainnet"
-      ;;
-    sepolia)
-      echo "--sepolia"
-      ;;
-    holesky)
-      echo "--holesky"
-      ;;
-    hoodi)
-      echo "--hoodi"
-      ;;
-    *)
-      echo "--sepolia"
-      ;;
-  esac
-}
-
 function show_logo() {
-    echo -e "${BLUE}$(t "welcome")${RESET}"
-    curl -s https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/logo.sh | bash
+    echo -e "\n${BLUE}$(t "welcome")${RESET}"
+    curl -s https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/logo_debug.sh | bash
 }
 
 # Language selection
@@ -131,7 +67,7 @@ function t {
 
     if [[ "$lang" == "en" ]]; then
         case "$key" in
-            "welcome") echo "              Welcome to the Ethereum RPC Node Setup and Management Script" ;;
+            "welcome") echo "Welcome to the Ethereum RPC Node Setup and Management Script" ;;
             "jwt_gen") echo "🔐 Generating jwt.hex..." ;;
             "choose_client") echo "🔧 Choose consensus client:" ;;
             "client_selected") echo "✅ Selected client: $1" ;;
@@ -454,7 +390,7 @@ function t {
         esac
     else
         case "$key" in
-            "welcome") echo "          Добро пожаловать в скрипт установки и управления нодой RPC Ethereum" ;;
+            "welcome") echo "Добро пожаловать в скрипт установки и управления нодой RPC Ethereum" ;;
             "jwt_gen") echo "🔐 Генерация jwt.hex..." ;;
             "choose_client") echo "🔧 Выберите consensus клиент:" ;;
             "client_selected") echo "✅ Выбран клиент: $1" ;;
@@ -810,6 +746,74 @@ function check_version() {
     echo -e "${GREEN}$(t "version_up_to_date")${NC}"
   fi
 
+}
+
+function choose_network {
+  mkdir -p "$NODE_DIR"
+
+  local options=("mainnet" "sepolia" "holesky" "hoodi")
+  local labels=(
+    "Ethereum Mainnet"
+    "Sepolia Testnet"
+    "Holesky Testnet"
+    "Hoodi Testnet"
+  )
+
+  PS3="🌐 Choose network:"$'\n> '
+  select opt_label in "${labels[@]}"; do
+    case $REPLY in
+      1|2|3|4)
+        local selected="${options[$((REPLY-1))]}"
+        echo "$selected" > "$NETWORK_FILE"
+        print_success "✅ Selected network: $selected"
+        CURRENT_NETWORK=$selected
+        return
+        ;;
+      *) print_error "❌ Invalid choice. Please try again." ;;
+    esac
+  done
+}
+
+function get_network_params {
+  local network=$1
+  case $network in
+    mainnet)
+      echo "--network mainnet --checkpoint-sync-url=https://sync-mainnet.beaconcha.in/"
+      ;;
+    sepolia)
+      echo "--network sepolia --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/"
+      ;;
+    holesky)
+      echo "--network holesky --checkpoint-sync-url=https://beaconstate-holesky.chainsafe.io/"
+      ;;
+    hoodi)
+      echo "--network hoodi --checkpoint-sync-url=https://beaconstate-hoodi.chainsafe.io/"
+      ;;
+    *)
+      echo "--network sepolia --checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io/"
+      ;;
+  esac
+}
+
+function get_execution_network_flag {
+  local network=$1
+  case $network in
+    mainnet)
+      echo "--mainnet"
+      ;;
+    sepolia)
+      echo "--sepolia"
+      ;;
+    holesky)
+      echo "--holesky"
+      ;;
+    hoodi)
+      echo "--hoodi"
+      ;;
+    *)
+      echo "--sepolia"
+      ;;
+  esac
 }
 
 # Функция для автоматической настройки ресурсов Docker контейнеров
@@ -3241,6 +3245,10 @@ function apply_resource_limits_to_existing_node {
         print_info "$(t "resource_limits_disabled")"
     fi
 }
+
+# ✦ Made by Pittpv
+# ✦ Feedback & Support in Tg: https://t.me/+DLsyG6ol3SFjM2Vk
+# ✦ https://x.com/pittpv
 
 # Main menu
 function main_menu {
