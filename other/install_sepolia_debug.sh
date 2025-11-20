@@ -131,14 +131,14 @@ function t {
 
     if [[ "$lang" == "en" ]]; then
         case "$key" in
-            "welcome") echo "              Welcome to the Sepolia Ethereum Node Setup and Management Script" ;;
+            "welcome") echo "              Welcome to the Ethereum RPC Node Setup and Management Script" ;;
             "jwt_gen") echo "🔐 Generating jwt.hex..." ;;
             "choose_client") echo "🔧 Choose consensus client:" ;;
             "client_selected") echo "✅ Selected client: $1" ;;
             "invalid_choice") echo "❌ Invalid choice. Please try again." ;;
             "creating_compose") echo "🛠️ Creating docker-compose.yml for client $1..." ;;
             "unknown_client") echo "❌ Unknown client: $1" ;;
-            "node_install") echo "🚀 Installing Sepolia node..." ;;
+            "node_install") echo "🚀 Installing RPC node..." ;;
             "node_installed") echo "✅ Node installed and running." ;;
             "node_update") echo "🔄 Updating containers..." ;;
             "node_updated") echo "✅ Update completed." ;;
@@ -186,7 +186,7 @@ function t {
             "confirm_delete") echo "⚠️ This will delete all node data. Continue? (y/n)" ;;
             "deleted") echo "🗑️ Node completely removed." ;;
             "cancelled") echo "❌ Deletion cancelled." ;;
-            "menu_title") echo "====== Sepolia Node Manager ======" ;;
+            "menu_title") echo "====== RPC Node Manager ======" ;;
             "menu_options") echo -e '1) Install prerequisites (Docker and other software)\n\033[0;32m2) Install node\033[0m\n3) Update node\n4) Check logs\n5) Check sync status\n\033[0;32m6) Set up Telegram notifications with sync status\033[0m\n\033[31m7) Remove Telegram notifications\033[0m\n8) Stop containers\n9) Start containers\n\033[31m10) Delete node\033[0m\n11) Change ports for installed node\n12) Check disk usage\n13) Firewall management\n14) Check RPC server\n15) Configure Docker resources\n\033[31m0) Exit\033[0m' ;;
             "goodbye") echo "👋 Goodbye!" ;;
             "invalid_option") echo "❌ Invalid choice, try again." ;;
@@ -247,7 +247,7 @@ function t {
             "nethermind_synced_fully") echo "Nethermind: Fully Synced (eth_syncing returned false)." ;;
             "nethermind_sync_data_missing") echo "Nethermind: Sync data missing from eth_syncing (after confirming not fully synced)." ;;
             "nethermind_rpc_error") printf "Nethermind: Error calling RPC method %s." "$1" ;;
-            "chatid_linked") echo "✅ ChatID successfully linked to Sepolia node" ;;
+            "chatid_linked") echo "✅ ChatID successfully linked to RPC node" ;;
             "invalid_token") echo "Invalid Telegram bot token. Please try again." ;;
             "token_format") echo "Token should be in format: 1234567890:ABCdefGHIJKlmNoPQRsTUVwxyZ" ;;
             "invalid_chatid") echo "Invalid Telegram chat ID or the bot doesn't have access to this chat. Please try again." ;;
@@ -263,7 +263,7 @@ function t {
             "restart_required") echo "♻️ To apply changes, restart the node containers, remove the old cron agent, and create a new one." ;;
             "current_script_version") echo "📌 Current script version:" ;;
             "new_version_avialable") echo "🚀 New version available:" ;;
-            "new_version_update") echo "Please update your Sepolia script" ;;
+            "new_version_update") echo "Please update your RPC script" ;;
             "version_up_to_date") echo "✅ You are using the latest version" ;;
             # Basic messages
             "press_enter_to_continue") echo "Press Enter to continue..." ;;
@@ -415,7 +415,7 @@ function t {
             # Main menu
             "script_works_in_iptables") echo "Script works with iptables using DOCKER-USER chain and duplicates rules for ufw." ;;
             "port_ip_management_logic") echo "Port/IP management logic is based on adding/removing allow rules." ;;
-            "on_first_run") echo "Before working with the function, run the Sepolia node installation. On first run:" ;;
+            "on_first_run") echo "Before working with the function, run the RPC node installation. On first run:" ;;
             "first_run_option_1") echo "First run option 1. Confirm ufw activation and ensure iptables are configured;" ;;
             "first_run_option_2") echo "Then using option 2 (item 1 within the option), open the required ports for your node to work. For example for Aztec: 8080,40400" ;;
             "first_run_option_3") echo "Finally using option 2 (item 3 within the option), block RPC and BEACON ports for incoming connections." ;;
@@ -454,14 +454,14 @@ function t {
         esac
     else
         case "$key" in
-            "welcome") echo "          Добро пожаловать в скрипт установки и управления нодой Sepolia Ethereum" ;;
+            "welcome") echo "          Добро пожаловать в скрипт установки и управления нодой RPC Ethereum" ;;
             "jwt_gen") echo "🔐 Генерация jwt.hex..." ;;
             "choose_client") echo "🔧 Выберите consensus клиент:" ;;
             "client_selected") echo "✅ Выбран клиент: $1" ;;
             "invalid_choice") echo "❌ Неверный выбор. Попробуйте снова." ;;
             "creating_compose") echo "🛠️ Создание docker-compose.yml для клиента $1..." ;;
             "unknown_client") echo "❌ Неизвестный клиент: $1" ;;
-            "node_install") echo "🚀 Установка Sepolia-ноды..." ;;
+            "node_install") echo "🚀 Установка RPC-ноды..." ;;
             "node_installed") echo "✅ Нода установлена и запущена." ;;
             "node_update") echo "🔄 Обновление контейнеров..." ;;
             "node_updated") echo "✅ Обновление завершено." ;;
@@ -509,7 +509,7 @@ function t {
             "confirm_delete") echo "⚠️ Это действие удалит все данные ноды. Продолжить? (y/n)" ;;
             "deleted") echo "🗑️ Нода полностью удалена." ;;
             "cancelled") echo "❌ Удаление отменено." ;;
-            "menu_title") echo "====== Sepolia Node Manager ======" ;;
+            "menu_title") echo "====== RPC Node Manager ======" ;;
             "menu_options") echo -e '1) Установить требования (Docker и другое ПО)\n\033[0;32m2) Установить ноду\033[0m\n3) Обновить ноду\n4) Проверить логи\n5) Проверить статус синхронизации\n\033[0;32m6) Настроить Telegram уведомления со сатусом синхронизации\033[0m\n\033[31m7) Удалить Telegram уведомления\033[0m\n8) Остановить контейнеры\n9) Запустить контейнеры\n\033[31m10) Удалить ноду\033[0m\n11) Изменить порты для установленной ноды\n12) Проверить занимаемое место\n13) Управление файрволлом\n14) Проверить RPC-сервер\n15) Настроить ресурсы Docker\n\033[31m0) Выйти\033[0m' ;;
             "goodbye") echo "👋 До свидания!" ;;
             "invalid_option") echo "❌ Неверный выбор, попробуйте снова." ;;
@@ -570,7 +570,7 @@ function t {
             "nethermind_synced_fully") echo "Nethermind: Полностью синхронизирован (eth_syncing вернул false)." ;;
             "nethermind_sync_data_missing") echo "Nethermind: Данные синхронизации отсутствуют в eth_syncing (после подтверждения неполной синхронизации)." ;;
             "nethermind_rpc_error") printf "Nethermind: Ошибка при вызове RPC метода %s." "$1" ;;
-            "chatid_linked") echo "✅ ChatID успешно связан с Sepolia node" ;;
+            "chatid_linked") echo "✅ ChatID успешно связан с RPC нодой" ;;
             "invalid_token") echo "Неверный токен Telegram бота. Пожалуйста, попробуйте снова." ;;
             "token_format") echo "Токен должен быть в формате: 1234567890:ABCdefGHIJKlmNoPQRsTUVwxyZ" ;;
             "invalid_chatid") echo "Неверный Chat ID или бот не имеет доступа к этому чату. Пожалуйста, попробуйте снова." ;;
@@ -586,7 +586,7 @@ function t {
             "restart_required") echo "♻️ Для применения изменений перезапустите контейнеры ноды, удалите старого cron-агента и создайте нового." ;;
             "current_script_version") echo "📌 Текущая версия скрипта:" ;;
             "new_version_avialable") echo "🚀 Доступна новая версия:" ;;
-            "new_version_update") echo "Пожалуйста, обновите Sepolia скрипт" ;;
+            "new_version_update") echo "Пожалуйста, обновите RPC скрипт" ;;
             "version_up_to_date") echo "✅ Установлена актуальная версия" ;;
             "ufw_wrong_ip") echo "Неверный IP-адрес. Попробуйте снова" ;;
             # Основные сообщения
@@ -739,7 +739,7 @@ function t {
             # Главное меню
             "script_works_in_iptables") echo "Скрипт работает в iptables c цепочкой DOCKER-USER и дублирует правила для ufw." ;;
             "port_ip_management_logic") echo "Логика управления портами/адресами построена на добавлении/удалении разрешающих правил." ;;
-            "on_first_run") echo "Перед работой с функцией запустите установку Sepolia ноды. При первом запуске:" ;;
+            "on_first_run") echo "Перед работой с функцией запустите установку RPC ноды. При первом запуске:" ;;
             "first_run_option_1") echo "Cначала запустите опцию 1. Подтвердите включение ufw и убедитесь что iptables настроены;" ;;
             "first_run_option_2") echo "Затем, используя опцию 2 (пункт 1 внутри опции), откройте необходимые порты для работы вашей ноды. Например для Aztec: 8080,40400" ;;
             "first_run_option_3") echo "В завершение, используя опцию 2 (пункт 3 внутри опции), выполните блокировку RPC и BEACON портов для входящих соединений." ;;
@@ -2025,7 +2025,7 @@ get_ip_address() {
 }
 ip=\$(get_ip_address)
 
-STATUS_MSG="[Sepolia Node Monitor]
+STATUS_MSG="[RPC Node Monitor]
 🌐 Server: \$ip
 Execution client: \$execution_status
 Consensus client: \$consensus_status"
