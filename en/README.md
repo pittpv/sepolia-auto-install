@@ -47,6 +47,7 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 
 ⚠️ Update the script ➡️ Delete the old RPC node ➡️ Install a new RPC node
 
+- Added installation in mainnet, Holesky, Hoodi, Sepolia
 - Beacon node operation has been stabilized
 - Update of the Docker resource usage restriction function (Option 15, also when installing the node)
   - Restrictions are assigned only to the execution client
@@ -54,7 +55,6 @@ All prerequisites can be installed automatically by selecting option 1 in the me
   - New calculation logic for CPU
   - Minimum requirements 24 RAM, 8 CPU
 - Distance display for beacon has been added to the synchronization status notification.
-- Added installation in mainnet, Holesky, Hoodi, Sepolia
 - Minor improvements
 
 ---
