@@ -908,12 +908,6 @@ function configure_docker_resources() {
         execution_reserve_cpu=4
     fi
 
-    # CONSENSUS CLIENT - БЕЗ ОГРАНИЧЕНИЙ (использует оставшиеся ресурсы)
-    consensus_limit_ram_gb=0  # 0 означает нет ограничения
-    consensus_reserve_ram_gb=0
-    consensus_limit_cpu=0
-    consensus_reserve_cpu=0
-
     # ГАРАНТИРУЕМ, ЧТО EXECUTION РЕЗЕРВЫ НЕ ПРЕВЫШАЮТ ДОСТУПНУЮ ПАМЯТЬ
     if [[ $execution_reserve_ram_gb -gt $available_ram_gb ]]; then
         execution_reserve_ram_gb=$available_ram_gb
@@ -937,7 +931,6 @@ function configure_docker_resources() {
     echo "   Execution Client RAM: limit=${execution_limit_ram_gb}G, reservation=${execution_reserve_ram_gb}G"
     echo "   Execution Client CPU: limit=${execution_limit_cpu} CPU cores, reservation=${execution_reserve_cpu} CPU cores"
     echo "   Consensus Client is not limited for stability of work"
-    #echo "   Consensus Client: limit=${consensus_limit_ram_gb}G, reservation=${consensus_reserve_ram_gb}G, ${consensus_cpu} CPU cores"
 
     # Запрашиваем согласие пользователя
     echo ""
@@ -957,22 +950,16 @@ function configure_docker_resources() {
                 # Сохраняем настройки в переменные для использования в create_docker_compose
                 EXECUTION_MEMORY_LIMIT="${execution_limit_ram_gb}G"
                 EXECUTION_MEMORY_RESERVATION="${execution_reserve_ram_gb}G"
-                CONSENSUS_MEMORY_LIMIT="${consensus_limit_ram_gb}G"
-                CONSENSUS_MEMORY_RESERVATION="${consensus_reserve_ram_gb}G"
                 EXECUTION_CPU_LIMIT="${execution_limit_cpu}.0"
                 EXECUTION_CPU_RESERVATION="${execution_reserve_cpu}.0"
-                #CONSENSUS_CPU_LIMIT="${execution_reserve_cpu}.0"
 
                 # Сохраняем настройки в файл для последующего использования
                 local resource_config_file="$NODE_DIR/resource_config.env"
                 {
                     echo "EXECUTION_MEMORY_LIMIT=\"$EXECUTION_MEMORY_LIMIT\""
                     echo "EXECUTION_MEMORY_RESERVATION=\"$EXECUTION_MEMORY_RESERVATION\""
-                    echo "CONSENSUS_MEMORY_LIMIT=\"$CONSENSUS_MEMORY_LIMIT\""
-                    echo "CONSENSUS_MEMORY_RESERVATION=\"$CONSENSUS_MEMORY_RESERVATION\""
                     echo "EXECUTION_CPU_LIMIT=\"$EXECUTION_CPU_LIMIT\""
                     echo "EXECUTION_CPU_RESERVATION=\"$EXECUTION_CPU_RESERVATION\""
-                    #echo "CONSENSUS_CPU_LIMIT=\"$CONSENSUS_CPU_LIMIT\""
                     echo "TOTAL_RAM_GB=\"$total_ram_gb\""
                     echo "CPU_CORES=\"$cpu_cores\""
                     echo "RESOURCE_LIMITS_ENABLED=\"true\""
@@ -989,22 +976,16 @@ function configure_docker_resources() {
                 # Устанавливаем значения без ограничений
                 EXECUTION_MEMORY_LIMIT=""
                 EXECUTION_MEMORY_RESERVATION=""
-                CONSENSUS_MEMORY_LIMIT=""
-                CONSENSUS_MEMORY_RESERVATION=""
                 EXECUTION_CPU_LIMIT=""
                 EXECUTION_CPU_RESERVATION=""
-                #CONSENSUS_CPU_LIMIT=""
 
                 # Сохраняем настройки в файл
                 local resource_config_file="$NODE_DIR/resource_config.env"
                 {
                     echo "EXECUTION_MEMORY_LIMIT=\"\""
                     echo "EXECUTION_MEMORY_RESERVATION=\"\""
-                    echo "CONSENSUS_MEMORY_LIMIT=\"\""
-                    echo "CONSENSUS_MEMORY_RESERVATION=\"\""
                     echo "EXECUTION_CPU_LIMIT=\"\""
                     echo "EXECUTION_CPU_RESERVATION=\"\""
-                    #echo "CONSENSUS_CPU_LIMIT=\"\""
                     echo "TOTAL_RAM_GB=\"$total_ram_gb\""
                     echo "CPU_CORES=\"$cpu_cores\""
                     echo "RESOURCE_LIMITS_ENABLED=\"false\""
@@ -1039,12 +1020,8 @@ function load_resource_configuration() {
         # Устанавливаем значения по умолчанию (без ограничений)
         EXECUTION_MEMORY_LIMIT=""
         EXECUTION_MEMORY_RESERVATION=""
-        CONSENSUS_MEMORY_LIMIT=""
-        CONSENSUS_MEMORY_RESERVATION=""
         EXECUTION_CPU_LIMIT=""
         EXECUTION_CPU_RESERVATION=""
-        #CONSENSUS_CPU_LIMIT=""
-        #CONSENSUS_CPU_RESERVATION=""
         RESOURCE_LIMITS_ENABLED="false"
         print_info "\n$(t "using_default_resources")"
     fi
@@ -1410,20 +1387,6 @@ EOF
     restart: unless-stopped
 EOF
 
-#      # Добавляем ограничения ресурсов только если они включены
-#      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-#        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-#    deploy:
-#      resources:
-#        limits:
-#          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-#        reservations:
-#          memory: ${CONSENSUS_MEMORY_RESERVATION:-2G}
-#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-#EOF
-#      fi
-
       local network_params=$(get_network_params "$CURRENT_NETWORK")
       cat >> "$DOCKER_COMPOSE_FILE" <<EOF
     volumes:
@@ -1463,20 +1426,6 @@ EOF
     restart: unless-stopped
 EOF
 
-#      # Добавляем ограничения ресурсов только если они включены
-#      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-#        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-#    deploy:
-#      resources:
-#        limits:
-#          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-#        reservations:
-#          memory: ${CONSENSUS_MEMORY_RESERVATION:-2G}
-#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-#EOF
-#      fi
-
       cat >> "$DOCKER_COMPOSE_FILE" <<EOF
     volumes:
       - $NODE_DIR/prysm:/data
@@ -1513,20 +1462,6 @@ EOF
     container_name: teku
     restart: unless-stopped
 EOF
-
-#      # Добавляем ограничения ресурсов только если они включены
-#      if [[ "${RESOURCE_LIMITS_ENABLED:-true}" == "true" ]] && [[ -n "$CONSENSUS_MEMORY_LIMIT" ]]; then
-#        cat >> "$DOCKER_COMPOSE_FILE" <<EOF
-#    deploy:
-#      resources:
-#        limits:
-#          memory: ${CONSENSUS_MEMORY_LIMIT:-2G}
-#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-#        reservations:
-#          memory: ${CONSENSUS_MEMORY_RESERVATION:-2G}
-#          cpus: '${CONSENSUS_CPU_LIMIT:-1.0}'
-#EOF
-#      fi
 
       cat >> "$DOCKER_COMPOSE_FILE" <<EOF
     volumes:
