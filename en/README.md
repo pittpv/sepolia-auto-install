@@ -47,7 +47,7 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 
 ⚠️ Update the script ➡️ Delete the old RPC node ➡️ Install a new RPC node, setup new monitoring
 
-Or use the guide to update without deleting data - [Update-from-1-7-4-to-1-8-0.md](https://raw.githubusercontent.com/pittpv/sepolia-auto-install/main/other/Update-from-1-7-4-to-1-8-0.md)
+Or use the guide to update without deleting data - [Update-from-1-7-4-to-1-8-0.md](https://github.com/pittpv/sepolia-auto-install/blob/main/other/Update-from-1-7-4-to-1-8-0.md)
 
 - Added installation in mainnet, Holesky, Hoodi, Sepolia
 - Beacon node operation has been stabilized
