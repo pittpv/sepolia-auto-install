@@ -1,4 +1,4 @@
-# Upgrade Instructions from Version 1.7.4 to Version 1.8.0
+# Upgrade Instructions from Version 1.7.x to Version 1.8.0
 
 ## ⚠️ Important Recommendations
 

@@ -48,7 +48,7 @@
 
 ⚠️ Обновите скрипт ➡️ удалите старую RPC ноду ➡️ устанвите новую RPC ноду, настройте новый мониторинг
 
-Либо используйте гайд для обновления без удаления данных - [Update-from-1-7-4-to-1-8-0.md](https://github.com/pittpv/sepolia-auto-install/blob/main/other/Update-from-1-7-4-to-1-8-0.md)
+Либо используйте гайд для обновления без удаления данных - [Update-from-1-7-x-to-1-8-0.md](https://github.com/pittpv/sepolia-auto-install/blob/main/other/Update-from-1-7-4-to-1-8-0.md)
 
 - Добавлена установка в mainnet, Holesky, Hoodi, Sepolia 
 - Стабилизирована работа beacon ноды
