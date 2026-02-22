@@ -43,6 +43,11 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 8 cores and more                   |
 | **Disk**           | 800 GB SSD (can grow up to 1.5 TB) |
 
+
+Rent a server:
+
+- [BF 2025 – KVM Fat Slice 8 on Servarica](https://clients.servarica.com/aff.php?aff=1249)
+
 ## 📌 Latest Updates 22-02-2026
 
 - **Updated sync status check for Geth (option 5):**
