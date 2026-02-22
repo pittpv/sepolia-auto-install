@@ -44,7 +44,7 @@
 | **Процессор (CPU)**| 8 ядер и более                           |
 | **Диск**          | 800 GB SSD (может увеличиться до 1.5 TB) |
 
-Арендовать сервер:
+**Арендовать сервер**:
 
 - [BF 2025 – KVM Fat Slice 8 на Servarica](https://clients.servarica.com/aff.php?aff=1249)
 

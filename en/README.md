@@ -44,7 +44,7 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **Disk**           | 800 GB SSD (can grow up to 1.5 TB) |
 
 
-Rent a server:
+**Rent a server**:
 
 - [BF 2025 – KVM Fat Slice 8 on Servarica](https://clients.servarica.com/aff.php?aff=1249)
 
