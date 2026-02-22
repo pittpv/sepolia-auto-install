@@ -88,5 +88,10 @@
     "VERSION": "1.8.0",
     "UPDATE_DATE": "20.11.2025",
     "CHANGES": ["Update of the Docker resource usage restriction function","Distance display for beacon in notification","Added installation in mainnet, Holesky, Hoodi, Sepolia","Minor improvements"]
+  },
+  {
+    "VERSION": "1.8.1",
+    "UPDATE_DATE": "22.02.2025",
+    "CHANGES": ["Geth sync check: 100% progress capped, no negative blocks remaining, catch-up message","Geth sync check: parse container logs for snapshot ETA, tx indexing and log index progress when block sync is 100%","sync_data_invalid message: recommend recheck in 10-15 minutes after client start"]
   }
 ]

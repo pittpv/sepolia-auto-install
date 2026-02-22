@@ -43,8 +43,20 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 8 cores and more                   |
 | **Disk**           | 800 GB SSD (can grow up to 1.5 TB) |
 
-## 📌 Latest Updates 20-11-2025
+## 📌 Latest Updates 22-02-2025
 
+- **Updated sync status check for Geth (option 5):**
+  - When block progress is 100%, "blocks remaining" is no longer shown as negative — it shows 0 and a message that the node is catching up to the chain head; progress is capped at 100%.
+  - When block progress is 100%, the script reads the Geth container logs and displays in the status: snapshot generation ETA, transaction indexing progress, and log index progress (processed/remaining, elapsed time).
+  - Updated message for invalid sync data: recommends checking again 10–15 minutes after the client has started.
+- Sync check logic for Reth and Nethermind is unchanged and works as before.
+
+---
+
+<details>
+<summary>📅 Version History</summary>
+
+### 20-11-2025
 ⚠️ Update the script ➡️ Delete the old RPC node ➡️ Install a new RPC node, setup new monitoring
 
 Or use the guide to update without deleting data - [Update-from-1-7-x-to-1-8-0.md](https://github.com/pittpv/sepolia-auto-install/blob/main/en/Update-from-1-7-4-to-1-8-0.md)
@@ -58,11 +70,6 @@ Or use the guide to update without deleting data - [Update-from-1-7-x-to-1-8-0.m
   - Minimum requirements 24 RAM, 8 CPU
 - Distance display for beacon has been added to the synchronization status notification.
 - Minor improvements
-
----
-
-<details>
-<summary>📅 Version History</summary>
 
 ### 10-11-2025
 - The default checkpoint URL has been changed for BEACON clients.

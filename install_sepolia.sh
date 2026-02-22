@@ -13,7 +13,7 @@ BLUE='\033[1;34m'
 VIOLET='\033[0;35m'
 RESET='\033[0m'
 
-SCRIPT_VERSION="1.8.0"
+SCRIPT_VERSION="1.8.1"
 
 # Default Port Configurations
 # These variables define the default port numbers for various services.
@@ -99,6 +99,14 @@ function t {
             "speed") echo "   Speed:         $1 blocks/sec" ;;
             "eta") echo "   Estimated time:   $1" ;;
             "low_speed") echo "   ⏱️ Speed too low to estimate" ;;
+            "geth_almost_synced") echo "   ✅ Catching up to chain head (target reached or passed)" ;;
+            "geth_blocks_done") echo "   Blocks remaining:  0" ;;
+            "geth_bg_title") echo "   📋 Background tasks (from Geth logs):" ;;
+            "geth_bg_snapshot_eta") echo "   Snapshot generation ETA: $1" ;;
+            "geth_bg_tx_index") echo "   Tx indexing: $1 / $2 ($3%), elapsed $4" ;;
+            "geth_bg_log_index") echo "   Log index: processed $1, remaining $2, elapsed $3" ;;
+            "geth_bg_no_logs") echo "   (Could not read Geth container logs)" ;;
+            "geth_bg_none_found") echo "   (No snapshot/indexing lines in recent logs)" ;;
             "consensus") echo "🌐 Consensus ($1):" ;;
             "no_sync_data") echo "⚠️ No /eth/v1/node/syncing data, trying finality..." ;;
             "beacon_active") echo "✅ Beacon chain active (finality data received)" ;;
@@ -147,7 +155,7 @@ function t {
             "unknown_execution_client") echo "❌ Unknown execution client: $1." ;;
             "execution_client_usage") echo "🔧 Execution client ($1):" ;;
             "jwt_not_found_error") echo "❌ Critical Error: JWT file not found at $1 before starting containers. Halting." ;;
-            "sync_data_invalid") echo "❌ The synchronization data is invalid. If the client was launched recently, then try again later." ;;
+            "sync_data_invalid") echo "❌ The synchronization data is invalid. If the client was launched recently, check again in 10–15 minutes." ;;
             "teku_no_sync_data") echo "No Teku synchronization data. Please check again later." ;;
             "lighthouse_no_sync_data") echo "No Lighthouse synchronization data. Please check again later." ;;
             "prysm_no_sync_data") echo "No Prysm synchronization data. Please check again later." ;;
@@ -422,6 +430,14 @@ function t {
             "speed") echo "   Скорость:         $1 блоков/сек" ;;
             "eta") echo "   Оценка времени:   $1" ;;
             "low_speed") echo "   ⏱️ Скорость слишком мала для оценки времени" ;;
+            "geth_almost_synced") echo "   ✅ Догоняем голову сети (цель достигнута или пройдена)" ;;
+            "geth_blocks_done") echo "   Осталось блоков:  0" ;;
+            "geth_bg_title") echo "   📋 Фоновые задачи (из логов Geth):" ;;
+            "geth_bg_snapshot_eta") echo "   Генерация снапшота ETA: $1" ;;
+            "geth_bg_tx_index") echo "   Индексация транзакций: $1 / $2 ($3%), прошло $4" ;;
+            "geth_bg_log_index") echo "   Лог-индекс: обработано $1, осталось $2, прошло $3" ;;
+            "geth_bg_no_logs") echo "   (Не удалось прочитать логи контейнера Geth)" ;;
+            "geth_bg_none_found") echo "   (Нет строк снапшота/индексации в последних логах)" ;;
             "consensus") echo "🌐 Consensus ($1):" ;;
             "no_sync_data") echo "⚠️ Нет данных /eth/v1/node/syncing, пробуем финализацию..." ;;
             "beacon_active") echo "✅ Beacon chain активен (данные финализации получены)" ;;
@@ -470,7 +486,7 @@ function t {
             "unknown_execution_client") echo "❌ Неизвестный execution клиент: $1." ;;
             "execution_client_usage") echo "🔧 Execution клиент ($1):" ;;
             "jwt_not_found_error") echo "❌ Критическая ошибка: JWT файл не найден по пути $1 перед запуском контейнеров. Остановка." ;;
-            "sync_data_invalid") echo "❌ Данные синхронизации недействительны. Если клиент был запущен недавно, то попробуйте еще раз позже." ;;
+            "sync_data_invalid") echo "❌ Данные синхронизации недействительны. Если клиент был запущен недавно, проверьте снова через 10–15 минут." ;;
             "teku_no_sync_data") echo "Нет данных о синхронизации Teku. Повторите проверку позднее." ;;
             "lighthouse_no_sync_data") echo "Нет данных о синхронизации Lighthouse. Повторите проверку позднее." ;;
             "prysm_no_sync_data") echo "Нет данных о синхронизации Prysm. Повторите проверку позднее." ;;
@@ -1611,18 +1627,29 @@ function check_sync {
       else
         local remaining=$((highest_dec - current_dec))
         local progress=$((100 * current_dec / highest_dec))
+        [[ $progress -gt 100 ]] && progress=100
+
         echo "$(t "syncing" "$display_execution_client_name")"
         echo "$(t "current_block" "$current_dec")"
         echo "$(t "target_block" "$highest_dec")"
-        echo "$(t "blocks_left" "$remaining")"
-        echo "$(t "progress" "$progress")"
+
+        if [[ $remaining -le 0 ]]; then
+          echo "$(t "geth_blocks_done")"
+          echo "$(t "progress" "100")"
+        else
+          echo "$(t "blocks_left" "$remaining")"
+          echo "$(t "progress" "$progress")"
+        fi
 
         echo "$(t "sync_speed")"
         sleep 5
         local sync_data2=$(curl -s -X POST "http://localhost:$EXECUTION_RPC_PORT" -H 'Content-Type: application/json' \
           --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}')
         local current2=$(echo "$sync_data2" | jq -r '.result.currentBlock // .result.syncing.currentBlock // .result.syncingData.currentBlock // empty')
-        local current2_dec=$((16#${current2:2}))
+        local current2_dec=0
+        if [[ -n "$current2" && "$current2" != "null" ]] && [[ "$current2" =~ ^0x[0-9a-fA-F]+$ ]]; then
+          current2_dec=$((16#${current2:2}))
+        fi
 
         local delta_blocks=$((current2_dec - current_dec))
         local speed_bps=0
@@ -1632,7 +1659,51 @@ function check_sync {
 
         echo "$(t "speed" "$speed_bps")"
 
-        if [[ $speed_bps -gt 0 ]]; then
+        if [[ $remaining -le 0 ]]; then
+          echo "$(t "geth_almost_synced")"
+          # Parse Geth logs for background tasks and ETA when block progress is 100%
+          if command -v docker &>/dev/null && docker logs --tail 1 "$execution_client_name" &>/dev/null; then
+            local geth_logs
+            geth_logs=$(docker logs --tail 3000 "$execution_client_name" 2>&1)
+            echo "$(t "geth_bg_title")"
+            local snapshot_line
+            snapshot_line=$(echo "$geth_logs" | grep "Generating snapshot" | tail -1)
+            if [[ -n "$snapshot_line" ]]; then
+              local eta
+              eta=$(echo "$snapshot_line" | grep -oE 'eta=[0-9hms.]+' | head -1)
+              if [[ -n "$eta" ]]; then
+                echo "$(t "geth_bg_snapshot_eta" "${eta#eta=}")"
+              fi
+            fi
+            local idx_line
+            idx_line=$(echo "$geth_logs" | grep "Indexing transactions" | tail -1)
+            if [[ -n "$idx_line" ]]; then
+              local blocks_str total_str elapsed_str
+              blocks_str=$(echo "$idx_line" | grep -oE 'blocks=[0-9,]+' | head -1 | cut -d= -f2)
+              total_str=$(echo "$idx_line" | grep -oE 'total=[0-9,]+' | head -1 | cut -d= -f2)
+              elapsed_str=$(echo "$idx_line" | grep -oE 'elapsed=[0-9hms.]+' | head -1 | cut -d= -f2)
+              if [[ -n "$blocks_str" && -n "$total_str" ]]; then
+                local b t pct
+                b=${blocks_str//,/}
+                t=${total_str//,/}
+                [[ "$t" -gt 0 ]] && pct=$((100 * b / t)) || pct=0
+                echo "$(t "geth_bg_tx_index" "$blocks_str" "$total_str" "$pct" "${elapsed_str:-—}")"
+              fi
+            fi
+            local logidx_line
+            logidx_line=$(echo "$geth_logs" | grep "Log index head rendering" | tail -1)
+            if [[ -n "$logidx_line" ]]; then
+              local proc_str rem_str el_str
+              proc_str=$(echo "$logidx_line" | grep -oE 'processed=[0-9,]+' | head -1 | cut -d= -f2)
+              rem_str=$(echo "$logidx_line" | grep -oE 'remaining=[0-9,]+' | head -1 | cut -d= -f2)
+              el_str=$(echo "$logidx_line" | grep -oE 'elapsed=[0-9hms.]+' | head -1 | cut -d= -f2)
+              echo "$(t "geth_bg_log_index" "${proc_str:-—}" "${rem_str:-—}" "${el_str:-—}")"
+            fi
+            [[ -z "$snapshot_line" && -z "$idx_line" && -z "$logidx_line" ]] && echo "$(t "geth_bg_none_found")"
+          else
+            echo "$(t "geth_bg_no_logs")"
+          fi
+        elif [[ $speed_bps -gt 0 ]]; then
           local est_sec=$((remaining / speed_bps))
           echo "$(t "eta" "$(format_time $est_sec)")"
         else
