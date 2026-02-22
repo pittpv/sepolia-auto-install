@@ -43,7 +43,7 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 | **CPU**            | 8 cores and more                   |
 | **Disk**           | 800 GB SSD (can grow up to 1.5 TB) |
 
-## 📌 Latest Updates 22-02-2025
+## 📌 Latest Updates 22-02-2026
 
 - **Updated sync status check for Geth (option 5):**
   - When block progress is 100%, "blocks remaining" is no longer shown as negative — it shows 0 and a message that the node is catching up to the chain head; progress is capped at 100%.
