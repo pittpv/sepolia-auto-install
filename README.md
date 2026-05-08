@@ -46,7 +46,7 @@
 
 **Арендовать сервер** (пожалуйста используйте мою реферальную ссылку):
 
-- [BF 2025 – KVM Fat Slice 8 на Servarica](https://clients.servarica.com/aff.php?aff=1249)
+- [V2 KVM FAT Slice 8 на Servarica](https://clients.servarica.com/aff.php?aff=1249)
 
 ## 📌 Последние обновления 08-05-2026
 

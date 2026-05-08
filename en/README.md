@@ -46,7 +46,7 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 
 **Rent a server** (please use my referral link):
 
-- [BF 2025 – KVM Fat Slice 8 on Servarica](https://clients.servarica.com/aff.php?aff=1249)
+- [V2 KVM FAT Slice 8 on Servarica](https://clients.servarica.com/aff.php?aff=1249)
 
 ## 📌 Latest Updates 08-05-2026
 
