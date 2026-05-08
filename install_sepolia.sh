@@ -13,7 +13,7 @@ BLUE='\033[1;34m'
 VIOLET='\033[0;35m'
 RESET='\033[0m'
 
-SCRIPT_VERSION="1.8.1"
+SCRIPT_VERSION="1.8.2"
 
 # Default Port Configurations
 # These variables define the default port numbers for various services.
@@ -246,6 +246,12 @@ function t {
             "ufw_enabled_successfully") echo "✅ UFW enabled successfully" ;;
             "current_ufw_status") echo "Current UFW status:" ;;
             "failed_to_enable_ufw") echo "[Error] Failed to enable UFW" ;;
+            # Rules persistence messages
+            "setting_up_persistence") echo "Setting up rules persistence for Docker restarts..." ;;
+            "rules_saved_to_file") echo "✅ DOCKER-USER rules saved to file" ;;
+            "failed_to_save_rules") echo "[Warning] Failed to save rules to file" ;;
+            "rules_restored_from_file") echo "✅ DOCKER-USER rules restored from file" ;;
+            "persistence_configured") echo "✅ Auto-restore configured for Docker service" ;;
             # Port blocking messages
             "blocking_rpc_ports") echo "[Action] Blocking incoming connections on RPC and BEACON ports" ;;
             "blocked_ports") echo "✅ Blocked ports:" ;;
@@ -359,11 +365,11 @@ function t {
             # Main menu
             "script_works_in_iptables") echo "Script works with iptables using DOCKER-USER chain and duplicates rules for ufw." ;;
             "port_ip_management_logic") echo "Port/IP management logic is based on adding/removing allow rules." ;;
-            "on_first_run") echo "Before working with the function, run the RPC node installation. On first run:" ;;
-            "first_run_option_1") echo "First run option 1. Confirm ufw activation and ensure iptables are configured;" ;;
-            "first_run_option_2") echo "Then using option 2 (item 1 within the option), open the required ports for your node to work. For example for Aztec: 8080,40400" ;;
-            "first_run_option_3") echo "Finally using option 2 (item 3 within the option), block RPC and BEACON ports for incoming connections." ;;
-            "now_you_can_add_remove") echo "Now you can add/remove needed ports and addresses using options 2 and 3." ;;
+            "on_first_run") echo "First time using Firewall Management? Recommended first-run sequence (do once):" ;;
+            "first_run_option_1") echo "1) Option 1 (Enable and prepare): enable UFW and set up iptables/DOCKER-USER rules;" ;;
+            "first_run_option_2") echo "2) Option 2 (Port management) → Open port: open the ports your node/service needs (e.g., Aztec: 8080, 40400);" ;;
+            "first_run_option_3") echo "3) Option 2 (Port management) → Block RPC and BEACON ports: block public inbound access to your RPC/BEACON ports." ;;
+            "now_you_can_add_remove") echo "After that, use Option 2 and Option 3 any time to add/remove ports and allow/deny specific IPs." ;;
             "firewall_management_main_menu") echo "────── Firewall Management Main Menu ──────" ;;
             "enable_and_prepare_option") echo "Enable and prepare (ufw, iptables)" ;;
             "port_management_option") echo "Port management" ;;
@@ -578,6 +584,12 @@ function t {
             "ufw_enabled_successfully") echo "✅ UFW успешно включен" ;;
             "current_ufw_status") echo "Текущий статус UFW:" ;;
             "failed_to_enable_ufw") echo "[Ошибка] Не удалось включить UFW" ;;
+            # Сообщения персистентности правил
+            "setting_up_persistence") echo "Настройка сохранения правил при перезапуске Docker..." ;;
+            "rules_saved_to_file") echo "✅ Правила DOCKER-USER сохранены в файл" ;;
+            "failed_to_save_rules") echo "[Внимание] Не удалось сохранить правила в файл" ;;
+            "rules_restored_from_file") echo "✅ Правила DOCKER-USER восстановлены из файла" ;;
+            "persistence_configured") echo "✅ Автовосстановление настроено для Docker сервиса" ;;
             # Сообщения блокировки портов
             "blocking_rpc_ports") echo "[Действие] Блокируем входящие соединения на RPC и BEACON порты" ;;
             "blocked_ports") echo "✅ Заблокированы порты:" ;;
@@ -691,11 +703,11 @@ function t {
             # Главное меню
             "script_works_in_iptables") echo "Скрипт работает в iptables c цепочкой DOCKER-USER и дублирует правила для ufw." ;;
             "port_ip_management_logic") echo "Логика управления портами/адресами построена на добавлении/удалении разрешающих правил." ;;
-            "on_first_run") echo "Перед работой с функцией запустите установку RPC ноды. При первом запуске:" ;;
-            "first_run_option_1") echo "Cначала запустите опцию 1. Подтвердите включение ufw и убедитесь что iptables настроены;" ;;
-            "first_run_option_2") echo "Затем, используя опцию 2 (пункт 1 внутри опции), откройте необходимые порты для работы вашей ноды. Например для Aztec: 8080,40400" ;;
-            "first_run_option_3") echo "В завершение, используя опцию 2 (пункт 3 внутри опции), выполните блокировку RPC и BEACON портов для входящих соединений." ;;
-            "now_you_can_add_remove") echo "Теперь можно добавлять/удалять нужные вам порты и адреса с помощью опций 2 и 3." ;;
+            "on_first_run") echo "Первый запуск управления файрволом? Рекомендуемый порядок (сделать один раз):" ;;
+            "first_run_option_1") echo "1) Опция 1 (Включение и подготовка): включите UFW и настройте правила iptables/DOCKER-USER;" ;;
+            "first_run_option_2") echo "2) Опция 2 (Управление портами) → Открыть порт: откройте порты, нужные вашей ноде/сервису (например, Aztec: 8080, 40400);" ;;
+            "first_run_option_3") echo "3) Опция 2 (Управление портами) → Блокировать RPC и BEACON порты: закройте публичный вход на RPC/BEACON порты." ;;
+            "now_you_can_add_remove") echo "Далее используйте опции 2 и 3 в любое время, чтобы добавлять/удалять порты и разрешать/запрещать доступ по IP." ;;
             "firewall_management_main_menu") echo "────── Главное меню управления фаерволом ──────" ;;
             "enable_and_prepare_option") echo "Включение и подготовка (ufw, iptables)" ;;
             "port_management_option") echo "Управление портами" ;;
@@ -2280,6 +2292,9 @@ function firewall_setup() {
           if [ -n "$CONSENSUS_RPC_PORT" ]; then
               add_docker_user_rules "$CONSENSUS_RPC_PORT" "consensus"
           fi
+
+          # Сохраняем правила после добавления
+          save_docker_user_rules
       else
           echo -e "${YELLOW}$(t "docker_chain_not_found")${RESET}"
       fi
@@ -2323,8 +2338,61 @@ function firewall_setup() {
       echo -e "\n${CYAN}$(t "current_ufw_status")${RESET}"
       ufw status numbered
 
+      # Настраиваем персистентность правил при старте Docker
+      echo -e "\n${BLUE}$(t "setting_up_persistence")${RESET}"
+      setup_rules_persistence
+
       return 0
   }
+
+    # Файл для сохранения правил DOCKER-USER
+    DOCKER_USER_RULES_FILE="/etc/iptables/docker-user.rules"
+    DOCKER_SYSTEMD_DROPIN="/etc/systemd/system/docker.service.d/restore-iptables.conf"
+
+    # Сохранение правил DOCKER-USER в файл
+    save_docker_user_rules() {
+        mkdir -p /etc/iptables
+        iptables-save -t filter | grep -E "^(-A DOCKER-USER|:DOCKER-USER|\*filter|COMMIT)" > "$DOCKER_USER_RULES_FILE" 2>/dev/null
+        if [ $? -eq 0 ]; then
+            echo -e "${GREEN}$(t "rules_saved_to_file")${RESET}"
+        else
+            echo -e "${YELLOW}$(t "failed_to_save_rules")${RESET}"
+        fi
+    }
+
+    # Восстановление правил DOCKER-USER из файла
+    restore_docker_user_rules() {
+        if [ -f "$DOCKER_USER_RULES_FILE" ]; then
+            # Ждём пока цепочка DOCKER-USER появится
+            local attempts=0
+            while ! iptables -L DOCKER-USER >/dev/null 2>&1; do
+                sleep 1
+                attempts=$((attempts + 1))
+                if [ $attempts -ge 30 ]; then
+                    echo "Timeout waiting for DOCKER-USER chain"
+                    return 1
+                fi
+            done
+            # Очищаем текущие правила и восстанавливаем из файла
+            iptables -F DOCKER-USER 2>/dev/null
+            # Восстанавливаем только правила DOCKER-USER
+            grep "^-A DOCKER-USER" "$DOCKER_USER_RULES_FILE" | while read line; do
+                iptables ${line/-A/-I} 2>/dev/null
+            done
+            echo -e "${GREEN}$(t "rules_restored_from_file")${RESET}"
+        fi
+    }
+
+    # Создание systemd drop-in для автовосстановления правил
+    setup_rules_persistence() {
+        mkdir -p /etc/systemd/system/docker.service.d
+        cat > "$DOCKER_SYSTEMD_DROPIN" << 'DROPIN_EOF'
+[Service]
+ExecStartPost=/bin/bash -c 'sleep 3 && if [ -f /etc/iptables/docker-user.rules ]; then iptables -F DOCKER-USER 2>/dev/null; grep "^-A DOCKER-USER" /etc/iptables/docker-user.rules | while read line; do iptables ${line/-A/-I} 2>/dev/null; done; fi'
+DROPIN_EOF
+        systemctl daemon-reload
+        echo -e "${GREEN}$(t "persistence_configured")${RESET}"
+    }
 
     # Проверка существования правила
     rule_exists() {
@@ -2403,6 +2471,8 @@ function firewall_setup() {
 
         # Возвращаем правило DROP в конец
         add_global_drop_rule
+        # Сохраняем правила для персистентности
+        save_docker_user_rules
     }
 
 	# Показать правила для портов
@@ -2593,6 +2663,7 @@ function firewall_setup() {
 							done
 
 							add_global_drop_rule
+							save_docker_user_rules
 							echo -e "\n${GREEN}$(t "deleted_iptables_rules") $deleted_count${RESET}"
 							;;
 
@@ -2730,6 +2801,7 @@ function firewall_setup() {
 							done
 
 							add_global_drop_rule
+							save_docker_user_rules
 							echo -e "\n${GREEN}$(t "deleted_iptables_rules") $iptables_deleted${RESET}"
 							echo -e "${GREEN}$(t "deleted_ufw_rules") $ufw_deleted${RESET}"
 							;;
@@ -2742,6 +2814,7 @@ function firewall_setup() {
 				3)
 					echo -e "\n${BLUE}$(t "blocking_rpc_ports_for_all")${RESET}"
 					add_global_drop_rule
+					save_docker_user_rules
 
 					# Также блокируем входящие соединения в UFW
 					echo -e "\n${BLUE}$(t "changing_ufw_policy_to_block_all")${RESET}"
@@ -2969,6 +3042,7 @@ function firewall_setup() {
 							done
 
 							add_global_drop_rule
+							save_docker_user_rules
 							echo -e "\n${GREEN}$(t "deleted_iptables_rules") $deleted_count${RESET}"
 							;;
 
@@ -3109,6 +3183,7 @@ function firewall_setup() {
 							done
 
 							add_global_drop_rule
+							save_docker_user_rules
 							echo -e "\n${GREEN}$(t "deleted_iptables_rules") $iptables_deleted${RESET}"
 							echo -e "${GREEN}$(t "deleted_ufw_rules") $ufw_deleted${RESET}"
 							;;
@@ -3193,6 +3268,8 @@ function firewall_setup() {
 			echo -e "\n${BLUE}1. $(t "clearing_docker_user_chain")...${RESET}"
 			if iptables -F DOCKER-USER; then
 				echo -e "${GREEN}$(t "all_docker_user_rules_deleted")${RESET}"
+				# Сохраняем пустые правила чтобы они не восстановились после рестарта Docker
+				save_docker_user_rules
 			else
 				echo -e "${RED}$(t "failed_to_clear_docker_user")${RESET}"
 				return 1

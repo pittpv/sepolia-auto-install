@@ -48,18 +48,25 @@ All prerequisites can be installed automatically by selecting option 1 in the me
 
 - [BF 2025 – KVM Fat Slice 8 on Servarica](https://clients.servarica.com/aff.php?aff=1249)
 
-## 📌 Latest Updates 22-02-2026
+## 📌 Latest Updates 08-05-2026
 
-- **Updated sync status check for Geth (option 5):**
-  - When block progress is 100%, "blocks remaining" is no longer shown as negative — it shows 0 and a message that the node is catching up to the chain head; progress is capped at 100%.
-  - When block progress is 100%, the script reads the Geth container logs and displays in the status: snapshot generation ETA, transaction indexing progress, and log index progress (processed/remaining, elapsed time).
-  - Updated message for invalid sync data: recommends checking again 10–15 minutes after the client has started.
-- Sync check logic for Reth and Nethermind is unchanged and works as before.
+- Added `save_docker_user_rules()` — saves `DOCKER-USER` rules to `/etc/iptables/docker-user.rules`
+- Added `setup_rules_persistence()` — creates a systemd drop-in at `/etc/systemd/system/docker.service.d/restore-iptables.conf` to automatically restore rules after each Docker start
+- Added automatic saving after each rules change (add, delete, block ports)
+- Added localized strings for new messages (EN/RU)
+- Added a clearer built-in first-run guide for the Firewall Management option
 
 ---
 
 <details>
 <summary>📅 Version History</summary>
+
+### 22-02-2026
+- **Updated sync status check for Geth (option 5):**
+  - When block progress is 100%, "blocks remaining" is no longer shown as negative — it shows 0 and a message that the node is catching up to the chain head; progress is capped at 100%.
+  - When block progress is 100%, the script reads the Geth container logs and displays in the status: snapshot generation ETA, transaction indexing progress, and log index progress (processed/remaining, elapsed time).
+  - Updated message for invalid sync data: recommends checking again 10–15 minutes after the client has started.
+- Sync check logic for Reth and Nethermind is unchanged and works as before.
 
 ### 20-11-2025
 ⚠️ Update the script ➡️ Delete the old RPC node ➡️ Install a new RPC node, setup new monitoring
