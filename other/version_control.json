@@ -98,5 +98,10 @@
     "VERSION": "1.8.2",
     "UPDATE_DATE": "08.05.2026",
     "CHANGES": ["Added save_docker_user_rules() to persist DOCKER-USER rules to /etc/iptables/docker-user.rules","Added setup_rules_persistence() to create a systemd drop-in that restores rules after each Docker start","Added automatic saving after each rules change (add, remove, block ports)","Added localized strings for new messages (EN/RU)","Added clearer built-in first-run guide for Firewall Management option"]
+  },
+  {
+    "VERSION": "1.8.3",
+    "UPDATE_DATE": "09.05.2026",
+    "CHANGES": ["Important fix for Firewall Management option"]
   }
 ]
